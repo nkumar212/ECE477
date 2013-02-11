@@ -594,7 +594,7 @@
 <wire x1="-2.1" y1="-2.3" x2="-2.6" y2="-2.3" width="0.127" layer="21"/>
 <wire x1="-2.6" y1="2.2" x2="-2.6" y2="-2.3" width="0.127" layer="21"/>
 <wire x1="2.5" y1="2.2" x2="2.5" y2="-2.3" width="0.127" layer="21"/>
-<circle x="-2.2" y="-1.7" radius="0.22360625" width="0.127" layer="21"/>
+<circle x="-2" y="-1.5" radius="0.22360625" width="0.127" layer="21"/>
 <text x="-2.9" y="-3.1" size="1.27" layer="21" rot="R90">&gt;NAME</text>
 <text x="4" y="-3.3" size="1.27" layer="21" rot="R90">&gt;VALUE</text>
 </package>
@@ -946,6 +946,18 @@
 <connect gate="G$1" pin="V-" pad="V- V-2"/>
 <connect gate="G$1" pin="VCC" pad="VCC"/>
 </connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="BQ34Z100">
+<gates>
+<gate name="G$1" symbol="BQ34Z100" x="2.54" y="0"/>
+</gates>
+<devices>
+<device name="">
 <technologies>
 <technology name=""/>
 </technologies>

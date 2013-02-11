@@ -777,6 +777,7 @@
 </symbols>
 <devicesets>
 <deviceset name="TXB0108">
+<description>3.3 - 5 volt level converter</description>
 <gates>
 <gate name="G$1" symbol="TXB0108" x="-2.54" y="-7.62"/>
 </gates>

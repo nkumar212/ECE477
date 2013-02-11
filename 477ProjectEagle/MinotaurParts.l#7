@@ -811,6 +811,7 @@
 </devices>
 </deviceset>
 <deviceset name="L298">
+<description>H bridge motor driver</description>
 <gates>
 <gate name="G$1" symbol="L298" x="-5.08" y="2.54"/>
 </gates>
@@ -923,6 +924,7 @@
 </devices>
 </deviceset>
 <deviceset name="MAX233">
+<description>RS232 level converter</description>
 <gates>
 <gate name="G$1" symbol="MAX233" x="-5.08" y="0"/>
 </gates>
@@ -953,6 +955,7 @@
 </devices>
 </deviceset>
 <deviceset name="BQ34Z100">
+<description>Battery fuel guage IC for lithium lion batteries</description>
 <gates>
 <gate name="G$1" symbol="BQ34Z100" x="2.54" y="0"/>
 </gates>
