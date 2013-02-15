@@ -861,35 +861,61 @@ KEMET V / EIA 7343-20, KEMET X / EIA 7343-43 Wafe solder</description>
 <rectangle x1="0.9525" y1="-0.8763" x2="1.6891" y2="0.8763" layer="51"/>
 <rectangle x1="-0.3" y1="-0.7" x2="0.3" y2="0.7" layer="35"/>
 </package>
+<package name="TACTILE-PTH-12MM">
+<wire x1="5" y1="-1.3" x2="5" y2="-0.7" width="0.2032" layer="51"/>
+<wire x1="5" y1="-0.7" x2="4.5" y2="-0.2" width="0.2032" layer="51"/>
+<wire x1="5" y1="0.2" x2="5" y2="1" width="0.2032" layer="51"/>
+<wire x1="-6" y1="4" x2="-6" y2="5" width="0.2032" layer="21"/>
+<wire x1="-5" y1="6" x2="5" y2="6" width="0.2032" layer="21"/>
+<wire x1="6" y1="5" x2="6" y2="4" width="0.2032" layer="21"/>
+<wire x1="6" y1="1" x2="6" y2="-1" width="0.2032" layer="21"/>
+<wire x1="6" y1="-4" x2="6" y2="-5" width="0.2032" layer="21"/>
+<wire x1="5" y1="-6" x2="-5" y2="-6" width="0.2032" layer="21"/>
+<wire x1="-6" y1="-5" x2="-6" y2="-4" width="0.2032" layer="21"/>
+<wire x1="-6" y1="-1" x2="-6" y2="1" width="0.2032" layer="21"/>
+<wire x1="-6" y1="5" x2="-5" y2="6" width="0.2032" layer="21" curve="-90"/>
+<wire x1="5" y1="6" x2="6" y2="5" width="0.2032" layer="21" curve="-90"/>
+<wire x1="6" y1="-5" x2="5" y2="-6" width="0.2032" layer="21" curve="-90"/>
+<wire x1="-5" y1="-6" x2="-6" y2="-5" width="0.2032" layer="21" curve="-90"/>
+<circle x="0" y="0" radius="3.5" width="0.2032" layer="21"/>
+<circle x="-4.5" y="4.5" radius="0.3" width="0.7" layer="21"/>
+<circle x="4.5" y="4.5" radius="0.3" width="0.7" layer="21"/>
+<circle x="4.5" y="-4.5" radius="0.3" width="0.7" layer="21"/>
+<circle x="-4.5" y="-4.5" radius="0.3" width="0.7" layer="21"/>
+<pad name="4" x="-6.25" y="2.5" drill="1.2" diameter="2.159"/>
+<pad name="2" x="-6.25" y="-2.5" drill="1.2" diameter="2.159"/>
+<pad name="1" x="6.25" y="-2.5" drill="1.2" diameter="2.159"/>
+<pad name="3" x="6.25" y="2.5" drill="1.2" diameter="2.159"/>
+</package>
 </packages>
 <symbols>
 <symbol name="TXB0108">
-<wire x1="-63.5" y1="60.96" x2="-30.48" y2="60.96" width="0.254" layer="94"/>
-<wire x1="-30.48" y1="60.96" x2="-30.48" y2="8.89" width="0.254" layer="94"/>
-<wire x1="-30.48" y1="8.89" x2="-63.5" y2="8.89" width="0.254" layer="94"/>
-<wire x1="-63.5" y1="8.89" x2="-63.5" y2="60.96" width="0.254" layer="94"/>
-<pin name="A1" x="-68.58" y="53.34" length="middle"/>
-<pin name="VCCA" x="-68.58" y="58.42" length="middle"/>
-<pin name="A2" x="-68.58" y="48.26" length="middle"/>
-<pin name="A3" x="-68.58" y="43.18" length="middle"/>
-<pin name="A4" x="-68.58" y="38.1" length="middle"/>
-<pin name="A5" x="-68.58" y="33.02" length="middle"/>
-<pin name="A6" x="-68.58" y="27.94" length="middle"/>
-<pin name="A7" x="-68.58" y="22.86" length="middle"/>
-<pin name="A8" x="-68.58" y="17.78" length="middle"/>
-<pin name="OE" x="-68.58" y="12.7" length="middle"/>
-<pin name="GND" x="-25.4" y="12.7" length="middle" rot="R180"/>
-<pin name="B8" x="-25.4" y="17.78" length="middle" rot="R180"/>
-<pin name="B7" x="-25.4" y="22.86" length="middle" rot="R180"/>
-<pin name="B6" x="-25.4" y="27.94" length="middle" rot="R180"/>
-<pin name="B5" x="-25.4" y="33.02" length="middle" rot="R180"/>
-<pin name="B4" x="-25.4" y="38.1" length="middle" rot="R180"/>
-<pin name="B3" x="-25.4" y="43.18" length="middle" rot="R180"/>
-<pin name="B2" x="-25.4" y="48.26" length="middle" rot="R180"/>
-<pin name="VCCB" x="-25.4" y="58.42" length="middle" rot="R180"/>
-<pin name="B1" x="-25.4" y="53.34" length="middle" rot="R180"/>
-<text x="-50.8" y="58.42" size="1.27" layer="95">&gt;NAME</text>
-<text x="-50.8" y="55.88" size="1.27" layer="96">&gt;VALUE</text>
+<wire x1="-15.24" y1="30.48" x2="17.78" y2="30.48" width="0.254" layer="94"/>
+<wire x1="17.78" y1="30.48" x2="17.78" y2="1.27" width="0.254" layer="94"/>
+<wire x1="17.78" y1="1.27" x2="-15.24" y2="1.27" width="0.254" layer="94"/>
+<wire x1="-15.24" y1="1.27" x2="-15.24" y2="30.48" width="0.254" layer="94"/>
+<pin name="A1" x="-20.32" y="25.4" length="middle"/>
+<pin name="VCCA" x="-20.32" y="27.94" length="middle"/>
+<pin name="A2" x="-20.32" y="22.86" length="middle"/>
+<pin name="A3" x="-20.32" y="20.32" length="middle"/>
+<pin name="A4" x="-20.32" y="17.78" length="middle"/>
+<pin name="A5" x="-20.32" y="15.24" length="middle"/>
+<pin name="A6" x="-20.32" y="12.7" length="middle"/>
+<pin name="A7" x="-20.32" y="10.16" length="middle"/>
+<pin name="A8" x="-20.32" y="7.62" length="middle"/>
+<pin name="OE" x="-20.32" y="5.08" length="middle"/>
+<pin name="GND" x="22.86" y="5.08" length="middle" rot="R180"/>
+<pin name="B8" x="22.86" y="7.62" length="middle" rot="R180"/>
+<pin name="B7" x="22.86" y="10.16" length="middle" rot="R180"/>
+<pin name="B6" x="22.86" y="12.7" length="middle" rot="R180"/>
+<pin name="B5" x="22.86" y="15.24" length="middle" rot="R180"/>
+<pin name="B4" x="22.86" y="17.78" length="middle" rot="R180"/>
+<pin name="B3" x="22.86" y="20.32" length="middle" rot="R180"/>
+<pin name="B2" x="22.86" y="22.86" length="middle" rot="R180"/>
+<pin name="VCCB" x="22.86" y="27.94" length="middle" rot="R180"/>
+<pin name="B1" x="22.86" y="25.4" length="middle" rot="R180"/>
+<text x="-2.54" y="27.94" size="1.27" layer="95">&gt;NAME</text>
+<text x="-2.54" y="25.4" size="1.27" layer="96">&gt;VALUE</text>
 </symbol>
 <symbol name="L298">
 <pin name="GND" x="-15.24" y="22.86" length="middle"/>
@@ -1217,6 +1243,13 @@ KEMET V / EIA 7343-20, KEMET X / EIA 7343-43 Wafe solder</description>
 <text x="-3.81" y="-3.302" size="1.778" layer="96">&gt;VALUE</text>
 <pin name="2" x="5.08" y="0" visible="off" length="short" direction="pas" swaplevel="1" rot="R180"/>
 <pin name="1" x="-5.08" y="0" visible="off" length="short" direction="pas" swaplevel="1"/>
+</symbol>
+<symbol name="BUTTON">
+<wire x1="-5.08" y1="0" x2="0" y2="5.08" width="0.254" layer="94"/>
+<wire x1="2.54" y1="0" x2="5.08" y2="0" width="0.254" layer="94"/>
+<pin name="1" x="-10.16" y="0" length="middle"/>
+<pin name="2" x="10.16" y="0" length="middle" rot="R180"/>
+<text x="-5.08" y="-2.54" size="1.27" layer="95">&gt;NAME</text>
 </symbol>
 </symbols>
 <devicesets>
@@ -1703,6 +1736,22 @@ KEMET V / EIA 7343-20, KEMET X / EIA 7343-43 Wafe solder</description>
 <connects>
 <connect gate="G$1" pin="1" pad="1"/>
 <connect gate="G$1" pin="2" pad="2"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="RESET_BUTTON">
+<gates>
+<gate name="G$1" symbol="BUTTON" x="0" y="2.54"/>
+</gates>
+<devices>
+<device name="" package="TACTILE-PTH-12MM">
+<connects>
+<connect gate="G$1" pin="1" pad="1"/>
+<connect gate="G$1" pin="2" pad="3"/>
 </connects>
 <technologies>
 <technology name=""/>
