@@ -1578,7 +1578,7 @@ KEMET V / EIA 7343-20, KEMET X / EIA 7343-43 Wafe solder</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="APXA100ARA271MJ80G">
+<deviceset name="APXA100ARA271MJ80G" uservalue="yes">
 <gates>
 <gate name="G$1" symbol="CAPACITOR" x="0" y="-2.54"/>
 </gates>
@@ -1638,13 +1638,13 @@ KEMET V / EIA 7343-20, KEMET X / EIA 7343-43 Wafe solder</description>
 </deviceset>
 <deviceset name="SRR1210" uservalue="yes">
 <gates>
-<gate name="G$1" symbol="SRR1210" x="0" y="0"/>
+<gate name="G$1" symbol="L-US" x="2.54" y="2.54"/>
 </gates>
 <devices>
 <device name="" package="SRR1210">
 <connects>
-<connect gate="G$1" pin="A" pad="A"/>
-<connect gate="G$1" pin="B" pad="B"/>
+<connect gate="G$1" pin="1" pad="A"/>
+<connect gate="G$1" pin="2" pad="B"/>
 </connects>
 <technologies>
 <technology name=""/>
@@ -1702,7 +1702,7 @@ KEMET V / EIA 7343-20, KEMET X / EIA 7343-43 Wafe solder</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="C-US-1210">
+<deviceset name="C-US-1210" uservalue="yes">
 <gates>
 <gate name="G$1" symbol="C-US" x="5.08" y="0"/>
 </gates>
@@ -1735,7 +1735,7 @@ KEMET V / EIA 7343-20, KEMET X / EIA 7343-43 Wafe solder</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="T495D336K025ATE090">
+<deviceset name="T495D336K025ATE090" uservalue="yes">
 <description>Tantalum capacitor for 12 volt power circuit</description>
 <gates>
 <gate name="G$1" symbol="CPOL-US" x="7.62" y="0"/>
