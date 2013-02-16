@@ -13,67 +13,44 @@
  *
  */
 
-
+//Intialize the ADC to grab the values from all 5 IR sensors then interrupt
+//when it is done
 void initADC() {
-    AD1CON1 = 0x80E4;
-    AD1CON2 = 0;
-    AD1CON3 = 0x1F05;
+    //set AN2,AN3,AN4,AN5, and AN9 as analog input
+    AD1PCFG = 0x023C;
+    //AD1PCFG = 0xFFFE; //only turn on AN0 as analog input
 
-    TRISBbits.TRISB0 = 1;
-    AD1PCFG = 0xFFFE;
+    //turn on ADC -- Integer mode -- Internal counter ends sampling and starts
+    //conversion
+    AD1CON1 = 0x80E4;
+
+    //use external vref+/- -- scan inputs enable -- buffer configured as 2 8-bit
+    //buffers -- interrupt after 5 conversions
+    AD1CON2 = 0x6410;
+    //AD1CON2 = 0x0410 //same as above but use VDD/VSS for reference Voltage
+
+    //TAD = 128 * (CLK/2 PERIOD)
+    //AUTOSAMPLE 31 * TAD  = sample about every 1ms
+    AD1CON3 = 0x1FFF;
+
+    //select AN 2,3,4,5, and 9 for scan
+    AD1CSSL = 0x023C;
+
+    AD1CHS = 0;
+    
+    //TRISBbits.TRISB0 = 1;
+    
 
 }
 
 
+//will get the sensor range from a sensor
+//THIS IS NOT USED IN THE FINAL CODE - SCANNING WITH INTERRUPTS IS USED INSTEAD
 long getIrSensorRange(char ID) {
     long Result;
     while(!AD1CON1bits.DONE);
     Result = (long) ADC1BUF0;
 
     return Result;
-}
-
-int main_test(int argc, char** argv) {
-    int counter;
-    long temp;
-    TRISA = 0;
-
-    // Setup PortA IOs as digital
-    AD1PCFG = 0xffff;
-
-    initADC();
-
-    while(1) {
-
-        temp = getIrSensorRange(1);
-        if(temp > 50) {
-            LATA = 0x01;
-        }
-        if(temp > 100){
-            LATA = 0x03;
-        }
-        if(temp > 200){
-            LATA = 0x07;
-        }
-        if(temp > 300){
-            LATA = 0x0F;
-        }
-        if(temp > 400)
-        {
-            LATA = 0x1F;
-        }
-        if(temp > 500){
-            LATA = 0x3F;
-        }
-        if(temp > 600){
-            LATA = 0x7F;
-        }
-        if(temp > 700){
-            LATA = 0xFF;
-        }
-        delay();
-
-    }
-    return (EXIT_SUCCESS);
 }
 
