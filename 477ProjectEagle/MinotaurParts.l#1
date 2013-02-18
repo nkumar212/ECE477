@@ -758,8 +758,8 @@ Basic SMA packaged diode. Good for reverse polarization protection. Common part 
 <wire x1="-1" y1="-3" x2="1" y2="-3" width="0.127" layer="21"/>
 <wire x1="3" y1="-1" x2="3" y2="1" width="0.127" layer="21"/>
 <wire x1="1" y1="3" x2="-1" y2="3" width="0.127" layer="21"/>
-<text x="4" y="1" size="1.27" layer="25">&gt;NAME</text>
-<text x="4" y="-1" size="1.27" layer="27">&gt;VALUE</text>
+<text x="-3.04" y="-2.85" size="1.27" layer="25" rot="R90">&gt;NAME</text>
+<text x="-3" y="3" size="1.27" layer="27">&gt;VALUE</text>
 </package>
 <package name="SOIC8">
 <description>&lt;b&gt;SOIC-8&lt;/b&gt; CASE 751-07&lt;p&gt;

@@ -506,8 +506,8 @@
 <wire x1="-2.2" y1="-5.5" x2="-2.9" y2="-5.5" width="0.127" layer="21"/>
 <wire x1="-3.4" y1="-5.5" x2="-4.2" y2="-5.5" width="0.127" layer="21"/>
 <wire x1="-4.7" y1="-5.5" x2="-5.5" y2="-5.5" width="0.127" layer="21"/>
-<text x="-13.9" y="-2.9" size="1.27" layer="25" rot="R90">&gt;NAME</text>
-<text x="-11.5" y="-3" size="1.27" layer="27" rot="R90">&gt;VALUE</text>
+<text x="8.96" y="-2.9" size="1.27" layer="25" rot="R90">&gt;NAME</text>
+<text x="-7.69" y="-3" size="1.27" layer="27" rot="R90">&gt;VALUE</text>
 </package>
 <package name="SSOP-14">
 <smd name="1" x="-1.95" y="-2.8" dx="0.3" dy="1.55" layer="1"/>
@@ -3854,7 +3854,7 @@ D = Direct mounting &lt;p&gt;
 <part name="U$2" library="MinotaurParts" deviceset="L298" device=""/>
 <part name="U$3" library="MinotaurParts" deviceset="TXS0104E" device=""/>
 <part name="ENCODER" library="con-molex" deviceset="22-23-2021" device=""/>
-<part name="X10" library="con-molex" deviceset="22-23-2041" device=""/>
+<part name="X10" library="con-molex" deviceset="22-23-2041" device="" value="MOTORS"/>
 <part name="U$4" library="MinotaurParts" deviceset="TPS5450-Q1" device=""/>
 <part name="CBOOT7" library="MinotaurParts" deviceset="C-US-1206" device="" value="10nF"/>
 <part name="U$8" library="MinotaurParts" deviceset="R-US" device="&quot;" value="10k"/>
@@ -4208,13 +4208,13 @@ D = Direct mounting &lt;p&gt;
 <wire x1="2.54" y1="-76.2" x2="2.54" y2="-96.52" width="0.2032" layer="91"/>
 <pinref part="SENSOR5" gate="-1" pin="S"/>
 <wire x1="2.54" y1="-96.52" x2="5.08" y2="-96.52" width="0.2032" layer="91"/>
-<junction x="2.54" y="-96.52"/>
 <pinref part="U$1" gate="A" pin="PMA7/C2OUT/AN9/RB9"/>
 <junction x="-78.74" y="-5.08"/>
 <pinref part="U$45" gate="G$1" pin="1"/>
 <wire x1="-132.08" y1="-73.66" x2="-132.08" y2="-81.28" width="0.1524" layer="91"/>
 <wire x1="-96.52" y1="-73.66" x2="-132.08" y2="-73.66" width="0.1524" layer="91"/>
 <junction x="-96.52" y="-73.66"/>
+<junction x="5.08" y="-96.52"/>
 </segment>
 </net>
 <net name="N$8" class="0">
@@ -4320,6 +4320,7 @@ D = Direct mounting &lt;p&gt;
 <segment>
 <pinref part="X1" gate="-4" pin="S"/>
 <wire x1="-431.8" y1="27.94" x2="-429.26" y2="27.94" width="0.2032" layer="91"/>
+<wire x1="-429.26" y1="27.94" x2="-416.56" y2="27.94" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="SDA" class="0">
@@ -4330,6 +4331,7 @@ D = Direct mounting &lt;p&gt;
 <segment>
 <pinref part="X1" gate="-3" pin="S"/>
 <wire x1="-431.8" y1="25.4" x2="-429.26" y2="25.4" width="0.2032" layer="91"/>
+<wire x1="-429.26" y1="25.4" x2="-416.56" y2="25.4" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$25" class="0">

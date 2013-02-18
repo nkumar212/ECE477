@@ -688,8 +688,8 @@
 <text x="4" y="-2.3" size="1.27" layer="27" rot="R90">&gt;VALUE</text>
 </package>
 <package name="CAPSMT_62_J80">
-<smd name="-" x="0" y="-4" dx="1.5" dy="5" layer="1" rot="R180"/>
-<smd name="+" x="0" y="4" dx="1.5" dy="5" layer="1" rot="R180"/>
+<smd name="-" x="0" y="-4.75" dx="1.5" dy="5" layer="1" rot="R180"/>
+<smd name="+" x="0" y="4.75" dx="1.5" dy="5" layer="1" rot="R180"/>
 <wire x1="0.5" y1="-5" x2="5" y2="-5" width="0.127" layer="21"/>
 <wire x1="3" y1="5" x2="0.5" y2="5" width="0.127" layer="21"/>
 <wire x1="-0.5" y1="5" x2="-3" y2="5" width="0.127" layer="21"/>
