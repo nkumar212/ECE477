@@ -6,7 +6,7 @@
 <setting alwaysvectorfont="no"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="0.1" unitdist="mm" unit="mm" style="lines" multiple="1" display="yes" altdistance="0.025" altunitdist="inch" altunit="inch"/>
+<grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.01" altunitdist="inch" altunit="inch"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
 <layer number="16" name="Bottom" color="1" fill="1" visible="yes" active="yes"/>
@@ -905,8 +905,13 @@ KEMET V / EIA 7343-20, KEMET X / EIA 7343-43 Wafe solder</description>
 <text x="-6.35" y="-5.08" size="1.016" layer="27" ratio="10">&gt;VALUE</text>
 </package>
 <package name="WSL2816">
-<smd name="P$1" x="0" y="2.825" dx="4.7" dy="2.45" layer="1"/>
-<smd name="P$2" x="0" y="-2.825" dx="4.7" dy="2.45" layer="1"/>
+<description>Current Sensing resistor .012 ohms with a 2W rating</description>
+<smd name="1" x="0" y="2.825" dx="4.7" dy="2.45" layer="1"/>
+<smd name="2" x="0" y="-2.825" dx="4.7" dy="2.45" layer="1"/>
+<wire x1="2.1" y1="-1.6" x2="2.1" y2="1.6" width="0.127" layer="21"/>
+<wire x1="-2.1" y1="-1.6" x2="-2.1" y2="1.6" width="0.127" layer="21"/>
+<text x="-2.6" y="-2.9" size="1.27" layer="25" rot="R90">&gt;NAME</text>
+<text x="3.8" y="-3.1" size="1.27" layer="27" rot="R90">&gt;VALUE</text>
 </package>
 </packages>
 <symbols>
@@ -1573,7 +1578,7 @@ KEMET V / EIA 7343-20, KEMET X / EIA 7343-43 Wafe solder</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="APXA100ARA271MJ80G">
+<deviceset name="APXA100ARA271MJ80G" uservalue="yes">
 <gates>
 <gate name="G$1" symbol="CAPACITOR" x="0" y="-2.54"/>
 </gates>
@@ -1633,13 +1638,13 @@ KEMET V / EIA 7343-20, KEMET X / EIA 7343-43 Wafe solder</description>
 </deviceset>
 <deviceset name="SRR1210" uservalue="yes">
 <gates>
-<gate name="G$1" symbol="SRR1210" x="0" y="0"/>
+<gate name="G$1" symbol="L-US" x="2.54" y="2.54"/>
 </gates>
 <devices>
 <device name="" package="SRR1210">
 <connects>
-<connect gate="G$1" pin="A" pad="A"/>
-<connect gate="G$1" pin="B" pad="B"/>
+<connect gate="G$1" pin="1" pad="A"/>
+<connect gate="G$1" pin="2" pad="B"/>
 </connects>
 <technologies>
 <technology name=""/>
@@ -1697,7 +1702,7 @@ KEMET V / EIA 7343-20, KEMET X / EIA 7343-43 Wafe solder</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="C-US-1210">
+<deviceset name="C-US-1210" uservalue="yes">
 <gates>
 <gate name="G$1" symbol="C-US" x="5.08" y="0"/>
 </gates>
@@ -1753,7 +1758,16 @@ KEMET V / EIA 7343-20, KEMET X / EIA 7343-43 Wafe solder</description>
 <gate name="G$1" symbol="R-US" x="0" y="7.62"/>
 </gates>
 <devices>
-<device name="" package="R1206">
+<device name="&quot;" package="R1206">
+<connects>
+<connect gate="G$1" pin="1" pad="1"/>
+<connect gate="G$1" pin="2" pad="2"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="CS" package="WSL2816">
 <connects>
 <connect gate="G$1" pin="1" pad="1"/>
 <connect gate="G$1" pin="2" pad="2"/>
