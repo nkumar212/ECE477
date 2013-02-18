@@ -3937,7 +3937,7 @@ D = Direct mounting &lt;p&gt;
 <part name="SUPPLY42" library="supply2" deviceset="V+" device=""/>
 <part name="SUPPLY43" library="supply2" deviceset="V+" device=""/>
 <part name="+3V7" library="supply1" deviceset="+3V3" device=""/>
-<part name="J1" library="SparkFun-Connectors" deviceset="POWER_JACK" device="PTH"/>
+<part name="J1" library="SparkFun-Connectors" deviceset="POWER_JACK" device="PTH" value="POWER_JACK_BAT"/>
 <part name="P+1" library="supply1" deviceset="V+" device=""/>
 <part name="SUPPLY44" library="supply2" deviceset="GND" device=""/>
 <part name="SV1" library="con-lsta" deviceset="FE08-1" device=""/>
@@ -3968,6 +3968,9 @@ D = Direct mounting &lt;p&gt;
 <part name="U$48" library="MinotaurParts" deviceset="C-US-1206" device="" value="10uF"/>
 <part name="U$49" library="MinotaurParts" deviceset="C-US-1206" device="" value="10uF"/>
 <part name="SUPPLY48" library="supply2" deviceset="GND" device=""/>
+<part name="J2" library="SparkFun-Connectors" deviceset="POWER_JACK" device="PTH" value="POWER_JACK_12VOUT"/>
+<part name="SUPPLY49" library="supply2" deviceset="GND" device=""/>
+<part name="SUPPLY50" library="supply2" deviceset="+12V" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -4119,6 +4122,9 @@ D = Direct mounting &lt;p&gt;
 <instance part="U$48" gate="G$1" x="-162.56" y="-83.82"/>
 <instance part="U$49" gate="G$1" x="-172.72" y="-83.82"/>
 <instance part="SUPPLY48" gate="GND" x="-152.4" y="-93.98"/>
+<instance part="J2" gate="G$1" x="-436.88" y="73.66"/>
+<instance part="SUPPLY49" gate="GND" x="-416.56" y="71.12"/>
+<instance part="SUPPLY50" gate="+12V" x="-416.56" y="93.98"/>
 </instances>
 <busses>
 </busses>
@@ -4886,6 +4892,17 @@ D = Direct mounting &lt;p&gt;
 <junction x="-162.56" y="-88.9"/>
 <junction x="-172.72" y="-88.9"/>
 </segment>
+<segment>
+<pinref part="J2" gate="G$1" pin="GNDBREAK"/>
+<wire x1="-434.34" y1="78.74" x2="-426.72" y2="78.74" width="0.1524" layer="91"/>
+<wire x1="-426.72" y1="78.74" x2="-426.72" y2="76.2" width="0.1524" layer="91"/>
+<pinref part="J2" gate="G$1" pin="GND"/>
+<wire x1="-426.72" y1="76.2" x2="-434.34" y2="76.2" width="0.1524" layer="91"/>
+<wire x1="-426.72" y1="76.2" x2="-416.56" y2="76.2" width="0.1524" layer="91"/>
+<wire x1="-416.56" y1="76.2" x2="-416.56" y2="73.66" width="0.1524" layer="91"/>
+<pinref part="SUPPLY49" gate="GND" pin="GND"/>
+<junction x="-426.72" y="76.2"/>
+</segment>
 </net>
 <net name="N$16" class="0">
 <segment>
@@ -5005,6 +5022,12 @@ D = Direct mounting &lt;p&gt;
 <junction x="-200.66" y="-109.22"/>
 <pinref part="SUPPLY18" gate="+12V" pin="+12V"/>
 <junction x="-175.26" y="-109.22"/>
+</segment>
+<segment>
+<pinref part="J2" gate="G$1" pin="PWR"/>
+<wire x1="-434.34" y1="81.28" x2="-416.56" y2="81.28" width="0.1524" layer="91"/>
+<wire x1="-416.56" y1="81.28" x2="-416.56" y2="91.44" width="0.1524" layer="91"/>
+<pinref part="SUPPLY50" gate="+12V" pin="+12V"/>
 </segment>
 </net>
 <net name="N$15" class="0">

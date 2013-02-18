@@ -6,7 +6,7 @@
 <setting alwaysvectorfont="no"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="0.1" unitdist="mm" unit="mm" style="lines" multiple="1" display="yes" altdistance="0.025" altunitdist="inch" altunit="inch"/>
+<grid distance="0.5" unitdist="mm" unit="mm" style="lines" multiple="1" display="yes" altdistance="0.025" altunitdist="inch" altunit="inch"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
 <layer number="16" name="Bottom" color="1" fill="1" visible="yes" active="yes"/>
@@ -716,8 +716,8 @@ Basic SMA packaged diode. Good for reverse polarization protection. Common part 
 <wire x1="0.5" y1="1" x2="0.5" y2="-1" width="0.2032" layer="21"/>
 <smd name="-" x="-2" y="0" dx="2.5" dy="1.7" layer="1" rot="R180"/>
 <smd name="+" x="2" y="0" dx="2.5" dy="1.7" layer="1"/>
-<text x="-2.286" y="1.651" size="0.4064" layer="25">&gt;NAME</text>
-<text x="0.254" y="1.651" size="0.4064" layer="27">&gt;VALUE</text>
+<text x="-2.286" y="1.651" size="0.8128" layer="25">&gt;NAME</text>
+<text x="-2.246" y="-2.349" size="0.8128" layer="27">&gt;VALUE</text>
 </package>
 <package name="SOD-523">
 <smd name="C" x="0.55" y="0" dx="0.8" dy="0.6" layer="1"/>
@@ -744,8 +744,8 @@ Basic SMA packaged diode. Good for reverse polarization protection. Common part 
 <wire x1="6" y1="4.5857875" x2="6" y2="-4.5857875" width="0.127" layer="21"/>
 <wire x1="6" y1="-4.5857875" x2="4.5857875" y2="-6" width="0.127" layer="21" curve="-90"/>
 <wire x1="4.5857875" y1="-6" x2="3" y2="-6" width="0.127" layer="21"/>
-<text x="8" y="2" size="1.27" layer="25">&gt;NAME</text>
-<text x="8" y="0" size="1.27" layer="27">&gt;VALUE</text>
+<text x="-6.5" y="-5" size="1.27" layer="25" rot="R90">&gt;NAME</text>
+<text x="7.5" y="-6" size="1.27" layer="27" rot="R90">&gt;VALUE</text>
 </package>
 <package name="SDR0403">
 <smd name="A" x="0" y="1.65" dx="4.5" dy="1.8" layer="1" rot="R180"/>
@@ -758,8 +758,8 @@ Basic SMA packaged diode. Good for reverse polarization protection. Common part 
 <wire x1="-1" y1="-3" x2="1" y2="-3" width="0.127" layer="21"/>
 <wire x1="3" y1="-1" x2="3" y2="1" width="0.127" layer="21"/>
 <wire x1="1" y1="3" x2="-1" y2="3" width="0.127" layer="21"/>
-<text x="4" y="1" size="1.27" layer="25">&gt;NAME</text>
-<text x="4" y="-1" size="1.27" layer="27">&gt;VALUE</text>
+<text x="-3.04" y="-2.85" size="1.27" layer="25" rot="R90">&gt;NAME</text>
+<text x="-3" y="3" size="1.27" layer="27">&gt;VALUE</text>
 </package>
 <package name="SOIC8">
 <description>&lt;b&gt;SOIC-8&lt;/b&gt; CASE 751-07&lt;p&gt;
