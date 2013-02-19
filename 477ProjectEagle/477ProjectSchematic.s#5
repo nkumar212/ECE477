@@ -506,8 +506,8 @@
 <wire x1="-2.2" y1="-5.5" x2="-2.9" y2="-5.5" width="0.127" layer="21"/>
 <wire x1="-3.4" y1="-5.5" x2="-4.2" y2="-5.5" width="0.127" layer="21"/>
 <wire x1="-4.7" y1="-5.5" x2="-5.5" y2="-5.5" width="0.127" layer="21"/>
-<text x="-13.9" y="-2.9" size="1.27" layer="25" rot="R90">&gt;NAME</text>
-<text x="-11.5" y="-3" size="1.27" layer="27" rot="R90">&gt;VALUE</text>
+<text x="8.96" y="-2.9" size="1.27" layer="25" rot="R90">&gt;NAME</text>
+<text x="-7.69" y="-3" size="1.27" layer="27" rot="R90">&gt;VALUE</text>
 </package>
 <package name="SSOP-14">
 <smd name="1" x="-1.95" y="-2.8" dx="0.3" dy="1.55" layer="1"/>
@@ -632,8 +632,8 @@ Basic SMA packaged diode. Good for reverse polarization protection. Common part 
 <wire x1="0.5" y1="1" x2="0.5" y2="-1" width="0.2032" layer="21"/>
 <smd name="-" x="-2" y="0" dx="2.5" dy="1.7" layer="1" rot="R180"/>
 <smd name="+" x="2" y="0" dx="2.5" dy="1.7" layer="1"/>
-<text x="-2.286" y="1.651" size="0.4064" layer="25">&gt;NAME</text>
-<text x="0.254" y="1.651" size="0.4064" layer="27">&gt;VALUE</text>
+<text x="-2.286" y="1.651" size="0.8128" layer="25">&gt;NAME</text>
+<text x="-2.246" y="-2.349" size="0.8128" layer="27">&gt;VALUE</text>
 </package>
 <package name="MSOP-8">
 <smd name="1" x="-0.975" y="-2.4" dx="1.02" dy="0.41" layer="1" rot="R270"/>
@@ -842,8 +842,8 @@ KEMET V / EIA 7343-20, KEMET X / EIA 7343-43 Wafe solder</description>
 <wire x1="-1" y1="-3" x2="1" y2="-3" width="0.127" layer="21"/>
 <wire x1="3" y1="-1" x2="3" y2="1" width="0.127" layer="21"/>
 <wire x1="1" y1="3" x2="-1" y2="3" width="0.127" layer="21"/>
-<text x="4" y="1" size="1.27" layer="25">&gt;NAME</text>
-<text x="4" y="-1" size="1.27" layer="27">&gt;VALUE</text>
+<text x="-3.04" y="-2.85" size="1.27" layer="25" rot="R90">&gt;NAME</text>
+<text x="-3" y="3" size="1.27" layer="27">&gt;VALUE</text>
 </package>
 <package name="CAPSMT_62_J80">
 <smd name="-" x="0" y="-4.75" dx="1.5" dy="5" layer="1" rot="R180"/>
@@ -875,8 +875,8 @@ KEMET V / EIA 7343-20, KEMET X / EIA 7343-43 Wafe solder</description>
 <wire x1="6" y1="4.5857875" x2="6" y2="-4.5857875" width="0.127" layer="21"/>
 <wire x1="6" y1="-4.5857875" x2="4.5857875" y2="-6" width="0.127" layer="21" curve="-90"/>
 <wire x1="4.5857875" y1="-6" x2="3" y2="-6" width="0.127" layer="21"/>
-<text x="8" y="2" size="1.27" layer="25">&gt;NAME</text>
-<text x="8" y="0" size="1.27" layer="27">&gt;VALUE</text>
+<text x="-6.5" y="-5" size="1.27" layer="25" rot="R90">&gt;NAME</text>
+<text x="7.5" y="-6" size="1.27" layer="27" rot="R90">&gt;VALUE</text>
 </package>
 <package name="WSL2816">
 <description>Current Sensing resistor .012 ohms with a 2W rating</description>
@@ -3854,18 +3854,18 @@ D = Direct mounting &lt;p&gt;
 <part name="U$2" library="MinotaurParts" deviceset="L298" device=""/>
 <part name="U$3" library="MinotaurParts" deviceset="TXS0104E" device=""/>
 <part name="ENCODER" library="con-molex" deviceset="22-23-2021" device=""/>
-<part name="X10" library="con-molex" deviceset="22-23-2041" device=""/>
+<part name="X10" library="con-molex" deviceset="22-23-2041" device="" value="MOTORS"/>
 <part name="U$4" library="MinotaurParts" deviceset="TPS5450-Q1" device=""/>
 <part name="CBOOT7" library="MinotaurParts" deviceset="C-US-1206" device="" value="10nF"/>
 <part name="U$8" library="MinotaurParts" deviceset="R-US" device="&quot;" value="10k"/>
 <part name="U$9" library="MinotaurParts" deviceset="R-US" device="&quot;" value="2.05k"/>
 <part name="D1_7" library="MinotaurParts" deviceset="B340A-13-F" device=""/>
 <part name="U$12" library="MinotaurParts" deviceset="TPS62160" device=""/>
-<part name="U$13" library="MinotaurParts" deviceset="C-US-1206" device="" value="10uF"/>
-<part name="U$14" library="MinotaurParts" deviceset="C-US-1206" device="" value="22uF"/>
+<part name="CIN5" library="MinotaurParts" deviceset="C-US-1206" device="" value="10uF"/>
+<part name="COUT5" library="MinotaurParts" deviceset="C-US-1206" device="" value="22uF"/>
 <part name="U$16" library="MinotaurParts" deviceset="R-US" device="&quot;" value="100k"/>
-<part name="U$17" library="MinotaurParts" deviceset="R-US" device="&quot;"/>
-<part name="U$18" library="MinotaurParts" deviceset="R-US" device="&quot;"/>
+<part name="R1_5" library="MinotaurParts" deviceset="R-US" device="&quot;"/>
+<part name="R2_5" library="MinotaurParts" deviceset="R-US" device="&quot;"/>
 <part name="U$26" library="MinotaurParts" deviceset="LM25085" device=""/>
 <part name="CIN12" library="MinotaurParts" deviceset="C-US-1210" device="" value="10uF"/>
 <part name="RT12" library="MinotaurParts" deviceset="R-US" device="&quot;" value="110k"/>
@@ -3945,7 +3945,7 @@ D = Direct mounting &lt;p&gt;
 <part name="SV3" library="con-lsta" deviceset="FE10-1" device=""/>
 <part name="SV4" library="con-lsta" deviceset="FE10-1" device=""/>
 <part name="+3V8" library="supply1" deviceset="+3V3" device=""/>
-<part name="U$15" library="MinotaurParts" deviceset="SDR0403" device="" value="2.2uH"/>
+<part name="L1_5" library="MinotaurParts" deviceset="SDR0403" device="" value="2.2uH"/>
 <part name="COUT7" library="MinotaurParts" deviceset="APXA100ARA271MJ80G" device="" value="270uF"/>
 <part name="CIN7" library="MinotaurParts" deviceset="C-US-1210" device="" value="10uF"/>
 <part name="L1_7" library="MinotaurParts" deviceset="SRR1210" device="" value="12uH"/>
@@ -4012,11 +4012,11 @@ D = Direct mounting &lt;p&gt;
 <instance part="U$9" gate="G$1" x="-205.74" y="68.58" rot="MR90"/>
 <instance part="D1_7" gate="G$1" x="-213.36" y="101.6" rot="MR90"/>
 <instance part="U$12" gate="G$1" x="-281.94" y="-12.7"/>
-<instance part="U$13" gate="G$1" x="-337.82" y="-17.78"/>
-<instance part="U$14" gate="G$1" x="-205.74" y="-7.62"/>
+<instance part="CIN5" gate="G$1" x="-337.82" y="-17.78"/>
+<instance part="COUT5" gate="G$1" x="-205.74" y="-7.62"/>
 <instance part="U$16" gate="G$1" x="-261.62" y="0" rot="R180"/>
-<instance part="U$17" gate="G$1" x="-226.06" y="-7.62" rot="R270"/>
-<instance part="U$18" gate="G$1" x="-226.06" y="-22.86" rot="R270"/>
+<instance part="R1_5" gate="G$1" x="-226.06" y="-7.62" rot="R270"/>
+<instance part="R2_5" gate="G$1" x="-226.06" y="-22.86" rot="R270"/>
 <instance part="U$26" gate="G$1" x="-322.58" y="-101.6"/>
 <instance part="CIN12" gate="G$1" x="-401.32" y="-91.44"/>
 <instance part="RT12" gate="G$1" x="-370.84" y="-91.44" rot="R90"/>
@@ -4099,7 +4099,7 @@ D = Direct mounting &lt;p&gt;
 <instance part="SV3" gate="G$1" x="78.74" y="91.44" rot="R270"/>
 <instance part="SV4" gate="G$1" x="93.98" y="-50.8" rot="R90"/>
 <instance part="+3V8" gate="G$1" x="147.32" y="5.08"/>
-<instance part="U$15" gate="G$1" x="-254" y="-5.08" rot="R90"/>
+<instance part="L1_5" gate="G$1" x="-254" y="-5.08" rot="R90"/>
 <instance part="COUT7" gate="G$1" x="-175.26" y="73.66"/>
 <instance part="CIN7" gate="G$1" x="-276.86" y="81.28"/>
 <instance part="L1_7" gate="G$1" x="-205.74" y="99.06"/>
@@ -4208,13 +4208,13 @@ D = Direct mounting &lt;p&gt;
 <wire x1="2.54" y1="-76.2" x2="2.54" y2="-96.52" width="0.2032" layer="91"/>
 <pinref part="SENSOR5" gate="-1" pin="S"/>
 <wire x1="2.54" y1="-96.52" x2="5.08" y2="-96.52" width="0.2032" layer="91"/>
-<junction x="2.54" y="-96.52"/>
 <pinref part="U$1" gate="A" pin="PMA7/C2OUT/AN9/RB9"/>
 <junction x="-78.74" y="-5.08"/>
 <pinref part="U$45" gate="G$1" pin="1"/>
 <wire x1="-132.08" y1="-73.66" x2="-132.08" y2="-81.28" width="0.1524" layer="91"/>
 <wire x1="-96.52" y1="-73.66" x2="-132.08" y2="-73.66" width="0.1524" layer="91"/>
 <junction x="-96.52" y="-73.66"/>
+<junction x="5.08" y="-96.52"/>
 </segment>
 </net>
 <net name="N$8" class="0">
@@ -4320,6 +4320,7 @@ D = Direct mounting &lt;p&gt;
 <segment>
 <pinref part="X1" gate="-4" pin="S"/>
 <wire x1="-431.8" y1="27.94" x2="-429.26" y2="27.94" width="0.2032" layer="91"/>
+<wire x1="-429.26" y1="27.94" x2="-416.56" y2="27.94" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="SDA" class="0">
@@ -4330,6 +4331,7 @@ D = Direct mounting &lt;p&gt;
 <segment>
 <pinref part="X1" gate="-3" pin="S"/>
 <wire x1="-431.8" y1="25.4" x2="-429.26" y2="25.4" width="0.2032" layer="91"/>
+<wire x1="-429.26" y1="25.4" x2="-416.56" y2="25.4" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$25" class="0">
@@ -4357,7 +4359,7 @@ D = Direct mounting &lt;p&gt;
 <pinref part="U$12" gate="G$1" pin="SW"/>
 <junction x="-269.24" y="-5.08"/>
 <wire x1="-269.24" y1="-5.08" x2="-261.62" y2="-5.08" width="0.1524" layer="91"/>
-<pinref part="U$15" gate="G$1" pin="1"/>
+<pinref part="L1_5" gate="G$1" pin="1"/>
 </segment>
 </net>
 <net name="N$37" class="0">
@@ -4374,13 +4376,13 @@ D = Direct mounting &lt;p&gt;
 <net name="N$40" class="0">
 <segment>
 <pinref part="U$12" gate="G$1" pin="FB"/>
-<pinref part="U$18" gate="G$1" pin="1"/>
+<pinref part="R2_5" gate="G$1" pin="1"/>
 <wire x1="-269.24" y1="-15.24" x2="-226.06" y2="-15.24" width="0.1524" layer="91"/>
 <wire x1="-226.06" y1="-15.24" x2="-226.06" y2="-17.78" width="0.1524" layer="91"/>
 <wire x1="-226.06" y1="-15.24" x2="-226.06" y2="-12.7" width="0.1524" layer="91"/>
 <junction x="-269.24" y="-15.24"/>
 <junction x="-226.06" y="-15.24"/>
-<pinref part="U$17" gate="G$1" pin="2"/>
+<pinref part="R1_5" gate="G$1" pin="2"/>
 <junction x="-226.06" y="-12.7"/>
 <wire x1="-226.06" y1="-12.7" x2="-226.06" y2="-10.16" width="0.1524" layer="91"/>
 <junction x="-226.06" y="-17.78"/>
@@ -4502,12 +4504,12 @@ D = Direct mounting &lt;p&gt;
 <net name="+5V" class="0">
 <segment>
 <pinref part="U$16" gate="G$1" pin="1"/>
-<pinref part="U$14" gate="G$1" pin="1"/>
+<pinref part="COUT5" gate="G$1" pin="1"/>
 <wire x1="-256.54" y1="0" x2="-243.84" y2="0" width="0.1524" layer="91"/>
 <wire x1="-243.84" y1="0" x2="-226.06" y2="0" width="0.1524" layer="91"/>
 <wire x1="-226.06" y1="0" x2="-205.74" y2="0" width="0.1524" layer="91"/>
 <wire x1="-205.74" y1="0" x2="-205.74" y2="-5.08" width="0.1524" layer="91"/>
-<pinref part="U$17" gate="G$1" pin="1"/>
+<pinref part="R1_5" gate="G$1" pin="1"/>
 <wire x1="-226.06" y1="-2.54" x2="-226.06" y2="0" width="0.1524" layer="91"/>
 <pinref part="U$12" gate="G$1" pin="VOS"/>
 <wire x1="-269.24" y1="-10.16" x2="-243.84" y2="-10.16" width="0.1524" layer="91"/>
@@ -4520,7 +4522,7 @@ D = Direct mounting &lt;p&gt;
 <junction x="-205.74" y="-5.08"/>
 <pinref part="SUPPLY4" gate="+5V" pin="+5V"/>
 <junction x="-205.74" y="0"/>
-<pinref part="U$15" gate="G$1" pin="2"/>
+<pinref part="L1_5" gate="G$1" pin="2"/>
 <wire x1="-243.84" y1="-5.08" x2="-243.84" y2="0" width="0.1524" layer="91"/>
 <wire x1="-246.38" y1="-5.08" x2="-243.84" y2="-5.08" width="0.1524" layer="91"/>
 <junction x="-243.84" y="-5.08"/>
@@ -4676,13 +4678,13 @@ D = Direct mounting &lt;p&gt;
 <junction x="-175.26" y="-142.24"/>
 </segment>
 <segment>
-<pinref part="U$13" gate="G$1" pin="2"/>
+<pinref part="CIN5" gate="G$1" pin="2"/>
 <junction x="-337.82" y="-22.86"/>
 <wire x1="-337.82" y1="-22.86" x2="-337.82" y2="-30.48" width="0.1524" layer="91"/>
-<pinref part="U$14" gate="G$1" pin="2"/>
+<pinref part="COUT5" gate="G$1" pin="2"/>
 <junction x="-205.74" y="-12.7"/>
 <wire x1="-205.74" y1="-12.7" x2="-205.74" y2="-30.48" width="0.1524" layer="91"/>
-<pinref part="U$18" gate="G$1" pin="2"/>
+<pinref part="R2_5" gate="G$1" pin="2"/>
 <junction x="-226.06" y="-27.94"/>
 <wire x1="-226.06" y1="-27.94" x2="-226.06" y2="-30.48" width="0.1524" layer="91"/>
 <junction x="-226.06" y="-30.48"/>
@@ -5328,7 +5330,7 @@ D = Direct mounting &lt;p&gt;
 <wire x1="-309.88" y1="-10.16" x2="-309.88" y2="-5.08" width="0.1524" layer="91"/>
 <pinref part="SUPPLY42" gate="1" pin="V+"/>
 <wire x1="-360.68" y1="-5.08" x2="-337.82" y2="-5.08" width="0.1524" layer="91"/>
-<pinref part="U$13" gate="G$1" pin="1"/>
+<pinref part="CIN5" gate="G$1" pin="1"/>
 <wire x1="-337.82" y1="-5.08" x2="-309.88" y2="-5.08" width="0.1524" layer="91"/>
 <wire x1="-337.82" y1="-5.08" x2="-337.82" y2="-15.24" width="0.1524" layer="91"/>
 <junction x="-337.82" y="-5.08"/>
