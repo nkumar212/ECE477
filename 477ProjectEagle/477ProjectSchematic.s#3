@@ -4322,12 +4322,26 @@ D = Direct mounting &lt;p&gt;
 <wire x1="-431.8" y1="27.94" x2="-429.26" y2="27.94" width="0.2032" layer="91"/>
 <wire x1="-429.26" y1="27.94" x2="-416.56" y2="27.94" width="0.1524" layer="91"/>
 </segment>
+<segment>
+<pinref part="ENCODER" gate="-1" pin="S"/>
+<pinref part="U$3" gate="G$1" pin="B1"/>
+<wire x1="203.2" y1="-58.42" x2="172.72" y2="-58.42" width="0.1524" layer="91"/>
+<junction x="172.72" y="-58.42"/>
+<junction x="203.2" y="-58.42"/>
+</segment>
 </net>
 <net name="SDA" class="0">
 <segment>
 <pinref part="X1" gate="-3" pin="S"/>
 <wire x1="-431.8" y1="25.4" x2="-429.26" y2="25.4" width="0.2032" layer="91"/>
 <wire x1="-429.26" y1="25.4" x2="-416.56" y2="25.4" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="U$3" gate="G$1" pin="B2"/>
+<pinref part="ENCODER" gate="-2" pin="S"/>
+<wire x1="172.72" y1="-60.96" x2="203.2" y2="-60.96" width="0.1524" layer="91"/>
+<junction x="172.72" y="-60.96"/>
+<junction x="203.2" y="-60.96"/>
 </segment>
 </net>
 <net name="N$25" class="0">
@@ -5790,24 +5804,6 @@ D = Direct mounting &lt;p&gt;
 <wire x1="236.22" y1="25.4" x2="236.22" y2="27.94" width="0.1524" layer="91"/>
 <pinref part="U$39" gate="G$1" pin="R1IN"/>
 <wire x1="236.22" y1="27.94" x2="220.98" y2="27.94" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="N$90" class="0">
-<segment>
-<pinref part="ENCODER" gate="-1" pin="S"/>
-<pinref part="U$3" gate="G$1" pin="B1"/>
-<wire x1="203.2" y1="-58.42" x2="172.72" y2="-58.42" width="0.1524" layer="91"/>
-<junction x="172.72" y="-58.42"/>
-<junction x="203.2" y="-58.42"/>
-</segment>
-</net>
-<net name="N$91" class="0">
-<segment>
-<pinref part="U$3" gate="G$1" pin="B2"/>
-<pinref part="ENCODER" gate="-2" pin="S"/>
-<wire x1="172.72" y1="-60.96" x2="203.2" y2="-60.96" width="0.1524" layer="91"/>
-<junction x="172.72" y="-60.96"/>
-<junction x="203.2" y="-60.96"/>
 </segment>
 </net>
 </nets>

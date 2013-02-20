@@ -4963,6 +4963,7 @@ D = Direct mounting &lt;p&gt;
 <pinref part="U$23" gate="G$1" pin="1"/>
 <wire x1="-160.02" y1="-15.24" x2="-167.64" y2="-15.24" width="0.2032" layer="91"/>
 <wire x1="-160.02" y1="-15.24" x2="-160.02" y2="-17.78" width="0.1524" layer="91"/>
+<junction x="-160.02" y="-15.24"/>
 </segment>
 <segment>
 <pinref part="U$19" gate="G$1" pin="VCCA"/>

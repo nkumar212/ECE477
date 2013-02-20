@@ -5783,9 +5783,10 @@ D = Direct mounting &lt;p&gt;
 <wire x1="91.44" y1="83.82" x2="91.44" y2="96.52" width="0.2032" layer="91"/>
 <wire x1="91.44" y1="96.52" x2="33.02" y2="96.52" width="0.2032" layer="91"/>
 <wire x1="33.02" y1="96.52" x2="33.02" y2="15.24" width="0.2032" layer="91"/>
-<wire x1="33.02" y1="15.24" x2="73.66" y2="15.24" width="0.2032" layer="91"/>
-<junction x="73.66" y="15.24"/>
 <junction x="91.44" y="83.82"/>
+<pinref part="U$1" gate="A" pin="PMBE/OC4/RD3"/>
+<wire x1="33.02" y1="15.24" x2="76.2" y2="15.24" width="0.1524" layer="91"/>
+<junction x="76.2" y="15.24"/>
 </segment>
 </net>
 <net name="N$86" class="0">

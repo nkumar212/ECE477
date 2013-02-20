@@ -4081,7 +4081,7 @@ D = Direct mounting &lt;p&gt;
 <instance part="X1" gate="-4" x="-434.34" y="27.94" rot="R180"/>
 <instance part="SUPPLY38" gate="+5V" x="-83.82" y="7.62"/>
 <instance part="SUPPLY39" gate="GND" x="-86.36" y="-5.08"/>
-<instance part="SUPPLY40" gate="GND" x="-426.72" y="10.16"/>
+<instance part="SUPPLY40" gate="GND" x="-429.26" y="10.16"/>
 <instance part="+3V2" gate="G$1" x="-132.08" y="73.66"/>
 <instance part="+3V3" gate="G$1" x="-167.64" y="-12.7"/>
 <instance part="+3V4" gate="G$1" x="99.06" y="60.96"/>
@@ -4321,6 +4321,7 @@ D = Direct mounting &lt;p&gt;
 <pinref part="X1" gate="-4" pin="S"/>
 <wire x1="-431.8" y1="27.94" x2="-429.26" y2="27.94" width="0.2032" layer="91"/>
 <wire x1="-429.26" y1="27.94" x2="-416.56" y2="27.94" width="0.1524" layer="91"/>
+<junction x="-431.8" y="27.94"/>
 </segment>
 <segment>
 <pinref part="ENCODER" gate="-1" pin="S"/>
@@ -4335,6 +4336,7 @@ D = Direct mounting &lt;p&gt;
 <pinref part="X1" gate="-3" pin="S"/>
 <wire x1="-431.8" y1="25.4" x2="-429.26" y2="25.4" width="0.2032" layer="91"/>
 <wire x1="-429.26" y1="25.4" x2="-416.56" y2="25.4" width="0.1524" layer="91"/>
+<junction x="-431.8" y="25.4"/>
 </segment>
 <segment>
 <pinref part="U$3" gate="G$1" pin="B2"/>
@@ -4833,10 +4835,12 @@ D = Direct mounting &lt;p&gt;
 <junction x="-78.74" y="0"/>
 </segment>
 <segment>
-<pinref part="X1" gate="-1" pin="S"/>
-<wire x1="-431.8" y1="20.32" x2="-426.72" y2="20.32" width="0.2032" layer="91"/>
-<wire x1="-426.72" y1="20.32" x2="-426.72" y2="12.7" width="0.2032" layer="91"/>
+<wire x1="-429.26" y1="20.32" x2="-429.26" y2="12.7" width="0.2032" layer="91"/>
 <pinref part="SUPPLY40" gate="GND" pin="GND"/>
+<pinref part="X1" gate="-2" pin="S"/>
+<wire x1="-431.8" y1="22.86" x2="-429.26" y2="22.86" width="0.1524" layer="91"/>
+<wire x1="-429.26" y1="22.86" x2="-429.26" y2="20.32" width="0.1524" layer="91"/>
+<junction x="-431.8" y="22.86"/>
 </segment>
 <segment>
 <pinref part="J1" gate="G$1" pin="GNDBREAK"/>
@@ -4980,10 +4984,12 @@ D = Direct mounting &lt;p&gt;
 <junction x="127" y="15.24"/>
 </segment>
 <segment>
-<pinref part="X1" gate="-2" pin="S"/>
-<wire x1="-431.8" y1="22.86" x2="-426.72" y2="22.86" width="0.2032" layer="91"/>
 <wire x1="-426.72" y1="22.86" x2="-426.72" y2="30.48" width="0.2032" layer="91"/>
 <pinref part="+3V6" gate="G$1" pin="+3V3"/>
+<pinref part="X1" gate="-1" pin="S"/>
+<wire x1="-431.8" y1="20.32" x2="-426.72" y2="20.32" width="0.1524" layer="91"/>
+<wire x1="-426.72" y1="20.32" x2="-426.72" y2="22.86" width="0.1524" layer="91"/>
+<junction x="-431.8" y="20.32"/>
 </segment>
 <segment>
 <pinref part="U$22" gate="G$1" pin="2"/>
