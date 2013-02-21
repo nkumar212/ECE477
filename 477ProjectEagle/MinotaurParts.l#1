@@ -658,8 +658,8 @@
 <wire x1="-1.5" y1="1.5" x2="1.5" y2="1.5" width="0.127" layer="21"/>
 <wire x1="-1.5" y1="-1.5" x2="1.5" y2="-1.5" width="0.127" layer="21"/>
 <circle x="-1.15" y="-1.15" radius="0.22360625" width="0.127" layer="21"/>
-<text x="2.9" y="-2.3" size="1.27" layer="28" rot="R90">&gt;VALUE</text>
-<text x="-1.7" y="-2.3" size="1.27" layer="26" rot="R90">&gt;NAME</text>
+<text x="2.9" y="-2.3" size="1.27" layer="27" rot="R90">&gt;VALUE</text>
+<text x="-1.7" y="-2.3" size="1.27" layer="25" rot="R90">&gt;NAME</text>
 </package>
 <package name="PSOP-8">
 <smd name="1" x="-1.905" y="-2.875" dx="2.15" dy="0.45" layer="1" rot="R90"/>
