@@ -139,7 +139,7 @@
 <rectangle x1="74.0156" y1="103.6828" x2="76.2" y2="104.2416" layer="1"/>
 <rectangle x1="74.4728" y1="103.1748" x2="75.5396" y2="103.6828" layer="1"/>
 <text x="2.1336" y="42.164" size="2.54" layer="21" rot="R270">Team 16: Project Minotaur</text>
-<text x="67.9196" y="122.936" size="1.9304" layer="21">TOP</text>
+<text x="23.5712" y="124.6632" size="1.9304" layer="21" rot="R180">TOP</text>
 <text x="7.5692" y="2.6416" size="1.9304" layer="21" rot="R90">Scott Stack, Neil Kumar, Jon Roose, John Hubberts</text>
 </plain>
 <libraries>
@@ -1545,8 +1545,8 @@ design rules under a new name.</description>
 <element name="J3" library="SparkFun-Connectors" package="RJ11-6" value="RJ11-6PTH" x="38.608" y="118.618" rot="R180"/>
 <element name="X4" library="SparkFun-Connectors" package="DB9" value="" x="91.8464" y="111.3536" rot="R270"/>
 <element name="RLED" library="MinotaurParts" package="R1206" value="1k" x="8.5852" y="68.5292" rot="R90"/>
-<element name="POWER" library="led" package="1206" value="" x="2.3368" y="-4.572"/>
-<element name="RLED2" library="MinotaurParts" package="R1206" value="1k" x="2.54" y="-8.5852"/>
+<element name="POWER" library="led" package="1206" value="" x="73.6092" y="121.3612"/>
+<element name="RLED2" library="MinotaurParts" package="R1206" value="1k" x="64.4652" y="117.5512"/>
 </elements>
 <signals>
 <signal name="N$1">
@@ -2306,7 +2306,7 @@ design rules under a new name.</description>
 <wire x1="73.152" y1="16.764" x2="73.152" y2="16.0752" width="1.778" layer="1"/>
 <wire x1="73.152" y1="16.0752" x2="72.3168" y2="15.24" width="1.778" layer="1"/>
 <polygon width="0.3048" layer="1" thermals="no">
-<vertex x="71.9328" y="10.9728"/>
+<vertex x="71.882" y="11.3792"/>
 <vertex x="72.8472" y="10.9728"/>
 <vertex x="72.8472" y="7.3152"/>
 <vertex x="70.7136" y="7.3152"/>
@@ -2319,7 +2319,7 @@ design rules under a new name.</description>
 <vertex x="64.3128" y="7.9248"/>
 <vertex x="66.4464" y="7.9248"/>
 <vertex x="66.4464" y="10.668"/>
-<vertex x="71.628" y="10.668"/>
+<vertex x="71.4248" y="11.3284"/>
 </polygon>
 <wire x1="71.1708" y1="9.1186" x2="68.2498" y2="9.1186" width="0.3048" layer="1"/>
 <wire x1="68.2498" y1="9.1186" x2="65.2272" y2="5.4864" width="0.3048" layer="1"/>
@@ -2649,8 +2649,13 @@ design rules under a new name.</description>
 <wire x1="4.0132" y1="79.7052" x2="4.0132" y2="80.1116" width="0.3048" layer="16"/>
 <wire x1="4.0132" y1="80.1116" x2="5.4864" y2="81.5848" width="0.3048" layer="16"/>
 <contactref element="POWER" pad="C"/>
+<wire x1="75.0312" y1="121.3612" x2="75.0312" y2="119.5828" width="0.3048" layer="1"/>
+<wire x1="75.0312" y1="119.5828" x2="69.5452" y2="114.0968" width="0.3048" layer="1"/>
+<wire x1="69.5452" y1="114.0968" x2="64.008" y2="114.0968" width="0.3048" layer="1"/>
+<wire x1="64.008" y1="114.0968" x2="61.5696" y2="111.6584" width="0.3048" layer="1"/>
+<wire x1="61.5696" y1="111.6584" x2="61.5696" y2="92.3544" width="0.3048" layer="1"/>
+<wire x1="61.5696" y1="92.3544" x2="60.6044" y2="91.3892" width="0.3048" layer="1"/>
 <wire x1="31.6992" y1="68.4784" x2="30.6832" y2="67.691" width="0" layer="19" extent="1-16"/>
-<wire x1="3.7588" y1="-4.572" x2="13.1134" y2="6.0452" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$16">
 <contactref element="U$4" pad="8"/>
@@ -2685,8 +2690,9 @@ design rules under a new name.</description>
 <contactref element="U$24" pad="1"/>
 <contactref element="U$1" pad="38"/>
 <contactref element="U$25" pad="1"/>
-<wire x1="77.4192" y1="94.7928" x2="37.7952" y2="94.7928" width="2.54" layer="16"/>
+<wire x1="77.4192" y1="94.7928" x2="59.5884" y2="94.7928" width="2.54" layer="16"/>
 <contactref element="X1" pad="1"/>
+<wire x1="59.5884" y1="94.7928" x2="37.7952" y2="94.7928" width="2.54" layer="16"/>
 <wire x1="77.4192" y1="94.7928" x2="78.9178" y2="93.2942" width="2.54" layer="16"/>
 <wire x1="78.9178" y1="93.2942" x2="81.0768" y2="91.1352" width="2.54" layer="16"/>
 <wire x1="81.0768" y1="91.1352" x2="81.6864" y2="91.1352" width="2.54" layer="16"/>
@@ -2787,8 +2793,12 @@ design rules under a new name.</description>
 <wire x1="35.4584" y1="108.4072" x2="35.4584" y2="112.2426" width="0.3048" layer="1"/>
 <wire x1="35.4584" y1="112.2426" x2="35.433" y2="112.268" width="0.3048" layer="1"/>
 <contactref element="RLED2" pad="1"/>
+<wire x1="63.0432" y1="117.5512" x2="59.6392" y2="114.1472" width="0.3048" layer="1"/>
+<wire x1="59.6392" y1="114.1472" x2="59.6392" y2="95.4024" width="0.3048" layer="1"/>
+<via x="59.6392" y="95.4024" extent="1-16" drill="0.6"/>
+<wire x1="59.6392" y1="95.4024" x2="59.5884" y2="95.3516" width="0.3048" layer="16"/>
+<wire x1="59.5884" y1="95.3516" x2="59.5884" y2="94.7928" width="0.3048" layer="16"/>
 <wire x1="29.1846" y1="67.691" x2="28.9784" y2="66.6496" width="0" layer="19" extent="1-16"/>
-<wire x1="1.118" y1="-8.5852" x2="26.3144" y2="61.1124" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="+12V">
 <contactref element="L1_12" pad="2"/>
@@ -3651,11 +3661,11 @@ design rules under a new name.</description>
 <wire x1="8.5852" y1="69.9512" x2="8.5852" y2="74.828" width="0.3048" layer="1"/>
 <wire x1="8.5852" y1="74.828" x2="6.8068" y2="76.6064" width="0.3048" layer="1"/>
 </signal>
-<signal name="N$62">
-<contactref element="POWER" pad="A"/>
-</signal>
 <signal name="N$78">
 <contactref element="RLED2" pad="2"/>
+<contactref element="POWER" pad="A"/>
+<wire x1="65.8872" y1="117.5512" x2="69.6972" y2="121.3612" width="0.3048" layer="1"/>
+<wire x1="69.6972" y1="121.3612" x2="72.1872" y2="121.3612" width="0.3048" layer="1"/>
 </signal>
 </signals>
 </board>
