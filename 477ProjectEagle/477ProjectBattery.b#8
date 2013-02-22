@@ -986,13 +986,11 @@ design rules under a new name.</description>
 <vertex x="39.624" y="32.9184"/>
 <vertex x="42.672" y="32.9184"/>
 <vertex x="42.672" y="31.6992"/>
-<vertex x="39.0144" y="28.0416"/>
-<vertex x="39.0144" y="26.8224"/>
+<vertex x="38.7096" y="28.0416"/>
 <vertex x="38.7096" y="26.5176"/>
-<vertex x="36.576" y="26.5176"/>
-<vertex x="36.2712" y="26.8224"/>
-<vertex x="36.2712" y="28.0416"/>
-<vertex x="36.576" y="28.3464"/>
+<vertex x="38.4048" y="25.908"/>
+<vertex x="36.8808" y="25.908"/>
+<vertex x="36.576" y="26.2128"/>
 </polygon>
 <wire x1="37.6" y1="25.9" x2="37.42" y2="24.97" width="0" layer="19" extent="1-1"/>
 </signal>
