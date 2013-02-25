@@ -6382,7 +6382,7 @@ Source: www.kingbright.com</description>
 <part name="LED2" library="led" deviceset="LED" device="SMT1206"/>
 <part name="J3" library="SparkFun-Connectors" deviceset="RJ11-6" device="PTH"/>
 <part name="X4" library="SparkFun-Connectors" deviceset="DB9" device="FEMALE"/>
-<part name="U$7" library="MinotaurParts" deviceset="R-US" device="&quot;"/>
+<part name="RLED" library="MinotaurParts" deviceset="R-US" device="&quot;" value="1k"/>
 <part name="SUPPLY60" library="supply2" deviceset="GND" device=""/>
 </parts>
 <sheets>
@@ -6556,12 +6556,12 @@ Source: www.kingbright.com</description>
 <instance part="SUPPLY57" gate="GND" x="289.56" y="116.84"/>
 <instance part="SUPPLY58" gate="G$1" x="261.62" y="129.54"/>
 <instance part="SUPPLY59" gate="GND" x="254" y="119.38"/>
-<instance part="LED1" gate="G$1" x="76.2" y="66.04" rot="R270"/>
+<instance part="LED1" gate="G$1" x="-68.58" y="-48.26" rot="R270"/>
 <instance part="LED2" gate="G$1" x="-45.72" y="-53.34"/>
 <instance part="J3" gate="G$1" x="-345.44" y="40.64"/>
 <instance part="X4" gate="G$1" x="340.36" y="25.4"/>
-<instance part="U$7" gate="G$1" x="83.82" y="58.42" rot="R90"/>
-<instance part="SUPPLY60" gate="GND" x="63.5" y="59.69"/>
+<instance part="RLED" gate="G$1" x="-60.96" y="-43.18" rot="R270"/>
+<instance part="SUPPLY60" gate="GND" x="-81.28" y="-54.61"/>
 </instances>
 <busses>
 </busses>
@@ -7523,11 +7523,12 @@ Source: www.kingbright.com</description>
 </segment>
 <segment>
 <pinref part="LED1" gate="G$1" pin="C"/>
-<wire x1="71.12" y1="66.04" x2="63.5" y2="66.04" width="0.1524" layer="91"/>
-<wire x1="63.5" y1="66.04" x2="63.5" y2="62.23" width="0.1524" layer="91"/>
+<wire x1="-73.66" y1="-48.26" x2="-81.28" y2="-48.26" width="0.1524" layer="91"/>
+<wire x1="-81.28" y1="-48.26" x2="-81.28" y2="-52.07" width="0.1524" layer="91"/>
 <pinref part="SUPPLY60" gate="GND" pin="GND"/>
-<wire x1="63.5" y1="62.23" x2="63.5" y2="60.96" width="0.1524" layer="91"/>
-<junction x="63.5" y="62.23"/>
+<wire x1="-81.28" y1="-52.07" x2="-81.28" y2="-53.34" width="0.1524" layer="91"/>
+<junction x="-81.28" y="-52.07"/>
+<junction x="-73.66" y="-48.26"/>
 </segment>
 </net>
 <net name="N$16" class="0">
@@ -8255,11 +8256,17 @@ Source: www.kingbright.com</description>
 <net name="N$66" class="0">
 <segment>
 <pinref part="U$1" gate="A" pin="PMA0/AN15/OCFB/CN12/RB15"/>
-<wire x1="-78.74" y1="-25.4" x2="-114.3" y2="-25.4" width="0.1524" layer="91"/>
+<wire x1="-78.74" y1="-25.4" x2="-81.28" y2="-25.4" width="0.1524" layer="91"/>
+<wire x1="-81.28" y1="-25.4" x2="-114.3" y2="-25.4" width="0.1524" layer="91"/>
 <wire x1="-114.3" y1="-25.4" x2="-114.3" y2="-12.7" width="0.1524" layer="91"/>
 <pinref part="SV6" gate="G$1" pin="14"/>
 <wire x1="-114.3" y1="-12.7" x2="-115.57" y2="-12.7" width="0.1524" layer="91"/>
 <junction x="-78.74" y="-25.4"/>
+<wire x1="-81.28" y1="-25.4" x2="-81.28" y2="-38.1" width="0.1524" layer="91"/>
+<pinref part="RLED" gate="G$1" pin="1"/>
+<wire x1="-81.28" y1="-38.1" x2="-60.96" y2="-38.1" width="0.1524" layer="91"/>
+<junction x="-60.96" y="-38.1"/>
+<junction x="-81.28" y="-25.4"/>
 </segment>
 </net>
 <net name="N$90" class="0">
@@ -8307,17 +8314,13 @@ Source: www.kingbright.com</description>
 </net>
 <net name="N$95" class="0">
 <segment>
-<wire x1="76.2" y1="33.02" x2="83.82" y2="33.02" width="0.1524" layer="91"/>
-<wire x1="83.82" y1="33.02" x2="92.71" y2="33.02" width="0.1524" layer="91"/>
+<wire x1="76.2" y1="33.02" x2="92.71" y2="33.02" width="0.1524" layer="91"/>
 <wire x1="92.71" y1="33.02" x2="92.71" y2="34.29" width="0.1524" layer="91"/>
 <pinref part="SV7" gate="G$1" pin="7"/>
 <wire x1="92.71" y1="34.29" x2="107.95" y2="34.29" width="0.1524" layer="91"/>
 <junction x="107.95" y="34.29"/>
 <pinref part="U$1" gate="A" pin="RF0"/>
 <junction x="76.2" y="33.02"/>
-<wire x1="83.82" y1="33.02" x2="83.82" y2="53.34" width="0.1524" layer="91"/>
-<pinref part="U$7" gate="G$1" pin="1"/>
-<junction x="83.82" y="53.34"/>
 </segment>
 </net>
 <net name="N$96" class="0">
@@ -8502,11 +8505,10 @@ Source: www.kingbright.com</description>
 <net name="N$31" class="0">
 <segment>
 <pinref part="LED1" gate="G$1" pin="A"/>
-<pinref part="U$7" gate="G$1" pin="2"/>
-<wire x1="83.82" y1="63.5" x2="83.82" y2="66.04" width="0.1524" layer="91"/>
-<wire x1="83.82" y1="66.04" x2="78.74" y2="66.04" width="0.1524" layer="91"/>
-<junction x="83.82" y="63.5"/>
-<junction x="78.74" y="66.04"/>
+<pinref part="RLED" gate="G$1" pin="2"/>
+<wire x1="-60.96" y1="-48.26" x2="-66.04" y2="-48.26" width="0.1524" layer="91"/>
+<junction x="-60.96" y="-48.26"/>
+<junction x="-66.04" y="-48.26"/>
 </segment>
 </net>
 </nets>

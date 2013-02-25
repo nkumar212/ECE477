@@ -5480,6 +5480,8 @@ Source: http://www.diodes.com/datasheets/ds23001.pdf</description>
 <part name="SUPPLY55" library="supply2" deviceset="+7V" device=""/>
 <part name="SUPPLY56" library="supply2" deviceset="+7V" device=""/>
 <part name="SUPPLY57" library="supply2" deviceset="GND" device=""/>
+<part name="SUPPLY58" library="supply2" deviceset="+7V" device=""/>
+<part name="SUPPLY59" library="supply2" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -5487,7 +5489,7 @@ Source: http://www.diodes.com/datasheets/ds23001.pdf</description>
 <text x="-251.46" y="114.3" size="1.778" layer="97">&gt;7V Regulator</text>
 <text x="-287.02" y="7.62" size="1.778" layer="97">5V Regulator</text>
 <text x="-307.34" y="-60.96" size="1.778" layer="97">12V Regulator</text>
-<text x="365.76" y="127" size="1.778" layer="91">TO MOTORS</text>
+<text x="365.76" y="127" size="1.778" layer="97">TO MOTORS</text>
 <text x="-12.7" y="10.16" size="1.778" layer="97">PIC24FJ128GA006</text>
 </plain>
 <instances>
@@ -5644,7 +5646,7 @@ Source: http://www.diodes.com/datasheets/ds23001.pdf</description>
 <instance part="D4" gate="G$1" x="345.44" y="111.76" rot="R90"/>
 <instance part="D5" gate="G$1" x="322.58" y="121.92" rot="R90"/>
 <instance part="D6" gate="G$1" x="314.96" y="121.92" rot="R90"/>
-<instance part="D7" gate="G$1" x="256.54" y="114.3" rot="R90"/>
+<instance part="D7" gate="G$1" x="261.62" y="124.46" rot="R90"/>
 <instance part="D8" gate="G$1" x="281.94" y="121.92" rot="R90"/>
 <instance part="SUPPLY52" gate="GND" x="340.36" y="101.6"/>
 <instance part="SUPPLY53" gate="G$1" x="345.44" y="116.84"/>
@@ -5652,6 +5654,8 @@ Source: http://www.diodes.com/datasheets/ds23001.pdf</description>
 <instance part="SUPPLY55" gate="G$1" x="322.58" y="127"/>
 <instance part="SUPPLY56" gate="G$1" x="281.94" y="127"/>
 <instance part="SUPPLY57" gate="GND" x="289.56" y="116.84"/>
+<instance part="SUPPLY58" gate="G$1" x="261.62" y="129.54"/>
+<instance part="SUPPLY59" gate="GND" x="254" y="119.38"/>
 </instances>
 <busses>
 </busses>
@@ -5871,12 +5875,21 @@ Source: http://www.diodes.com/datasheets/ds23001.pdf</description>
 <segment>
 <wire x1="281.94" y1="91.44" x2="279.4" y2="91.44" width="0.1524" layer="91"/>
 <wire x1="279.4" y1="91.44" x2="274.32" y2="91.44" width="0.1524" layer="91"/>
-<wire x1="274.32" y1="91.44" x2="274.32" y2="132.08" width="0.1524" layer="91"/>
+<wire x1="274.32" y1="91.44" x2="274.32" y2="121.92" width="0.1524" layer="91"/>
+<wire x1="274.32" y1="121.92" x2="274.32" y2="132.08" width="0.1524" layer="91"/>
 <wire x1="274.32" y1="132.08" x2="350.52" y2="132.08" width="0.1524" layer="91"/>
 <pinref part="X10" gate="-1" pin="S"/>
 <pinref part="U$2" gate="G$1" pin="OUT2"/>
 <junction x="279.4" y="91.44"/>
 <junction x="350.52" y="132.08"/>
+<pinref part="D7" gate="G$1" pin="A"/>
+<wire x1="274.32" y1="121.92" x2="261.62" y2="121.92" width="0.1524" layer="91"/>
+<wire x1="261.62" y1="121.92" x2="259.08" y2="121.92" width="0.1524" layer="91"/>
+<wire x1="259.08" y1="121.92" x2="259.08" y2="127" width="0.1524" layer="91"/>
+<pinref part="D1" gate="G$1" pin="C"/>
+<wire x1="259.08" y1="127" x2="254" y2="127" width="0.1524" layer="91"/>
+<junction x="254" y="127"/>
+<junction x="261.62" y="121.92"/>
 </segment>
 </net>
 <net name="N$21" class="0">
@@ -6097,6 +6110,7 @@ Source: http://www.diodes.com/datasheets/ds23001.pdf</description>
 <segment>
 <pinref part="D4" gate="G$1" pin="C"/>
 <pinref part="SUPPLY53" gate="G$1" pin="+7V"/>
+<junction x="345.44" y="114.3"/>
 </segment>
 <segment>
 <pinref part="D5" gate="G$1" pin="C"/>
@@ -6107,6 +6121,11 @@ Source: http://www.diodes.com/datasheets/ds23001.pdf</description>
 <pinref part="D8" gate="G$1" pin="C"/>
 <pinref part="SUPPLY56" gate="G$1" pin="+7V"/>
 <junction x="281.94" y="124.46"/>
+</segment>
+<segment>
+<pinref part="D7" gate="G$1" pin="C"/>
+<pinref part="SUPPLY58" gate="G$1" pin="+7V"/>
+<junction x="261.62" y="127"/>
 </segment>
 </net>
 <net name="+5V" class="0">
@@ -6578,6 +6597,7 @@ Source: http://www.diodes.com/datasheets/ds23001.pdf</description>
 <segment>
 <pinref part="D3" gate="G$1" pin="A"/>
 <pinref part="SUPPLY52" gate="GND" pin="GND"/>
+<junction x="340.36" y="104.14"/>
 </segment>
 <segment>
 <pinref part="D6" gate="G$1" pin="A"/>
@@ -6588,6 +6608,11 @@ Source: http://www.diodes.com/datasheets/ds23001.pdf</description>
 <pinref part="D2" gate="G$1" pin="A"/>
 <pinref part="SUPPLY57" gate="GND" pin="GND"/>
 <junction x="289.56" y="119.38"/>
+</segment>
+<segment>
+<pinref part="D1" gate="G$1" pin="A"/>
+<pinref part="SUPPLY59" gate="GND" pin="GND"/>
+<junction x="254" y="121.92"/>
 </segment>
 </net>
 <net name="N$16" class="0">
