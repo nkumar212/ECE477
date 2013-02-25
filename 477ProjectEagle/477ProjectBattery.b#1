@@ -108,9 +108,9 @@
 <wire x1="50.8" y1="50.8" x2="0" y2="50.8" width="0" layer="20"/>
 <wire x1="0" y1="50.8" x2="0" y2="0" width="0" layer="20"/>
 <text x="13.3604" y="11.8364" size="0.8128" layer="21" ratio="15">OUT</text>
-<text x="29.8196" y="11.8364" size="0.8128" layer="21" ratio="15">OUT</text>
+<text x="29.8196" y="11.8364" size="0.8128" layer="21" ratio="15">IN</text>
 <text x="37.4396" y="11.8364" size="0.8128" layer="21" ratio="15">OUT</text>
-<text x="21.8948" y="11.8364" size="0.8128" layer="21" ratio="15">IN</text>
+<text x="21.8948" y="11.8364" size="0.8128" layer="21" ratio="15">OUT</text>
 <text x="14.8844" y="18.2372" size="0.6096" layer="21" ratio="15">+3.3V</text>
 <text x="12.1412" y="18.2372" size="0.6096" layer="21" ratio="15">GND</text>
 <text x="23.114" y="18.2372" size="0.6096" layer="21" ratio="15">BAT+</text>
@@ -848,17 +848,17 @@ design rules under a new name.</description>
 <wire x1="7.57" y1="41.486" x2="9.798" y2="41.486" width="1.27" layer="1"/>
 <wire x1="9.798" y1="41.486" x2="9.908" y2="41.596" width="0.3048" layer="1"/>
 <polygon width="0.3048" layer="1" thermals="no">
-<vertex x="23.7236" y="13.6652"/>
-<vertex x="29.5148" y="13.6652"/>
-<vertex x="30.1244" y="12.1412"/>
-<vertex x="30.1244" y="10.6172"/>
+<vertex x="23.2664" y="14.097"/>
+<vertex x="30.099" y="14.097"/>
+<vertex x="30.2006" y="12.192"/>
+<vertex x="30.3022" y="10.6172"/>
 <vertex x="32.8676" y="7.874"/>
 <vertex x="32.8676" y="7.5692"/>
 <vertex x="32.5628" y="7.2644"/>
 <vertex x="23.114" y="7.2644"/>
 <vertex x="22.8092" y="7.5692"/>
 <vertex x="22.8092" y="7.874"/>
-<vertex x="23.4188" y="8.1788"/>
+<vertex x="23.495" y="8.763"/>
 <vertex x="23.4188" y="12.1412"/>
 </polygon>
 <polygon width="0.3048" layer="1" thermals="no">
@@ -960,8 +960,8 @@ design rules under a new name.</description>
 <wire x1="17.97" y1="9.986" x2="15.47" y2="9.986" width="0.3048" layer="1"/>
 <wire x1="15.47" y1="9.986" x2="13.47" y2="11.986" width="0.3048" layer="1"/>
 <wire x1="13.47" y1="11.986" x2="13.47" y2="13.486" width="0.3048" layer="1"/>
-<wire x1="13.47" y1="13.486" x2="13.57" y2="13.586" width="0.3048" layer="1"/>
-<wire x1="13.57" y1="13.586" x2="13.47" y2="13.586" width="0.3048" layer="1"/>
+<wire x1="13.47" y1="13.486" x2="13.5192" y2="13.459" width="0.3048" layer="1"/>
+<wire x1="13.5192" y1="13.459" x2="13.47" y2="13.586" width="0.3048" layer="1"/>
 <wire x1="13.47" y1="13.586" x2="13.37" y2="13.486" width="0.3048" layer="1"/>
 <wire x1="13.588" y1="24.026" x2="13.588" y2="15.604" width="0.6096" layer="1"/>
 <wire x1="13.588" y1="15.604" x2="13.47" y2="15.486" width="0.3048" layer="1"/>
@@ -988,22 +988,22 @@ design rules under a new name.</description>
 <vertex x="13.67" y="28.386"/>
 </polygon>
 <polygon width="0.3048" layer="1" thermals="no">
-<vertex x="13.3604" y="13.6652"/>
-<vertex x="11.5316" y="13.6652"/>
+<vertex x="14.3002" y="13.8684"/>
+<vertex x="11.6586" y="13.843"/>
 <vertex x="10.3124" y="12.446"/>
 <vertex x="10.3124" y="9.398"/>
 <vertex x="12.7508" y="6.9596"/>
 <vertex x="20.6756" y="6.9596"/>
-<vertex x="22.5044" y="8.7884"/>
-<vertex x="22.5044" y="12.7508"/>
-<vertex x="21.8948" y="13.3604"/>
-<vertex x="19.7612" y="13.3604"/>
+<vertex x="22.3012" y="8.7884"/>
+<vertex x="22.1742" y="12.7508"/>
+<vertex x="22.1488" y="14.1478"/>
+<vertex x="19.7866" y="14.1732"/>
 <vertex x="17.018" y="10.6172"/>
 <vertex x="15.7988" y="10.6172"/>
 <vertex x="14.2748" y="12.1412"/>
 <vertex x="14.2748" y="12.7508"/>
 </polygon>
-<polygon width="0.3048" layer="16">
+<polygon width="0.3048" layer="16" thermals="no">
 <vertex x="7.874" y="46.2788"/>
 <vertex x="45.3644" y="46.2788"/>
 <vertex x="46.8884" y="44.7548"/>

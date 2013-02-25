@@ -108,9 +108,9 @@
 <wire x1="50.8" y1="50.8" x2="0" y2="50.8" width="0" layer="20"/>
 <wire x1="0" y1="50.8" x2="0" y2="0" width="0" layer="20"/>
 <text x="13.3604" y="11.8364" size="0.8128" layer="21" ratio="15">OUT</text>
-<text x="29.8196" y="11.8364" size="0.8128" layer="21" ratio="15">OUT</text>
+<text x="30.4038" y="11.7348" size="0.8128" layer="21" ratio="15">IN</text>
 <text x="37.4396" y="11.8364" size="0.8128" layer="21" ratio="15">OUT</text>
-<text x="21.8948" y="11.8364" size="0.8128" layer="21" ratio="15">IN</text>
+<text x="21.8948" y="11.8364" size="0.8128" layer="21" ratio="15">OUT</text>
 <text x="14.8844" y="18.2372" size="0.6096" layer="21" ratio="15">+3.3V</text>
 <text x="12.1412" y="18.2372" size="0.6096" layer="21" ratio="15">GND</text>
 <text x="23.114" y="18.2372" size="0.6096" layer="21" ratio="15">BAT+</text>
