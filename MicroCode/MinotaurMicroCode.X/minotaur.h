@@ -16,6 +16,13 @@ extern "C" {
 long getIrSensorRange(char);
 void initADC();
 
+//PWM related functions
+void initPWM();
+
+
+//Timer related functions
+void initTimer();
+
 
 
 #ifdef	__cplusplus

@@ -38,7 +38,12 @@ int main(int argc, char** argv) {
     // Setup PortA IOs as digital
     AD1PCFG = 0xffff;
 
+    //initialize peripherals
     initADC();
+    initPWM();
+
+    //set duty cycle of OC3 to 50% to test
+    //OC3RS = 0x007F;
 
     //infinite polling loop
     while(1) {
@@ -63,8 +68,6 @@ int main(int argc, char** argv) {
             AD1CON1bits.ASAM = 1;  //turn sampling back on
         }
 
-
-        //sensor1 = getIrSensorRange(1);
         if(sensor1 > 50) {
             LATA = 0x01;
         }
