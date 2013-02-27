@@ -17,7 +17,7 @@
 //when it is done
 void initADC() {
     //set AN2,AN3,AN4,AN5, and AN9 as analog input
-    AD1PCFG = 0x023C;
+    AD1PCFG = 0xFDC3;
     //AD1PCFG = 0xFFFE; //only turn on AN0 as analog input
 
     //turn on ADC -- Integer mode -- Internal counter ends sampling and starts

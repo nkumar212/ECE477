@@ -12,13 +12,21 @@
 extern "C" {
 #endif
 
+#define MAX_BUFSIZE 50
+
+
 //structure for recieving control data
 typedef struct _controlData {
     char command;
     char value;
 } controlData;
 
+typedef struct _BUFFER {
+    int place;
+    char DATA[MAX_BUFSIZE];
+} BUFFER;
 
+extern BUFFER TX_DATA_BUFFER;
 
 //declare ADC related functions
 long getIrSensorRange(char);
@@ -33,6 +41,7 @@ void initTimer();
 
 //uart functions
 void initUART();
+char *intToString(int, char *);
 
 #ifdef	__cplusplus
 }
