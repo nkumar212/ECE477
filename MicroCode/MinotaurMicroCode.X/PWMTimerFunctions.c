@@ -1,18 +1,20 @@
 /*
  * ECE 477 Purdue University
  * Team 16: Project Minotaur Home Security Robot
- *
+ * Scott Stack, Neil Kumar, Jon Roose, John Hubberts
  *
  * This file provides functions dealing with PWM and Timer module functionality
  *
  */
 
-#include <stdio.h>
-#include <stdlib.h>
+//#include <stdio.h>
+//#include <stdlib.h>
 #include <p24Fxxxx.h>
 #include "minotaur.h"
 
 
+//Initializes the PWM module to use OC3 and OC4 to control the speed of the
+//motors.
 void initPWM() {
     //set Timer 2 period to be about 15ms
     PR2 = 0x00FF;
@@ -31,13 +33,20 @@ void initPWM() {
 
     //enable Timer 2 to start PWM
     //set prescalar to 256
-    T2CON |= 0x8030;
+    T2CON = 0x8030;
 
     return;
 }
 
-
+//Initialize timer 3 as a timeout timer. If no command is received when the
+//timer expires, stop moving the robot. Reset the timer when a command is
+//received. 
 void initTimer() {
+    //set timer to expire afer 1.5 seconds
+    PR3 = 0x5B8D;
+    T3CON = 0x8030; //enable timer and set prescalar to 256
+
+
     return;
 }
 

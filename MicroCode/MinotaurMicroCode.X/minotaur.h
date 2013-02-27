@@ -12,6 +12,14 @@
 extern "C" {
 #endif
 
+//structure for recieving control data
+typedef struct _controlData {
+    char command;
+    char value;
+} controlData;
+
+
+
 //declare ADC related functions
 long getIrSensorRange(char);
 void initADC();
@@ -23,7 +31,8 @@ void initPWM();
 //Timer related functions
 void initTimer();
 
-
+//uart functions
+void initUART();
 
 #ifdef	__cplusplus
 }
