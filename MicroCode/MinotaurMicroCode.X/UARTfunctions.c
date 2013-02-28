@@ -33,10 +33,6 @@ void initUART() {
 
 
 char *intToString(int num, char *end) {
-    int temp, base;
-    int i = 0;
-    char retString[10];
-    
     *end = '\0';
 
     while (num != 0) {
@@ -50,9 +46,13 @@ char *intToString(int num, char *end) {
 
 //place the sting sent to function into the TX_DATA_BUFFER to send data
 void printString(char *string) {
-    int i = TX_DATA_BUFFER.place + 1;
-
-    while(string[i] != '\0') {
-        TX_DATA_BUFFER.DATA[i];
+    int i = TX_DATA_BUFFER.place+1;
+    int j = 0;
+    
+    while(string[j] != '\0') {
+        while(i >= MAX_BUFSIZE);   //wait if buffer is full
+        TX_DATA_BUFFER.DATA[i] = string[j];
+        j++;
+        i++;
     }
 }

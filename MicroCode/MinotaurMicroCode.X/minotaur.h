@@ -1,5 +1,5 @@
 /* 
- * File:   adc.h
+ * File:   minotaur.h
  * Author: team16
  *
  * Created on February 12, 2013, 5:02 PM
@@ -21,12 +21,14 @@ typedef struct _controlData {
     char value;
 } controlData;
 
+//Buffer used for transmitting and recieving data
 typedef struct _BUFFER {
     int place;
     char DATA[MAX_BUFSIZE];
 } BUFFER;
 
 extern BUFFER TX_DATA_BUFFER;
+
 
 //declare ADC related functions
 long getIrSensorRange(char);
@@ -42,6 +44,7 @@ void initTimer();
 //uart functions
 void initUART();
 char *intToString(int, char *);
+void printString(char *);
 
 #ifdef	__cplusplus
 }
