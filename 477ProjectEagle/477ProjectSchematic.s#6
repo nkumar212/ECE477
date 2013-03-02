@@ -6247,13 +6247,13 @@ Source: www.kingbright.com</description>
 <part name="COUT7" library="MinotaurParts" deviceset="APXA100ARA271MJ80G" device="" value="270uF"/>
 <part name="CIN7" library="MinotaurParts" deviceset="C-US-1210" device="" value="10uF"/>
 <part name="L1_7" library="MinotaurParts" deviceset="SRR1210" device="" value="12uH"/>
-<part name="U$23" library="MinotaurParts" deviceset="C-US-1206" device="" value="10uF"/>
-<part name="U$24" library="MinotaurParts" deviceset="C-US-1206" device="" value="10uF"/>
-<part name="U$25" library="MinotaurParts" deviceset="C-US-1206" device="" value="10uF"/>
+<part name="U$23" library="MinotaurParts" deviceset="C-US-1206" device="" value="0.1uF"/>
+<part name="U$24" library="MinotaurParts" deviceset="C-US-1206" device="" value="0.1uF"/>
+<part name="U$25" library="MinotaurParts" deviceset="C-US-1206" device="" value="0.1uF"/>
 <part name="SUPPLY45" library="supply2" deviceset="GND" device=""/>
-<part name="U$40" library="MinotaurParts" deviceset="C-US-1206" device="" value="10uF"/>
-<part name="U$43" library="MinotaurParts" deviceset="C-US-1206" device="" value="10uF"/>
-<part name="U$44" library="MinotaurParts" deviceset="C-US-1206" device="" value="10uF"/>
+<part name="U$40" library="MinotaurParts" deviceset="C-US-1206" device="" value="0.1uF"/>
+<part name="U$43" library="MinotaurParts" deviceset="C-US-1206" device="" value="0.1uF"/>
+<part name="U$44" library="MinotaurParts" deviceset="C-US-1206" device="" value="0.1uF"/>
 <part name="SUPPLY46" library="supply2" deviceset="GND" device=""/>
 <part name="SUPPLY47" library="supply2" deviceset="GND" device=""/>
 <part name="U$45" library="MinotaurParts" deviceset="C-US-1206" device="" value="10uF"/>
@@ -6269,7 +6269,7 @@ Source: www.kingbright.com</description>
 <part name="SV6" library="con-lstb" deviceset="MA08-2" device=""/>
 <part name="SV7" library="con-lstb" deviceset="MA08-2" device=""/>
 <part name="SV8" library="con-lstb" deviceset="MA08-2" device=""/>
-<part name="U$6" library="MinotaurParts" deviceset="C-US-1206" device="" value="10uF"/>
+<part name="U$6" library="MinotaurParts" deviceset="C-US-1206" device="" value="0.1uF"/>
 <part name="SUPPLY51" library="supply2" deviceset="GND" device=""/>
 <part name="D1" library="diode" deviceset="DIODE-" device="DO-214AC"/>
 <part name="D2" library="diode" deviceset="DIODE-" device="DO-214AC"/>
@@ -6296,6 +6296,8 @@ Source: www.kingbright.com</description>
 <part name="RLED2" library="MinotaurParts" deviceset="R-US" device="&quot;" value="1k"/>
 <part name="+3V10" library="supply1" deviceset="+3V3" device=""/>
 <part name="SUPPLY61" library="supply2" deviceset="GND" device=""/>
+<part name="U$3" library="MinotaurParts" deviceset="C-US-1206" device="" value="10uF"/>
+<part name="SUPPLY26" library="supply2" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -6469,6 +6471,8 @@ Source: www.kingbright.com</description>
 <instance part="RLED2" gate="G$1" x="-386.08" y="35.56" rot="R270"/>
 <instance part="+3V10" gate="G$1" x="-386.08" y="43.18"/>
 <instance part="SUPPLY61" gate="GND" x="-386.08" y="15.24"/>
+<instance part="U$3" gate="G$1" x="118.11" y="58.42"/>
+<instance part="SUPPLY26" gate="GND" x="118.11" y="52.07"/>
 </instances>
 <busses>
 </busses>
@@ -8135,11 +8139,17 @@ Source: www.kingbright.com</description>
 <segment>
 <wire x1="95.25" y1="27.94" x2="95.25" y2="31.75" width="0.1524" layer="91"/>
 <pinref part="SV7" gate="G$1" pin="9"/>
-<wire x1="95.25" y1="31.75" x2="107.95" y2="31.75" width="0.1524" layer="91"/>
+<wire x1="95.25" y1="31.75" x2="104.14" y2="31.75" width="0.1524" layer="91"/>
 <junction x="107.95" y="31.75"/>
 <pinref part="U$1" gate="A" pin="VCAP/VDDCORE"/>
+<wire x1="104.14" y1="31.75" x2="107.95" y2="31.75" width="0.1524" layer="91"/>
 <wire x1="95.25" y1="27.94" x2="76.2" y2="27.94" width="0.1524" layer="91"/>
 <junction x="76.2" y="27.94"/>
+<wire x1="104.14" y1="31.75" x2="104.14" y2="63.5" width="0.1524" layer="91"/>
+<wire x1="104.14" y1="63.5" x2="118.11" y2="63.5" width="0.1524" layer="91"/>
+<wire x1="118.11" y1="63.5" x2="118.11" y2="60.96" width="0.1524" layer="91"/>
+<junction x="104.14" y="31.75"/>
+<pinref part="U$3" gate="G$1" pin="1"/>
 </segment>
 </net>
 <net name="N$94" class="0">

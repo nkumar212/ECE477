@@ -33,7 +33,7 @@ void initUART() {
 
 
 char *intToString(int num, char *end) {
-    *end = '\0';
+    *end = 0;
 
     while (num != 0) {
         *--end = '0' + (num%10);
@@ -46,13 +46,46 @@ char *intToString(int num, char *end) {
 
 //place the sting sent to function into the TX_DATA_BUFFER to send data
 void printString(char *string) {
-    int i = TX_DATA_BUFFER.place+1;
     int j = 0;
     
     while(string[j] != '\0') {
-        while(i >= MAX_BUFSIZE);   //wait if buffer is full
-        TX_DATA_BUFFER.DATA[i] = string[j];
+        while(BUFF_status(&TX_DATA_BUFFER) == BUFF_FULL); //wait if buffer is full
+        BUFF_push(&TX_DATA_BUFFER, string[j]);
+        
         j++;
-        i++;
     }
+}
+
+
+
+//FUNCTIONS TO IMPLEMENT CIRCULAR BUFFER
+int BUFF_push(BUFFER* buff, char c) {
+  if((buff->tail + 1) % MAX_BUFFSIZE == buff->head) {
+    return BUFF_FULL;
+  } else {
+    buff->data[buff->tail] = c;
+    buff->tail = (buff->tail + 1) % MAX_BUFFSIZE;
+  }
+  return BUFF_NORMAL;
+}
+
+char BUFF_pop(BUFFER* buff) {
+  char c = -1;
+  if(buff->head == buff->tail) {
+    return BUFF_EMPTY;
+  } else {
+    c = buff->data[buff->head];
+    buff->head = (buff->head + 1) % MAX_BUFFSIZE;
+  }
+  return c;
+}
+
+int BUFF_status(BUFFER* buff) {
+  if(buff->head == buff->tail) {
+    return BUFF_EMPTY;
+  } else if ((buff->tail + 1) % MAX_BUFFSIZE == buff->head) {
+    return BUFF_FULL;
+  } else {
+    return BUFF_NORMAL;
+  }
 }

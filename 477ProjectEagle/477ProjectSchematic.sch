@@ -6,7 +6,7 @@
 <setting alwaysvectorfont="no"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="0.05" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.01" altunitdist="inch" altunit="inch"/>
+<grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.01" altunitdist="inch" altunit="inch"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="no" active="no"/>
 <layer number="2" name="Route2" color="1" fill="3" visible="no" active="no"/>
@@ -520,8 +520,9 @@
 <wire x1="-2.2" y1="-5.5" x2="-2.9" y2="-5.5" width="0.127" layer="21"/>
 <wire x1="-3.4" y1="-5.5" x2="-4.2" y2="-5.5" width="0.127" layer="21"/>
 <wire x1="-4.7" y1="-5.5" x2="-5.5" y2="-5.5" width="0.127" layer="21"/>
-<text x="8.96" y="-2.9" size="1.27" layer="25" rot="R90">&gt;NAME</text>
-<text x="-7.69" y="-3" size="1.27" layer="27" rot="R90">&gt;VALUE</text>
+<text x="9.36" y="-3.1" size="1.27" layer="25" rot="R90">&gt;NAME</text>
+<text x="-8.09" y="-3.3" size="1.27" layer="27" rot="R90">&gt;VALUE</text>
+<smd name="GNDPAD" x="0" y="0" dx="16" dy="5" layer="1"/>
 </package>
 <package name="PSOP-8">
 <smd name="1" x="-1.905" y="-2.875" dx="2.15" dy="0.45" layer="1" rot="R90"/>
@@ -575,8 +576,8 @@
 <wire x1="-0.965" y1="-0.787" x2="0.965" y2="-0.787" width="0.1016" layer="51"/>
 <smd name="1" x="-1.4" y="0" dx="1.6" dy="1.8" layer="1"/>
 <smd name="2" x="1.4" y="0" dx="1.6" dy="1.8" layer="1"/>
-<text x="-3.81" y="1.27" size="1.27" layer="25">&gt;NAME</text>
-<text x="-2.54" y="-2.54" size="1.27" layer="27">&gt;VALUE</text>
+<text x="-1.6764" y="1.27" size="0.6096" layer="25">&gt;NAME</text>
+<text x="-1.6256" y="-1.9304" size="0.6096" layer="27">&gt;VALUE</text>
 <rectangle x1="-1.7018" y1="-0.8509" x2="-0.9517" y2="0.8491" layer="51"/>
 <rectangle x1="0.9517" y1="-0.8491" x2="1.7018" y2="0.8509" layer="51"/>
 <rectangle x1="-0.1999" y1="-0.4001" x2="0.1999" y2="0.4001" layer="35"/>
@@ -591,8 +592,8 @@
 <wire x1="-2.473" y1="-0.983" x2="-2.473" y2="0.983" width="0.0508" layer="39"/>
 <smd name="2" x="1.422" y="0" dx="1.6" dy="1.803" layer="1"/>
 <smd name="1" x="-1.422" y="0" dx="1.6" dy="1.803" layer="1"/>
-<text x="-1.27" y="1.27" size="1.27" layer="25">&gt;NAME</text>
-<text x="-1.27" y="-2.54" size="1.27" layer="27">&gt;VALUE</text>
+<text x="-1.27" y="1.27" size="0.6096" layer="25">&gt;NAME</text>
+<text x="-1.27" y="-1.9304" size="0.6096" layer="27">&gt;VALUE</text>
 <rectangle x1="-1.6891" y1="-0.8763" x2="-0.9525" y2="0.8763" layer="51"/>
 <rectangle x1="0.9525" y1="-0.8763" x2="1.6891" y2="0.8763" layer="51"/>
 <rectangle x1="-0.3" y1="-0.7" x2="0.3" y2="0.7" layer="35"/>
@@ -626,8 +627,8 @@ Basic SMA packaged diode. Good for reverse polarization protection. Common part 
 <wire x1="-1.5" y1="1.5" x2="1.5" y2="1.5" width="0.127" layer="21"/>
 <wire x1="-1.5" y1="-1.5" x2="1.5" y2="-1.5" width="0.127" layer="21"/>
 <circle x="-1.15" y="-1.15" radius="0.22360625" width="0.127" layer="21"/>
-<text x="2.9" y="-2.3" size="1.27" layer="27" rot="R90">&gt;VALUE</text>
-<text x="-1.7" y="-2.3" size="1.27" layer="25" rot="R90">&gt;NAME</text>
+<text x="1.9856" y="3.1864" size="0.6096" layer="27" rot="R90">&gt;VALUE</text>
+<text x="1.0432" y="3.1864" size="0.6096" layer="25" rot="R90">&gt;NAME</text>
 </package>
 <package name="SOIC8">
 <description>&lt;b&gt;SOIC-8&lt;/b&gt; CASE 751-07&lt;p&gt;
@@ -819,8 +820,8 @@ KEMET V / EIA 7343-20, KEMET X / EIA 7343-43 Wafe solder</description>
 <wire x1="-1" y1="-3" x2="1" y2="-3" width="0.127" layer="21"/>
 <wire x1="3" y1="-1" x2="3" y2="1" width="0.127" layer="21"/>
 <wire x1="1" y1="3" x2="-1" y2="3" width="0.127" layer="21"/>
-<text x="-3.04" y="-2.85" size="1.27" layer="25" rot="R90">&gt;NAME</text>
-<text x="-3" y="3" size="1.27" layer="27">&gt;VALUE</text>
+<text x="0.6656" y="-3.3448" size="0.8128" layer="25" rot="R180">&gt;NAME</text>
+<text x="-3.6604" y="3.3048" size="0.8128" layer="27">&gt;VALUE</text>
 </package>
 <package name="CAPSMT_62_J80">
 <smd name="-" x="0" y="-4.75" dx="1.5" dy="5" layer="1" rot="R180"/>
@@ -861,8 +862,8 @@ KEMET V / EIA 7343-20, KEMET X / EIA 7343-43 Wafe solder</description>
 <smd name="2" x="0" y="-2.825" dx="4.7" dy="2.45" layer="1"/>
 <wire x1="2.1" y1="-1.6" x2="2.1" y2="1.6" width="0.127" layer="21"/>
 <wire x1="-2.1" y1="-1.6" x2="-2.1" y2="1.6" width="0.127" layer="21"/>
-<text x="-2.6" y="-2.9" size="1.27" layer="25" rot="R90">&gt;NAME</text>
-<text x="3.8" y="-3.1" size="1.27" layer="27" rot="R90">&gt;VALUE</text>
+<text x="-0.4664" y="4.72" size="0.8128" layer="25" rot="R90">&gt;NAME</text>
+<text x="0.752" y="4.52" size="0.8128" layer="27" rot="R90">&gt;VALUE</text>
 </package>
 </packages>
 <symbols>
@@ -1267,7 +1268,7 @@ KEMET V / EIA 7343-20, KEMET X / EIA 7343-43 Wafe solder</description>
 <connect gate="G$1" pin="ENA" pad="ENA"/>
 <connect gate="G$1" pin="ENB" pad="ENB"/>
 <connect gate="G$1" pin="GND" pad="GND"/>
-<connect gate="G$1" pin="GND1" pad="GND1"/>
+<connect gate="G$1" pin="GND1" pad="GND1 GNDPAD"/>
 <connect gate="G$1" pin="GND2" pad="GND2"/>
 <connect gate="G$1" pin="GND3" pad="GND3"/>
 <connect gate="G$1" pin="IN1" pad="IN1"/>

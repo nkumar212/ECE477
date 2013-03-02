@@ -673,8 +673,8 @@
 <wire x1="-1.5" y1="1.5" x2="1.5" y2="1.5" width="0.127" layer="21"/>
 <wire x1="-1.5" y1="-1.5" x2="1.5" y2="-1.5" width="0.127" layer="21"/>
 <circle x="-1.15" y="-1.15" radius="0.22360625" width="0.127" layer="21"/>
-<text x="2.9" y="-2.3" size="1.27" layer="27" rot="R90">&gt;VALUE</text>
-<text x="-1.7" y="-2.3" size="1.27" layer="25" rot="R90">&gt;NAME</text>
+<text x="0.7664" y="3.1864" size="0.6096" layer="27" rot="R90">&gt;VALUE</text>
+<text x="-0.176" y="3.1864" size="0.6096" layer="25" rot="R90">&gt;NAME</text>
 </package>
 <package name="PSOP-8">
 <smd name="1" x="-1.905" y="-2.875" dx="2.15" dy="0.45" layer="1" rot="R90"/>
@@ -773,8 +773,8 @@ Basic SMA packaged diode. Good for reverse polarization protection. Common part 
 <wire x1="-1" y1="-3" x2="1" y2="-3" width="0.127" layer="21"/>
 <wire x1="3" y1="-1" x2="3" y2="1" width="0.127" layer="21"/>
 <wire x1="1" y1="3" x2="-1" y2="3" width="0.127" layer="21"/>
-<text x="-3.04" y="-2.85" size="1.27" layer="25" rot="R90">&gt;NAME</text>
-<text x="-3" y="3" size="1.27" layer="27">&gt;VALUE</text>
+<text x="1.9356" y="-3.3448" size="0.8128" layer="25" rot="R180">&gt;NAME</text>
+<text x="-2.3904" y="3.3048" size="0.8128" layer="27">&gt;VALUE</text>
 </package>
 <package name="SOIC8">
 <description>&lt;b&gt;SOIC-8&lt;/b&gt; CASE 751-07&lt;p&gt;

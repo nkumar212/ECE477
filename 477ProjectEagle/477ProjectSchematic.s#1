@@ -7543,6 +7543,7 @@ Source: www.kingbright.com</description>
 <wire x1="83.82" y1="30.48" x2="83.82" y2="62.23" width="0.1524" layer="91"/>
 <pinref part="+3V1" gate="G$1" pin="+3V3"/>
 <junction x="83.82" y="62.23"/>
+<junction x="83.82" y="30.48"/>
 </segment>
 </net>
 <net name="+12V" class="0">

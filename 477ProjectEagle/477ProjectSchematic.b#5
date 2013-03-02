@@ -1506,7 +1506,7 @@ design rules under a new name.</description>
 <element name="RLED" library="MinotaurParts" package="R1206" value="1k" x="8.5852" y="68.5292" rot="R90"/>
 <element name="POWER" library="led" package="1206" value="" x="73.6092" y="121.3612"/>
 <element name="RLED2" library="MinotaurParts" package="R1206" value="1k" x="64.4652" y="117.5512"/>
-<element name="U$3" library="MinotaurParts" package="C1206" value="10uF" x="4.4704" y="-4.6736"/>
+<element name="U$3" library="MinotaurParts" package="C1206" value="10uF" x="35.3568" y="72.5424" rot="MR270"/>
 </elements>
 <signals>
 <signal name="N$1">
@@ -3392,7 +3392,7 @@ design rules under a new name.</description>
 <wire x1="36.0426" y1="73.0504" x2="41.7068" y2="73.0504" width="0.3048" layer="1"/>
 <wire x1="41.7068" y1="73.0504" x2="42.5704" y2="72.1868" width="0.3048" layer="1"/>
 <contactref element="U$3" pad="1"/>
-<wire x1="3.0704" y1="-4.6736" x2="36.0426" y2="73.0504" width="0" layer="19" extent="1-1"/>
+<wire x1="35.3568" y1="73.9424" x2="36.0426" y2="73.0504" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$94">
 <contactref element="SV7" pad="10"/>

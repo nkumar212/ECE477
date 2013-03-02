@@ -1,0 +1,14 @@
+- Bulk capacitor
+- Ask about ground plane
+- Barrel connectors on all power lines
+- capacitor for pushbutton
+- Ask about cap sizes
+- Verify surface mount package solderability
+- Replace 7.2 volt supply w/ diodes?
+- 6 .1 inch spaced headers for each encoder. Maybe place next to IR sensor inputs
+- put in mount drill holes
+-  
+
+
+
+- Verify resistor values for power supplies

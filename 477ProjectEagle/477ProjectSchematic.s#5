@@ -6298,6 +6298,7 @@ Source: www.kingbright.com</description>
 <part name="SUPPLY61" library="supply2" deviceset="GND" device=""/>
 <part name="U$3" library="MinotaurParts" deviceset="C-US-1206" device="" value="10uF"/>
 <part name="SUPPLY26" library="supply2" deviceset="GND" device=""/>
+<part name="+3V1" library="supply1" deviceset="+3V3" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -6473,6 +6474,7 @@ Source: www.kingbright.com</description>
 <instance part="SUPPLY61" gate="GND" x="-386.08" y="15.24"/>
 <instance part="U$3" gate="G$1" x="118.11" y="58.42"/>
 <instance part="SUPPLY26" gate="GND" x="118.11" y="52.07"/>
+<instance part="+3V1" gate="G$1" x="83.82" y="64.77"/>
 </instances>
 <busses>
 </busses>
@@ -7522,6 +7524,19 @@ Source: www.kingbright.com</description>
 <pinref part="+3V10" gate="G$1" pin="+3V3"/>
 <junction x="-386.08" y="40.64"/>
 </segment>
+<segment>
+<wire x1="93.98" y1="30.48" x2="93.98" y2="33.02" width="0.1524" layer="91"/>
+<pinref part="SV7" gate="G$1" pin="8"/>
+<wire x1="93.98" y1="33.02" x2="123.19" y2="33.02" width="0.1524" layer="91"/>
+<wire x1="123.19" y1="33.02" x2="123.19" y2="34.29" width="0.1524" layer="91"/>
+<junction x="123.19" y="34.29"/>
+<pinref part="U$1" gate="A" pin="ENVREG"/>
+<wire x1="93.98" y1="30.48" x2="83.82" y2="30.48" width="0.1524" layer="91"/>
+<junction x="76.2" y="30.48"/>
+<wire x1="83.82" y1="30.48" x2="76.2" y2="30.48" width="0.1524" layer="91"/>
+<wire x1="83.82" y1="30.48" x2="83.82" y2="62.23" width="0.1524" layer="91"/>
+<pinref part="+3V1" gate="G$1" pin="+3V3"/>
+</segment>
 </net>
 <net name="+12V" class="0">
 <segment>
@@ -8194,18 +8209,6 @@ Source: www.kingbright.com</description>
 <junction x="107.95" y="36.83"/>
 <pinref part="U$1" gate="A" pin="PMD0/RE0"/>
 <junction x="76.2" y="38.1"/>
-</segment>
-</net>
-<net name="N$98" class="0">
-<segment>
-<wire x1="93.98" y1="30.48" x2="93.98" y2="33.02" width="0.1524" layer="91"/>
-<pinref part="SV7" gate="G$1" pin="8"/>
-<wire x1="93.98" y1="33.02" x2="123.19" y2="33.02" width="0.1524" layer="91"/>
-<wire x1="123.19" y1="33.02" x2="123.19" y2="34.29" width="0.1524" layer="91"/>
-<junction x="123.19" y="34.29"/>
-<pinref part="U$1" gate="A" pin="ENVREG"/>
-<wire x1="93.98" y1="30.48" x2="76.2" y2="30.48" width="0.1524" layer="91"/>
-<junction x="76.2" y="30.48"/>
 </segment>
 </net>
 <net name="N$76" class="0">

@@ -8527,16 +8527,13 @@ Source: www.kingbright.com</description>
 <junction x="-66.04" y="-48.26"/>
 </segment>
 </net>
-<net name="N$62" class="0">
-<segment>
-<pinref part="POWER" gate="G$1" pin="A"/>
-<junction x="-386.08" y="25.4"/>
-</segment>
-</net>
 <net name="N$78" class="0">
 <segment>
 <pinref part="RLED2" gate="G$1" pin="2"/>
 <junction x="-386.08" y="30.48"/>
+<pinref part="POWER" gate="G$1" pin="A"/>
+<junction x="-386.08" y="25.4"/>
+<wire x1="-386.08" y1="30.48" x2="-386.08" y2="25.4" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>

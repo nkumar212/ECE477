@@ -7396,6 +7396,10 @@ Source: www.kingbright.com</description>
 <pinref part="SUPPLY61" gate="GND" pin="GND"/>
 <junction x="-386.08" y="17.78"/>
 </segment>
+<segment>
+<pinref part="SUPPLY26" gate="GND" pin="GND"/>
+<junction x="118.11" y="54.61"/>
+</segment>
 </net>
 <net name="N$16" class="0">
 <segment>
@@ -7536,6 +7540,7 @@ Source: www.kingbright.com</description>
 <wire x1="83.82" y1="30.48" x2="76.2" y2="30.48" width="0.1524" layer="91"/>
 <wire x1="83.82" y1="30.48" x2="83.82" y2="62.23" width="0.1524" layer="91"/>
 <pinref part="+3V1" gate="G$1" pin="+3V3"/>
+<junction x="83.82" y="62.23"/>
 </segment>
 </net>
 <net name="+12V" class="0">
@@ -8165,6 +8170,7 @@ Source: www.kingbright.com</description>
 <wire x1="118.11" y1="63.5" x2="118.11" y2="60.96" width="0.1524" layer="91"/>
 <junction x="104.14" y="31.75"/>
 <pinref part="U$3" gate="G$1" pin="1"/>
+<junction x="118.11" y="60.96"/>
 </segment>
 </net>
 <net name="N$94" class="0">
