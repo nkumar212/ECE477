@@ -5,6 +5,7 @@
 - Ask about cap sizes
 - Verify surface mount package solderability
 - Replace 7.2 volt supply w/ diodes?
+-Pins nums on encoders
 # 6 .1 inch spaced headers for each encoder. Maybe place next to IR sensor inputs
 # put in mount drill holes
   

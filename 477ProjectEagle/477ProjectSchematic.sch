@@ -607,11 +607,13 @@ Basic SMA packaged diode. Good for reverse polarization protection. Common part 
 <wire x1="2.3" y1="-1" x2="2.3" y2="-1.45" width="0.2032" layer="21"/>
 <wire x1="2.3" y1="-1.45" x2="-2.3" y2="-1.45" width="0.2032" layer="21"/>
 <wire x1="-2.3" y1="-1.45" x2="-2.3" y2="-1" width="0.2032" layer="21"/>
-<wire x1="0.5" y1="1" x2="0.5" y2="-1" width="0.2032" layer="21"/>
 <smd name="-" x="-2" y="0" dx="2.5" dy="1.7" layer="1" rot="R180"/>
 <smd name="+" x="2" y="0" dx="2.5" dy="1.7" layer="1"/>
 <text x="-2.286" y="1.651" size="0.8128" layer="25">&gt;NAME</text>
 <text x="-2.246" y="-2.349" size="0.8128" layer="27">&gt;VALUE</text>
+<wire x1="1.4" y1="1.39" x2="1.4" y2="0.88" width="0.127" layer="21"/>
+<wire x1="1.42" y1="-0.86" x2="1.43" y2="-0.86" width="0.127" layer="21"/>
+<wire x1="1.43" y1="-0.86" x2="1.43" y2="-1.46" width="0.127" layer="21"/>
 </package>
 <package name="MSOP-8">
 <smd name="1" x="-0.975" y="-2.4" dx="1.02" dy="0.41" layer="1" rot="R270"/>
@@ -810,8 +812,8 @@ KEMET V / EIA 7343-20, KEMET X / EIA 7343-43 Wafe solder</description>
 <pad name="3" x="6.25" y="2.5" drill="1.2" diameter="2.159"/>
 </package>
 <package name="SDR0403">
-<smd name="A" x="0" y="1.65" dx="4.5" dy="1.8" layer="1" rot="R180"/>
-<smd name="B" x="0" y="-1.65" dx="4.5" dy="1.8" layer="1" rot="R180"/>
+<smd name="A" x="0" y="2.45" dx="4.5" dy="2.6" layer="1" rot="R180"/>
+<smd name="B" x="0" y="-2.45" dx="4.5" dy="2.6" layer="1" rot="R180"/>
 <wire x1="1" y1="-3" x2="3" y2="-1" width="0.127" layer="21" curve="90"/>
 <wire x1="-1" y1="-3" x2="-3" y2="-1" width="0.127" layer="21" curve="-90"/>
 <wire x1="-3" y1="1" x2="-1" y2="3" width="0.127" layer="21" curve="-90"/>
@@ -1118,12 +1120,12 @@ KEMET V / EIA 7343-20, KEMET X / EIA 7343-43 Wafe solder</description>
 <pin name="R2OUT" x="-12.7" y="2.54" length="middle"/>
 <pin name="R2IN" x="20.32" y="2.54" length="middle" rot="R180"/>
 <pin name="T2OUT" x="20.32" y="5.08" length="middle" rot="R180"/>
-<pin name="C2-" x="20.32" y="-5.08" length="middle" rot="R180"/>
-<pin name="C2+" x="20.32" y="-7.62" length="middle" rot="R180"/>
+<pin name="C2-" x="20.32" y="0" length="middle" rot="R180"/>
+<pin name="C2+" x="20.32" y="-5.08" length="middle" rot="R180"/>
 <pin name="C1-" x="20.32" y="-10.16" length="middle" rot="R180"/>
 <pin name="C1+" x="20.32" y="-12.7" length="middle" rot="R180"/>
 <pin name="V-" x="-12.7" y="-12.7" length="middle"/>
-<pin name="V+" x="-12.7" y="-10.16" length="middle"/>
+<pin name="V+" x="-12.7" y="-7.62" length="middle"/>
 <pin name="VCC" x="-12.7" y="-5.08" length="middle"/>
 <pin name="GND" x="-12.7" y="-2.54" length="middle"/>
 <pin name="T1OUT" x="20.32" y="10.16" length="middle" rot="R180"/>
@@ -1133,6 +1135,9 @@ KEMET V / EIA 7343-20, KEMET X / EIA 7343-43 Wafe solder</description>
 <pin name="T2IN" x="-12.7" y="5.08" length="middle"/>
 <text x="-5.08" y="12.7" size="1.27" layer="95">&gt;NAME</text>
 <text x="-5.08" y="-17.78" size="1.27" layer="96">&gt;VALUE</text>
+<pin name="C2+2" x="20.32" y="-7.62" length="middle" rot="R180"/>
+<pin name="CS-" x="20.32" y="-2.54" length="middle" rot="R180"/>
+<pin name="V-2" x="-12.7" y="-10.16" length="middle"/>
 </symbol>
 <symbol name="TXB0108">
 <wire x1="-15.24" y1="30.48" x2="17.78" y2="30.48" width="0.254" layer="94"/>
@@ -1301,7 +1306,7 @@ KEMET V / EIA 7343-20, KEMET X / EIA 7343-43 Wafe solder</description>
 <connects>
 <connect gate="G$1" pin="BOOT" pad="1"/>
 <connect gate="G$1" pin="ENA" pad="5"/>
-<connect gate="G$1" pin="GND" pad="6 PAD"/>
+<connect gate="G$1" pin="GND" pad="2 6 PAD" route="any"/>
 <connect gate="G$1" pin="PH" pad="8"/>
 <connect gate="G$1" pin="VIN" pad="7"/>
 <connect gate="G$1" pin="VSENSE" pad="4"/>
@@ -1493,8 +1498,10 @@ KEMET V / EIA 7343-20, KEMET X / EIA 7343-43 Wafe solder</description>
 <connects>
 <connect gate="G$1" pin="C1+" pad="C1+"/>
 <connect gate="G$1" pin="C1-" pad="C1-"/>
-<connect gate="G$1" pin="C2+" pad="C2+ C2+2"/>
-<connect gate="G$1" pin="C2-" pad="C2- C2-2"/>
+<connect gate="G$1" pin="C2+" pad="C2+"/>
+<connect gate="G$1" pin="C2+2" pad="C2+2"/>
+<connect gate="G$1" pin="C2-" pad="C2-"/>
+<connect gate="G$1" pin="CS-" pad="C2-2"/>
 <connect gate="G$1" pin="GND" pad="GND GND2"/>
 <connect gate="G$1" pin="R1IN" pad="R1IN"/>
 <connect gate="G$1" pin="R1OUT" pad="R1OUT"/>
@@ -1505,7 +1512,8 @@ KEMET V / EIA 7343-20, KEMET X / EIA 7343-43 Wafe solder</description>
 <connect gate="G$1" pin="T2IN" pad="T2IN"/>
 <connect gate="G$1" pin="T2OUT" pad="T2OUT"/>
 <connect gate="G$1" pin="V+" pad="V+"/>
-<connect gate="G$1" pin="V-" pad="V- V-2"/>
+<connect gate="G$1" pin="V-" pad="V-"/>
+<connect gate="G$1" pin="V-2" pad="V-2"/>
 <connect gate="G$1" pin="VCC" pad="VCC"/>
 </connects>
 <technologies>
@@ -6241,12 +6249,12 @@ Source: www.kingbright.com</description>
 <part name="CIN5" library="MinotaurParts" deviceset="C-US-1206" device="" value="10uF"/>
 <part name="COUT5" library="MinotaurParts" deviceset="C-US-1206" device="" value="22uF"/>
 <part name="U$16" library="MinotaurParts" deviceset="R-US" device="&quot;" value="100k"/>
-<part name="R1_5" library="MinotaurParts" deviceset="R-US" device="&quot;"/>
-<part name="R2_5" library="MinotaurParts" deviceset="R-US" device="&quot;"/>
+<part name="R1_5" library="MinotaurParts" deviceset="R-US" device="&quot;" value="105k"/>
+<part name="R2_5" library="MinotaurParts" deviceset="R-US" device="&quot;" value="20k"/>
 <part name="U$26" library="MinotaurParts" deviceset="LM25085" device=""/>
 <part name="CIN12" library="MinotaurParts" deviceset="C-US-1210" device="" value="10uF"/>
 <part name="RT12" library="MinotaurParts" deviceset="R-US" device="&quot;" value="110k"/>
-<part name="CVCC12" library="MinotaurParts" deviceset="C-US-1206" device="" value="740nF"/>
+<part name="CVCC12" library="MinotaurParts" deviceset="C-US-1206" device="" value="470nF"/>
 <part name="RAJ12" library="MinotaurParts" deviceset="R-US" device="&quot;" value="2.55k"/>
 <part name="CADJ12" library="MinotaurParts" deviceset="C-US-1206" device="" value="1.0nF"/>
 <part name="RSNS12" library="MinotaurParts" deviceset="R-US" device="&quot;" value="0.020"/>
@@ -6327,12 +6335,11 @@ Source: www.kingbright.com</description>
 <part name="U$43" library="MinotaurParts" deviceset="C-US-1206" device="" value="0.1uF"/>
 <part name="U$44" library="MinotaurParts" deviceset="C-US-1206" device="" value="0.1uF"/>
 <part name="SUPPLY46" library="supply2" deviceset="GND" device=""/>
-<part name="SUPPLY47" library="supply2" deviceset="GND" device=""/>
-<part name="U$45" library="MinotaurParts" deviceset="C-US-1206" device="" value="10uF"/>
-<part name="U$46" library="MinotaurParts" deviceset="C-US-1206" device="" value="10uF"/>
-<part name="U$47" library="MinotaurParts" deviceset="C-US-1206" device="" value="10uF"/>
-<part name="U$48" library="MinotaurParts" deviceset="C-US-1206" device="" value="10uF"/>
-<part name="U$49" library="MinotaurParts" deviceset="C-US-1206" device="" value="10uF"/>
+<part name="U$45" library="MinotaurParts" deviceset="C-US-1206" device="" value="0.1uF"/>
+<part name="U$46" library="MinotaurParts" deviceset="C-US-1206" device="" value="0.1uF"/>
+<part name="U$47" library="MinotaurParts" deviceset="C-US-1206" device="" value="0.1uF"/>
+<part name="U$48" library="MinotaurParts" deviceset="C-US-1206" device="" value="0.1uF"/>
+<part name="U$49" library="MinotaurParts" deviceset="C-US-1206" device="" value="0.1uF"/>
 <part name="SUPPLY48" library="supply2" deviceset="GND" device=""/>
 <part name="J2" library="SparkFun-Connectors" deviceset="POWER_JACK" device="PTH" value="POWER_JACK_12VOUT"/>
 <part name="SUPPLY49" library="supply2" deviceset="GND" device=""/>
@@ -6383,6 +6390,12 @@ Source: www.kingbright.com</description>
 <part name="SUPPLY66" library="supply2" deviceset="GND" device=""/>
 <part name="SUPPLY67" library="supply2" deviceset="GND" device=""/>
 <part name="SUPPLY68" library="supply2" deviceset="+5V" device=""/>
+<part name="J4" library="SparkFun-Connectors" deviceset="POWER_JACK" device="PTH" value="POWER_JACK_BAT"/>
+<part name="+3V9" library="supply1" deviceset="+3V3" device=""/>
+<part name="SUPPLY69" library="supply2" deviceset="GND" device=""/>
+<part name="U$5" library="MinotaurParts" deviceset="C-US-1206" device="" value="0.1uF"/>
+<part name="SUPPLY70" library="supply2" deviceset="GND" device=""/>
+<part name="SUPPLY71" library="supply2" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -6441,7 +6454,7 @@ Source: www.kingbright.com</description>
 <instance part="U$37" gate="G$1" x="-200.66" y="-132.08" rot="R90"/>
 <instance part="COUT12" gate="G$1" x="-175.26" y="-124.46"/>
 <instance part="U$39" gate="G$1" x="292.1" y="20.32"/>
-<instance part="SUPPLY2" gate="G$1" x="256.54" y="93.98"/>
+<instance part="SUPPLY2" gate="G$1" x="236.22" y="91.44"/>
 <instance part="SUPPLY3" gate="G$1" x="-157.48" y="88.9"/>
 <instance part="SUPPLY4" gate="+5V" x="-205.74" y="2.54"/>
 <instance part="SUPPLY6" gate="+5V" x="-81.28" y="-88.9"/>
@@ -6479,7 +6492,7 @@ Source: www.kingbright.com</description>
 <instance part="SUPPLY35" gate="GND" x="-137.16" y="55.88"/>
 <instance part="SUPPLY36" gate="GND" x="-213.36" y="30.48"/>
 <instance part="SW_1" gate="G$1" x="-198.12" y="33.02"/>
-<instance part="SUPPLY37" gate="GND" x="-337.82" y="27.94"/>
+<instance part="SUPPLY37" gate="GND" x="-337.82" y="29.21"/>
 <instance part="U$22" gate="G$1" x="-312.42" y="50.8" rot="R90"/>
 <instance part="X1" gate="-1" x="180.34" y="-73.66" rot="R180"/>
 <instance part="X1" gate="-2" x="180.34" y="-71.12" rot="R180"/>
@@ -6513,7 +6526,6 @@ Source: www.kingbright.com</description>
 <instance part="U$43" gate="G$1" x="218.44" y="66.04"/>
 <instance part="U$44" gate="G$1" x="205.74" y="66.04"/>
 <instance part="SUPPLY46" gate="GND" x="213.36" y="58.42"/>
-<instance part="SUPPLY47" gate="GND" x="327.66" y="35.56"/>
 <instance part="U$45" gate="G$1" x="-132.08" y="-83.82"/>
 <instance part="U$46" gate="G$1" x="-142.24" y="-83.82"/>
 <instance part="U$47" gate="G$1" x="-152.4" y="-83.82"/>
@@ -6569,6 +6581,12 @@ Source: www.kingbright.com</description>
 <instance part="SUPPLY66" gate="GND" x="264.16" y="-66.04"/>
 <instance part="SUPPLY67" gate="GND" x="264.16" y="-81.28"/>
 <instance part="SUPPLY68" gate="+5V" x="252.73" y="-66.04"/>
+<instance part="J4" gate="G$1" x="-436.88" y="1.27"/>
+<instance part="+3V9" gate="G$1" x="-422.91" y="17.78"/>
+<instance part="SUPPLY69" gate="GND" x="-425.45" y="-2.54"/>
+<instance part="U$5" gate="G$1" x="236.22" y="86.36"/>
+<instance part="SUPPLY70" gate="GND" x="236.22" y="78.74"/>
+<instance part="SUPPLY71" gate="GND" x="327.66" y="13.97"/>
 </instances>
 <busses>
 </busses>
@@ -6988,14 +7006,6 @@ Source: www.kingbright.com</description>
 <junction x="-175.26" y="86.36"/>
 </segment>
 <segment>
-<pinref part="U$2" gate="G$1" pin="VS"/>
-<wire x1="279.4" y1="86.36" x2="256.54" y2="86.36" width="0.1524" layer="91"/>
-<wire x1="256.54" y1="86.36" x2="256.54" y2="91.44" width="0.1524" layer="91"/>
-<pinref part="SUPPLY2" gate="G$1" pin="+7V"/>
-<junction x="279.4" y="86.36"/>
-<junction x="256.54" y="91.44"/>
-</segment>
-<segment>
 <pinref part="D4" gate="G$1" pin="C"/>
 <pinref part="SUPPLY53" gate="G$1" pin="+7V"/>
 <junction x="345.44" y="114.3"/>
@@ -7014,6 +7024,16 @@ Source: www.kingbright.com</description>
 <pinref part="D7" gate="G$1" pin="C"/>
 <pinref part="SUPPLY58" gate="G$1" pin="+7V"/>
 <junction x="261.62" y="127"/>
+</segment>
+<segment>
+<pinref part="U$2" gate="G$1" pin="VS"/>
+<wire x1="279.4" y1="86.36" x2="246.38" y2="86.36" width="0.1524" layer="91"/>
+<junction x="279.4" y="86.36"/>
+<wire x1="246.38" y1="86.36" x2="246.38" y2="88.9" width="0.1524" layer="91"/>
+<pinref part="U$5" gate="G$1" pin="1"/>
+<wire x1="246.38" y1="88.9" x2="236.22" y2="88.9" width="0.1524" layer="91"/>
+<pinref part="SUPPLY2" gate="G$1" pin="+7V"/>
+<junction x="236.22" y="88.9"/>
 </segment>
 </net>
 <net name="+5V" class="0">
@@ -7452,13 +7472,6 @@ Source: www.kingbright.com</description>
 <junction x="218.44" y="60.96"/>
 </segment>
 <segment>
-<wire x1="332.74" y1="30.48" x2="332.74" y2="38.1" width="0.1524" layer="91"/>
-<wire x1="332.74" y1="38.1" x2="327.66" y2="38.1" width="0.1524" layer="91"/>
-<pinref part="SUPPLY47" gate="GND" pin="GND"/>
-<pinref part="X4" gate="G$1" pin="1"/>
-<junction x="332.74" y="30.48"/>
-</segment>
-<segment>
 <pinref part="U$45" gate="G$1" pin="2"/>
 <pinref part="U$49" gate="G$1" pin="2"/>
 <wire x1="-132.08" y1="-88.9" x2="-142.24" y2="-88.9" width="0.1524" layer="91"/>
@@ -7568,6 +7581,38 @@ Source: www.kingbright.com</description>
 <pinref part="SUPPLY67" gate="GND" pin="GND"/>
 <junction x="274.32" y="-76.2"/>
 <junction x="264.16" y="-78.74"/>
+</segment>
+<segment>
+<pinref part="J4" gate="G$1" pin="GNDBREAK"/>
+<wire x1="-434.34" y1="6.35" x2="-425.45" y2="6.35" width="0.1524" layer="91"/>
+<wire x1="-425.45" y1="6.35" x2="-425.45" y2="3.81" width="0.1524" layer="91"/>
+<pinref part="J4" gate="G$1" pin="GND"/>
+<wire x1="-425.45" y1="3.81" x2="-425.45" y2="0" width="0.1524" layer="91"/>
+<wire x1="-434.34" y1="3.81" x2="-425.45" y2="3.81" width="0.1524" layer="91"/>
+<junction x="-434.34" y="6.35"/>
+<junction x="-434.34" y="3.81"/>
+<pinref part="SUPPLY69" gate="GND" pin="GND"/>
+</segment>
+<segment>
+<wire x1="-340.36" y1="40.64" x2="-337.82" y2="40.64" width="0.1524" layer="91"/>
+<wire x1="-337.82" y1="40.64" x2="-337.82" y2="31.75" width="0.1524" layer="91"/>
+<pinref part="J3" gate="G$1" pin="3"/>
+<junction x="-340.36" y="40.64"/>
+<pinref part="SUPPLY37" gate="GND" pin="GND"/>
+<wire x1="-337.82" y1="31.75" x2="-337.82" y2="30.48" width="0.1524" layer="91"/>
+<junction x="-337.82" y="31.75"/>
+</segment>
+<segment>
+<pinref part="U$5" gate="G$1" pin="2"/>
+<pinref part="SUPPLY70" gate="GND" pin="GND"/>
+<junction x="236.22" y="81.28"/>
+</segment>
+<segment>
+<pinref part="X4" gate="G$1" pin="5"/>
+<wire x1="332.74" y1="20.32" x2="327.66" y2="20.32" width="0.1524" layer="91"/>
+<wire x1="327.66" y1="20.32" x2="327.66" y2="16.51" width="0.1524" layer="91"/>
+<pinref part="SUPPLY71" gate="GND" pin="GND"/>
+<junction x="327.66" y="16.51"/>
 </segment>
 </net>
 <net name="N$16" class="0">
@@ -7711,6 +7756,13 @@ Source: www.kingbright.com</description>
 <pinref part="+3V1" gate="G$1" pin="+3V3"/>
 <junction x="83.82" y="62.23"/>
 <junction x="83.82" y="30.48"/>
+</segment>
+<segment>
+<pinref part="J4" gate="G$1" pin="PWR"/>
+<wire x1="-434.34" y1="8.89" x2="-422.91" y2="8.89" width="0.1524" layer="91"/>
+<wire x1="-422.91" y1="8.89" x2="-422.91" y2="15.24" width="0.1524" layer="91"/>
+<junction x="-434.34" y="8.89"/>
+<pinref part="+3V9" gate="G$1" pin="+3V3"/>
 </segment>
 </net>
 <net name="+12V" class="0">
@@ -8076,14 +8128,6 @@ Source: www.kingbright.com</description>
 <junction x="-309.88" y="-5.08"/>
 </segment>
 </net>
-<net name="N$86" class="0">
-<segment>
-<wire x1="-340.36" y1="40.64" x2="-337.82" y2="40.64" width="0.1524" layer="91"/>
-<wire x1="-337.82" y1="40.64" x2="-337.82" y2="30.48" width="0.1524" layer="91"/>
-<pinref part="J3" gate="G$1" pin="3"/>
-<junction x="-340.36" y="40.64"/>
-</segment>
-</net>
 <net name="N$53" class="0">
 <segment>
 <wire x1="332.74" y1="27.94" x2="330.2" y2="27.94" width="0.1524" layer="91"/>
@@ -8092,6 +8136,7 @@ Source: www.kingbright.com</description>
 <wire x1="330.2" y1="30.48" x2="312.42" y2="30.48" width="0.1524" layer="91"/>
 <pinref part="X4" gate="G$1" pin="2"/>
 <junction x="332.74" y="27.94"/>
+<junction x="312.42" y="30.48"/>
 </segment>
 </net>
 <net name="N$87" class="0">
@@ -8102,6 +8147,7 @@ Source: www.kingbright.com</description>
 <wire x1="327.66" y1="27.94" x2="312.42" y2="27.94" width="0.1524" layer="91"/>
 <pinref part="X4" gate="G$1" pin="3"/>
 <junction x="332.74" y="25.4"/>
+<junction x="312.42" y="27.94"/>
 </segment>
 </net>
 <net name="N$6" class="0">
@@ -8577,6 +8623,39 @@ Source: www.kingbright.com</description>
 <wire x1="123.19" y1="-3.81" x2="123.19" y2="-2.54" width="0.1524" layer="91"/>
 <junction x="123.19" y="-2.54"/>
 <junction x="274.32" y="-55.88"/>
+</segment>
+</net>
+<net name="N$13" class="0">
+<segment>
+<pinref part="U$39" gate="G$1" pin="V-2"/>
+<wire x1="279.4" y1="10.16" x2="276.86" y2="10.16" width="0.1524" layer="91"/>
+<wire x1="276.86" y1="10.16" x2="276.86" y2="7.62" width="0.1524" layer="91"/>
+<pinref part="U$39" gate="G$1" pin="V-"/>
+<wire x1="276.86" y1="7.62" x2="279.4" y2="7.62" width="0.1524" layer="91"/>
+<junction x="279.4" y="10.16"/>
+<junction x="279.4" y="7.62"/>
+</segment>
+</net>
+<net name="N$62" class="0">
+<segment>
+<pinref part="U$39" gate="G$1" pin="C2-"/>
+<wire x1="312.42" y1="20.32" x2="316.23" y2="20.32" width="0.1524" layer="91"/>
+<wire x1="316.23" y1="20.32" x2="316.23" y2="17.78" width="0.1524" layer="91"/>
+<pinref part="U$39" gate="G$1" pin="CS-"/>
+<wire x1="316.23" y1="17.78" x2="312.42" y2="17.78" width="0.1524" layer="91"/>
+<junction x="312.42" y="17.78"/>
+<junction x="312.42" y="20.32"/>
+</segment>
+</net>
+<net name="N$72" class="0">
+<segment>
+<pinref part="U$39" gate="G$1" pin="C2+"/>
+<wire x1="312.42" y1="15.24" x2="316.23" y2="15.24" width="0.1524" layer="91"/>
+<wire x1="316.23" y1="15.24" x2="316.23" y2="12.7" width="0.1524" layer="91"/>
+<pinref part="U$39" gate="G$1" pin="C2+2"/>
+<wire x1="316.23" y1="12.7" x2="312.42" y2="12.7" width="0.1524" layer="91"/>
+<junction x="312.42" y="12.7"/>
+<junction x="312.42" y="15.24"/>
 </segment>
 </net>
 </nets>
