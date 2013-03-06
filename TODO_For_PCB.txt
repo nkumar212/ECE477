@@ -11,7 +11,7 @@
 
 
 
-- Verify resistor values for power supplies
+# Verify resistor values for power supplies
 
 
 # = DONE

@@ -124,7 +124,7 @@
 <text x="10.8712" y="0.7112" size="1.778" layer="21">left motor</text>
 <text x="32.6136" y="0.8636" size="1.778" layer="21">right motor</text>
 <text x="2.1336" y="49.784" size="2.54" layer="21" rot="R270">Team 16: Project Minotaur</text>
-<text x="23.3172" y="49.4284" size="1.9304" layer="21" rot="R180">TOP</text>
+<text x="48.8442" y="36.9062" size="1.9304" layer="21" rot="R180">TOP</text>
 <text x="7.5692" y="8.9916" size="1.27" layer="21" rot="R90">Scott Stack, Neil Kumar, Jon Roose, John Hubberts</text>
 <hole x="83.82" y="121.92" drill="3.9624"/>
 <hole x="21.59" y="121.92" drill="3.9624"/>
@@ -4338,7 +4338,7 @@ design rules under a new name.</description>
 <wire x1="76.0349" y1="57.5691" x2="69.1896" y2="50.7238" width="2.54" layer="1"/>
 <wire x1="76.073" y1="58.1914" x2="76.0349" y2="58.1533" width="0.6096" layer="1"/>
 <wire x1="76.0349" y1="58.1533" x2="76.0349" y2="57.5691" width="0.6096" layer="1"/>
-<wire x1="86.868" y1="57.7342" x2="87.646" y2="57.7342" width="0" layer="19" extent="1-1"/>
+<wire x1="86.868" y1="57.7342" x2="87.646" y2="57.7342" width="0.6096" layer="1"/>
 </signal>
 <signal name="N$53">
 <contactref element="U$39" pad="T1OUT"/>

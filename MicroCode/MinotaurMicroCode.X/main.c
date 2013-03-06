@@ -45,7 +45,7 @@ void delay(void) {
 }
 
 int main(int argc, char** argv) {
-    char *toPrint = "Hello Neil";   //string of size 10
+    //char *toPrint = "Hello Neil";   //string of size 10
 
     // Setup PortA IOs as digital outputs
     TRISA = 0;
@@ -99,15 +99,18 @@ int main(int argc, char** argv) {
             
 
             OC3RS = SENSOR4 >> 2; //set dutycycle of PWM based on POT val
+            OC4RS = SENSOR4 >> 2; 
             //toPrint = intToString(SENSOR1, (toPrint+10));
             //
         }
 
+        /* TEST THE UART BY SENDING A MESSAGE WHEN TIMER INTERRUPTS
         if (PRINT == 1) {
             printString(toPrint);
             PRINT = 0;
         }
-
+        */
+        
         //If the UART module is ready to send a character, place the
         //next character in the TX buffer in the send register
         if (READY_TO_SEND == 1) {

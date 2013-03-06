@@ -124,7 +124,7 @@
 <text x="10.8712" y="0.7112" size="1.778" layer="21">left motor</text>
 <text x="32.6136" y="0.8636" size="1.778" layer="21">right motor</text>
 <text x="2.1336" y="49.784" size="2.54" layer="21" rot="R270">Team 16: Project Minotaur</text>
-<text x="23.3172" y="49.4284" size="1.9304" layer="21" rot="R180">TOP</text>
+<text x="48.8442" y="36.9062" size="1.9304" layer="21" rot="R180">TOP</text>
 <text x="7.5692" y="8.9916" size="1.27" layer="21" rot="R90">Scott Stack, Neil Kumar, Jon Roose, John Hubberts</text>
 <hole x="83.82" y="121.92" drill="3.9624"/>
 <hole x="21.59" y="121.92" drill="3.9624"/>
@@ -152,6 +152,10 @@
 <text x="39.7764" y="63.5508" size="1.016" layer="21" rot="R180">48</text>
 <text x="46.3804" y="64.1604" size="1.016" layer="21">49</text>
 <text x="39.7764" y="81.6356" size="1.016" layer="21">64</text>
+<text x="30.5054" y="0.762" size="1.016" layer="21">+</text>
+<text x="25.4" y="0.8382" size="1.016" layer="21">+</text>
+<text x="23.0124" y="0.889" size="1.016" layer="21">-</text>
+<text x="28.1432" y="0.889" size="1.016" layer="21">-</text>
 </plain>
 <libraries>
 <library name="MinotaurParts">
