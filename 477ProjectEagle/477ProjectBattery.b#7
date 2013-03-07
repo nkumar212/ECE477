@@ -515,6 +515,7 @@ design rules under a new name.</description>
 <element name="3.3OUT" library="SparkFun-Connectors" package="POWER_JACK_PTH" value="POWER_JACKPTH" x="22.6822" y="0.0508"/>
 <element name="UNREG_OUT" library="SparkFun-Connectors" package="POWER_JACK_PTH" value="POWER_JACKPTH" x="10.3378" y="0.0508"/>
 <element name="BAT_IN" library="SparkFun-Connectors" package="POWER_JACK_PTH" value="POWER_JACKPTH" x="35.7378" y="0.0254"/>
+<element name="U$2" library="MinotaurParts" package="C1206" value="1uF" x="2.54" y="-3.0988"/>
 </elements>
 <signals>
 <signal name="N$36">
@@ -649,6 +650,8 @@ design rules under a new name.</description>
 <wire x1="38.6148" y1="28.086" x2="38.7148" y2="27.986" width="0.254" layer="1"/>
 <contactref element="BAT_IN" pad="GNDBREAK"/>
 <contactref element="BAT_IN" pad="GND"/>
+<contactref element="U$2" pad="2"/>
+<wire x1="35.7378" y1="7.7254" x2="3.94" y2="-3.0988" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="+3V3">
 <contactref element="R3" pad="1"/>
@@ -993,6 +996,11 @@ design rules under a new name.</description>
 <contactref element="UNREG_OUT" pad="GNDBREAK"/>
 <wire x1="15.0378" y1="10.7508" x2="16.4328" y2="13.1618" width="2.54" layer="1"/>
 <wire x1="16.4328" y1="13.1618" x2="16.4328" y2="17.272" width="2.54" layer="1"/>
+</signal>
+<signal name="N$7">
+<contactref element="U$1" pad="7"/>
+<contactref element="U$2" pad="1"/>
+<wire x1="1.14" y1="-3.0988" x2="32.6048" y2="28.046" width="0" layer="19" extent="1-1"/>
 </signal>
 </signals>
 </board>

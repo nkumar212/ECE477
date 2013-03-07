@@ -607,11 +607,13 @@ Basic SMA packaged diode. Good for reverse polarization protection. Common part 
 <wire x1="2.3" y1="-1" x2="2.3" y2="-1.45" width="0.2032" layer="21"/>
 <wire x1="2.3" y1="-1.45" x2="-2.3" y2="-1.45" width="0.2032" layer="21"/>
 <wire x1="-2.3" y1="-1.45" x2="-2.3" y2="-1" width="0.2032" layer="21"/>
-<wire x1="0.5" y1="1" x2="0.5" y2="-1" width="0.2032" layer="21"/>
 <smd name="-" x="-2" y="0" dx="2.5" dy="1.7" layer="1" rot="R180"/>
 <smd name="+" x="2" y="0" dx="2.5" dy="1.7" layer="1"/>
 <text x="-2.286" y="1.651" size="0.8128" layer="25">&gt;NAME</text>
 <text x="-2.246" y="-2.349" size="0.8128" layer="27">&gt;VALUE</text>
+<wire x1="1.4" y1="1.39" x2="1.4" y2="0.88" width="0.127" layer="21"/>
+<wire x1="1.42" y1="-0.86" x2="1.43" y2="-0.86" width="0.127" layer="21"/>
+<wire x1="1.43" y1="-0.86" x2="1.43" y2="-1.46" width="0.127" layer="21"/>
 </package>
 <package name="MSOP-8">
 <smd name="1" x="-0.975" y="-2.4" dx="1.02" dy="0.41" layer="1" rot="R270"/>
@@ -6247,12 +6249,12 @@ Source: www.kingbright.com</description>
 <part name="CIN5" library="MinotaurParts" deviceset="C-US-1206" device="" value="10uF"/>
 <part name="COUT5" library="MinotaurParts" deviceset="C-US-1206" device="" value="22uF"/>
 <part name="U$16" library="MinotaurParts" deviceset="R-US" device="&quot;" value="100k"/>
-<part name="R1_5" library="MinotaurParts" deviceset="R-US" device="&quot;"/>
-<part name="R2_5" library="MinotaurParts" deviceset="R-US" device="&quot;"/>
+<part name="R1_5" library="MinotaurParts" deviceset="R-US" device="&quot;" value="105k"/>
+<part name="R2_5" library="MinotaurParts" deviceset="R-US" device="&quot;" value="20k"/>
 <part name="U$26" library="MinotaurParts" deviceset="LM25085" device=""/>
 <part name="CIN12" library="MinotaurParts" deviceset="C-US-1210" device="" value="10uF"/>
 <part name="RT12" library="MinotaurParts" deviceset="R-US" device="&quot;" value="110k"/>
-<part name="CVCC12" library="MinotaurParts" deviceset="C-US-1206" device="" value="740nF"/>
+<part name="CVCC12" library="MinotaurParts" deviceset="C-US-1206" device="" value="470nF"/>
 <part name="RAJ12" library="MinotaurParts" deviceset="R-US" device="&quot;" value="2.55k"/>
 <part name="CADJ12" library="MinotaurParts" deviceset="C-US-1206" device="" value="1.0nF"/>
 <part name="RSNS12" library="MinotaurParts" deviceset="R-US" device="&quot;" value="0.020"/>

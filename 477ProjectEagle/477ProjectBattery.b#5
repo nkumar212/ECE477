@@ -497,8 +497,8 @@ design rules under a new name.</description>
 <element name="R2" library="MinotaurParts" package="R1206" value="120k" x="17.8548" y="21.74" rot="R180"/>
 <element name="U$1" library="MinotaurParts" package="SSOP-14" value="BQ34Z100" x="35.4048" y="29.996" rot="R270"/>
 <element name="L1" library="MinotaurParts" package="SDR0403" value="2.2uH" x="25.0208" y="28.806" rot="R180"/>
-<element name="U$3" library="MinotaurParts" package="R1206" value="16k" x="26.7548" y="45.6056" rot="R180"/>
-<element name="U$4" library="MinotaurParts" package="R1206" value="240k" x="14.1748" y="41.596" rot="R180"/>
+<element name="U$3" library="MinotaurParts" package="R1206" value="16.5k" x="26.7548" y="45.6056" rot="R180"/>
+<element name="U$4" library="MinotaurParts" package="R1206" value="255k" x="14.1748" y="41.596" rot="R180"/>
 <element name="U$5" library="MinotaurParts" package="C1206" value="0.1uF" x="37.2948" y="36.4456"/>
 <element name="U$6" library="MinotaurParts" package="R1206" value="100" x="30.3876" y="42.0056" rot="R180"/>
 <element name="U$7" library="MinotaurParts" package="R1206" value="100" x="17.9148" y="39.1952"/>

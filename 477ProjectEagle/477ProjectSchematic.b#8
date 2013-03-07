@@ -123,7 +123,7 @@
 <wire x1="0" y1="127" x2="0" y2="0" width="0" layer="20"/>
 <text x="10.8712" y="0.7112" size="1.778" layer="21">left motor</text>
 <text x="32.6136" y="0.8636" size="1.778" layer="21">right motor</text>
-<text x="2.1336" y="49.784" size="2.54" layer="21" rot="R270">Team 16: Project Minotaur</text>
+<text x="2.4638" y="45.0342" size="1.9304" layer="21" rot="R270">Team 16: Project Minotaur</text>
 <text x="48.8442" y="36.9062" size="1.9304" layer="21" rot="R180">TOP</text>
 <text x="7.5692" y="8.9916" size="1.27" layer="21" rot="R90">Scott Stack, Neil Kumar, Jon Roose, John Hubberts</text>
 <hole x="83.82" y="121.92" drill="3.9624"/>
@@ -151,11 +151,13 @@
 <text x="21.9456" y="56.896" size="1.016" layer="21" rot="R180">33</text>
 <text x="39.7764" y="63.5508" size="1.016" layer="21" rot="R180">48</text>
 <text x="46.3804" y="64.1604" size="1.016" layer="21">49</text>
-<text x="39.7764" y="81.6356" size="1.016" layer="21">64</text>
+<text x="39.5224" y="81.7118" size="1.016" layer="21">64</text>
 <text x="30.5054" y="0.762" size="1.016" layer="21">+</text>
 <text x="25.4" y="0.8382" size="1.016" layer="21">+</text>
 <text x="23.0124" y="0.889" size="1.016" layer="21">-</text>
 <text x="28.1432" y="0.889" size="1.016" layer="21">-</text>
+<text x="11.2522" y="27.178" size="1.778" layer="21" rot="R90">PCB 1 of 2</text>
+<text x="46.0756" y="112.4712" size="1.778" layer="20" rot="R90">RESET</text>
 </plain>
 <libraries>
 <library name="MinotaurParts">
@@ -3345,12 +3347,11 @@ design rules under a new name.</description>
 <vertex x="73.5584" y="10.3632"/>
 <vertex x="73.5584" y="7.7216"/>
 <vertex x="68.4784" y="7.7216"/>
-<vertex x="64.6176" y="2.4384"/>
-<vertex x="50.5968" y="2.4384"/>
-<vertex x="50.5968" y="5.7912"/>
-<vertex x="58.2168" y="5.7912"/>
-<vertex x="58.8264" y="5.1816"/>
-<vertex x="61.5696" y="5.1816"/>
+<vertex x="64.516" y="1.651"/>
+<vertex x="50.5206" y="1.5494"/>
+<vertex x="50.6222" y="5.08"/>
+<vertex x="58.801" y="5.08"/>
+<vertex x="61.5696" y="5.1054"/>
 <vertex x="64.3128" y="7.9248"/>
 <vertex x="66.8528" y="7.9248"/>
 <vertex x="66.9036" y="10.4648"/>
@@ -3464,15 +3465,12 @@ design rules under a new name.</description>
 <vertex x="21.9456" y="14.5288"/>
 <vertex x="24.9936" y="14.4272"/>
 <vertex x="24.9936" y="13.4112"/>
-<vertex x="25.1968" y="13.4112"/>
 <vertex x="28.0416" y="13.4112"/>
 <vertex x="28.0416" y="14.4272"/>
 <vertex x="28.8036" y="14.4272"/>
 <vertex x="32.7152" y="14.478"/>
-<vertex x="41.656" y="4.7244"/>
-<vertex x="43.8912" y="4.6736"/>
-<vertex x="45.1104" y="3.4544"/>
-<vertex x="49.5808" y="3.4544"/>
+<vertex x="44.0944" y="1.5748"/>
+<vertex x="49.657" y="1.524"/>
 </polygon>
 <wire x1="5.2832" y1="114.6048" x2="5.2324" y2="114.554" width="0.3048" layer="1"/>
 <wire x1="2.1336" y1="85.0392" x2="2.1336" y2="89.6112" width="1.778" layer="16"/>

@@ -651,7 +651,11 @@ design rules under a new name.</description>
 <contactref element="BAT_IN" pad="GNDBREAK"/>
 <contactref element="BAT_IN" pad="GND"/>
 <contactref element="U$2" pad="2"/>
-<wire x1="35.7378" y1="7.7254" x2="3.94" y2="-3.0988" width="0" layer="19" extent="1-1"/>
+<contactref element="U$1" pad="1"/>
+<contactref element="U$1" pad="3"/>
+<wire x1="32.6048" y1="30.646" x2="32.6048" y2="31.946" width="0" layer="19" extent="1-1"/>
+<wire x1="38.2048" y1="28.046" x2="32.6048" y2="30.646" width="0" layer="19" extent="1-1"/>
+<wire x1="3.94" y1="-3.0988" x2="35.7378" y2="7.7254" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="+3V3">
 <contactref element="R3" pad="1"/>

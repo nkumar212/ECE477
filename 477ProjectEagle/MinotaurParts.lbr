@@ -835,16 +835,16 @@ Source: http://focus.ti.com/lit/ds/symlink/tlc27l2.pdf</description>
 <rectangle x1="-0.1999" y1="-0.4001" x2="0.1999" y2="0.4001" layer="35"/>
 </package>
 <package name="SLF10165">
-<smd name="2" x="0" y="-4.65" dx="3.2" dy="3.5" layer="1" rot="R180"/>
-<smd name="1" x="0" y="4.65" dx="3.2" dy="3.5" layer="1" rot="R180"/>
-<wire x1="-1.6" y1="5.1" x2="-4.1" y2="5.1" width="0.127" layer="21"/>
-<wire x1="-5" y1="4.2" x2="-5" y2="-5.2" width="0.127" layer="21"/>
-<wire x1="-5" y1="-5.2" x2="-1.7" y2="-5.2" width="0.127" layer="21"/>
-<wire x1="1.6" y1="5.1" x2="5" y2="5.1" width="0.127" layer="21"/>
-<wire x1="5" y1="5.1" x2="5" y2="-5.2" width="0.127" layer="21"/>
-<wire x1="5" y1="-5.2" x2="1.6" y2="-5.2" width="0.127" layer="21"/>
-<wire x1="-4.1" y1="5.1" x2="-4.1" y2="4.2" width="0.127" layer="21"/>
-<wire x1="-4.1" y1="4.2" x2="-5" y2="4.2" width="0.127" layer="21"/>
+<smd name="2" x="0" y="-5.15" dx="3.3" dy="2" layer="1" rot="R180"/>
+<smd name="1" x="0" y="5.15" dx="3.3" dy="2" layer="1"/>
+<wire x1="-1.6" y1="5.05" x2="-4.1" y2="5.05" width="0.127" layer="21"/>
+<wire x1="-5.05" y1="3.8" x2="-5.05" y2="-5.05" width="0.127" layer="21"/>
+<wire x1="-5.05" y1="-5.05" x2="-1.7" y2="-5.05" width="0.127" layer="21"/>
+<wire x1="1.6" y1="5.05" x2="5.05" y2="5.05" width="0.127" layer="21"/>
+<wire x1="5.05" y1="5.05" x2="5.05" y2="-5.05" width="0.127" layer="21"/>
+<wire x1="5.05" y1="-5.05" x2="1.4" y2="-5.05" width="0.127" layer="21"/>
+<wire x1="-4.1" y1="5.05" x2="-4.1" y2="3.8" width="0.127" layer="21"/>
+<wire x1="-4.1" y1="3.8" x2="-5.05" y2="3.8" width="0.127" layer="21"/>
 <text x="-5.4" y="-3.1" size="1.27" layer="21" rot="R90">&gt;NAME</text>
 <text x="6.7" y="-3.2" size="1.27" layer="27" rot="R90">&gt;VALUE</text>
 </package>
@@ -907,7 +907,7 @@ KEMET V / EIA 7343-20, KEMET X / EIA 7343-43 Wafe solder</description>
 </package>
 <package name="WSL2816">
 <description>Current Sensing resistor .012 ohms with a 2W rating</description>
-<smd name="1" x="0" y="2.825" dx="4.7" dy="2.45" layer="1"/>
+<smd name="1" x="0" y="2.875" dx="4.7" dy="2.5" layer="1"/>
 <smd name="2" x="0" y="-2.825" dx="4.7" dy="2.45" layer="1"/>
 <wire x1="2.1" y1="-1.6" x2="2.1" y2="1.6" width="0.127" layer="21"/>
 <wire x1="-2.1" y1="-1.6" x2="-2.1" y2="1.6" width="0.127" layer="21"/>

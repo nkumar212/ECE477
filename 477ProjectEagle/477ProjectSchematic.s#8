@@ -6333,7 +6333,6 @@ Source: www.kingbright.com</description>
 <part name="U$43" library="MinotaurParts" deviceset="C-US-1206" device="" value="0.1uF"/>
 <part name="U$44" library="MinotaurParts" deviceset="C-US-1206" device="" value="0.1uF"/>
 <part name="SUPPLY46" library="supply2" deviceset="GND" device=""/>
-<part name="SUPPLY47" library="supply2" deviceset="GND" device=""/>
 <part name="U$45" library="MinotaurParts" deviceset="C-US-1206" device="" value="0.1uF"/>
 <part name="U$46" library="MinotaurParts" deviceset="C-US-1206" device="" value="0.1uF"/>
 <part name="U$47" library="MinotaurParts" deviceset="C-US-1206" device="" value="0.1uF"/>
@@ -6525,7 +6524,6 @@ Source: www.kingbright.com</description>
 <instance part="U$43" gate="G$1" x="218.44" y="66.04"/>
 <instance part="U$44" gate="G$1" x="205.74" y="66.04"/>
 <instance part="SUPPLY46" gate="GND" x="213.36" y="58.42"/>
-<instance part="SUPPLY47" gate="GND" x="327.66" y="35.56"/>
 <instance part="U$45" gate="G$1" x="-132.08" y="-83.82"/>
 <instance part="U$46" gate="G$1" x="-142.24" y="-83.82"/>
 <instance part="U$47" gate="G$1" x="-152.4" y="-83.82"/>
@@ -7470,13 +7468,6 @@ Source: www.kingbright.com</description>
 <junction x="213.36" y="60.96"/>
 <junction x="205.74" y="60.96"/>
 <junction x="218.44" y="60.96"/>
-</segment>
-<segment>
-<wire x1="332.74" y1="30.48" x2="332.74" y2="38.1" width="0.1524" layer="91"/>
-<wire x1="332.74" y1="38.1" x2="327.66" y2="38.1" width="0.1524" layer="91"/>
-<pinref part="SUPPLY47" gate="GND" pin="GND"/>
-<pinref part="X4" gate="G$1" pin="1"/>
-<junction x="332.74" y="30.48"/>
 </segment>
 <segment>
 <pinref part="U$45" gate="G$1" pin="2"/>
