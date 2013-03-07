@@ -6,7 +6,7 @@
 <setting alwaysvectorfont="no"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="0.1" unitdist="mm" unit="mm" style="lines" multiple="1" display="yes" altdistance="0.025" altunitdist="inch" altunit="inch"/>
+<grid distance="0.01" unitdist="mm" unit="mm" style="lines" multiple="1" display="yes" altdistance="0.025" altunitdist="inch" altunit="inch"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
 <layer number="2" name="Route2" color="1" fill="3" visible="no" active="no"/>
@@ -729,11 +729,13 @@ Basic SMA packaged diode. Good for reverse polarization protection. Common part 
 <wire x1="2.3" y1="-1" x2="2.3" y2="-1.45" width="0.2032" layer="21"/>
 <wire x1="2.3" y1="-1.45" x2="-2.3" y2="-1.45" width="0.2032" layer="21"/>
 <wire x1="-2.3" y1="-1.45" x2="-2.3" y2="-1" width="0.2032" layer="21"/>
-<wire x1="0.5" y1="1" x2="0.5" y2="-1" width="0.2032" layer="21"/>
 <smd name="-" x="-2" y="0" dx="2.5" dy="1.7" layer="1" rot="R180"/>
 <smd name="+" x="2" y="0" dx="2.5" dy="1.7" layer="1"/>
 <text x="-2.286" y="1.651" size="0.8128" layer="25">&gt;NAME</text>
 <text x="-2.246" y="-2.349" size="0.8128" layer="27">&gt;VALUE</text>
+<wire x1="1.4" y1="1.39" x2="1.4" y2="0.88" width="0.127" layer="21"/>
+<wire x1="1.42" y1="-0.86" x2="1.43" y2="-0.86" width="0.127" layer="21"/>
+<wire x1="1.43" y1="-0.86" x2="1.43" y2="-1.46" width="0.127" layer="21"/>
 </package>
 <package name="SOD-523">
 <smd name="C" x="0.55" y="0" dx="0.8" dy="0.6" layer="1"/>
@@ -1086,12 +1088,12 @@ Source: http://www.kingtronics.com/SMD_M7/M7_SMD_4007.pdf</description>
 <pin name="R2OUT" x="-12.7" y="2.54" length="middle"/>
 <pin name="R2IN" x="20.32" y="2.54" length="middle" rot="R180"/>
 <pin name="T2OUT" x="20.32" y="5.08" length="middle" rot="R180"/>
-<pin name="C2-" x="20.32" y="-5.08" length="middle" rot="R180"/>
-<pin name="C2+" x="20.32" y="-7.62" length="middle" rot="R180"/>
+<pin name="C2-" x="20.32" y="0" length="middle" rot="R180"/>
+<pin name="C2+" x="20.32" y="-5.08" length="middle" rot="R180"/>
 <pin name="C1-" x="20.32" y="-10.16" length="middle" rot="R180"/>
 <pin name="C1+" x="20.32" y="-12.7" length="middle" rot="R180"/>
 <pin name="V-" x="-12.7" y="-12.7" length="middle"/>
-<pin name="V+" x="-12.7" y="-10.16" length="middle"/>
+<pin name="V+" x="-12.7" y="-7.62" length="middle"/>
 <pin name="VCC" x="-12.7" y="-5.08" length="middle"/>
 <pin name="GND" x="-12.7" y="-2.54" length="middle"/>
 <pin name="T1OUT" x="20.32" y="10.16" length="middle" rot="R180"/>
@@ -1101,6 +1103,9 @@ Source: http://www.kingtronics.com/SMD_M7/M7_SMD_4007.pdf</description>
 <pin name="T2IN" x="-12.7" y="5.08" length="middle"/>
 <text x="-5.08" y="12.7" size="1.27" layer="95">&gt;NAME</text>
 <text x="-5.08" y="-17.78" size="1.27" layer="96">&gt;VALUE</text>
+<pin name="C2+2" x="20.32" y="-7.62" length="middle" rot="R180"/>
+<pin name="CS-" x="20.32" y="-2.54" length="middle" rot="R180"/>
+<pin name="V-2" x="-12.7" y="-10.16" length="middle"/>
 </symbol>
 <symbol name="BQ34Z100">
 <wire x1="-12.7" y1="-10.16" x2="-12.7" y2="10.16" width="0.254" layer="94"/>
@@ -1503,8 +1508,10 @@ Source: http://www.kingtronics.com/SMD_M7/M7_SMD_4007.pdf</description>
 <connects>
 <connect gate="G$1" pin="C1+" pad="C1+"/>
 <connect gate="G$1" pin="C1-" pad="C1-"/>
-<connect gate="G$1" pin="C2+" pad="C2+ C2+2"/>
-<connect gate="G$1" pin="C2-" pad="C2- C2-2"/>
+<connect gate="G$1" pin="C2+" pad="C2+"/>
+<connect gate="G$1" pin="C2+2" pad="C2+2"/>
+<connect gate="G$1" pin="C2-" pad="C2-"/>
+<connect gate="G$1" pin="CS-" pad="C2-2"/>
 <connect gate="G$1" pin="GND" pad="GND GND2"/>
 <connect gate="G$1" pin="R1IN" pad="R1IN"/>
 <connect gate="G$1" pin="R1OUT" pad="R1OUT"/>
@@ -1515,7 +1522,8 @@ Source: http://www.kingtronics.com/SMD_M7/M7_SMD_4007.pdf</description>
 <connect gate="G$1" pin="T2IN" pad="T2IN"/>
 <connect gate="G$1" pin="T2OUT" pad="T2OUT"/>
 <connect gate="G$1" pin="V+" pad="V+"/>
-<connect gate="G$1" pin="V-" pad="V- V-2"/>
+<connect gate="G$1" pin="V-" pad="V-"/>
+<connect gate="G$1" pin="V-2" pad="V-2"/>
 <connect gate="G$1" pin="VCC" pad="VCC"/>
 </connects>
 <technologies>
@@ -1633,7 +1641,7 @@ Source: http://www.kingtronics.com/SMD_M7/M7_SMD_4007.pdf</description>
 <connects>
 <connect gate="G$1" pin="BOOT" pad="1"/>
 <connect gate="G$1" pin="ENA" pad="5"/>
-<connect gate="G$1" pin="GND" pad="6 PAD"/>
+<connect gate="G$1" pin="GND" pad="2 6 PAD" route="any"/>
 <connect gate="G$1" pin="PH" pad="8"/>
 <connect gate="G$1" pin="VIN" pad="7"/>
 <connect gate="G$1" pin="VSENSE" pad="4"/>

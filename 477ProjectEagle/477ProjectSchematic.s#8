@@ -6394,6 +6394,7 @@ Source: www.kingbright.com</description>
 <part name="SUPPLY69" library="supply2" deviceset="GND" device=""/>
 <part name="U$5" library="MinotaurParts" deviceset="C-US-1206" device="" value="0.1uF"/>
 <part name="SUPPLY70" library="supply2" deviceset="GND" device=""/>
+<part name="SUPPLY71" library="supply2" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -6585,6 +6586,7 @@ Source: www.kingbright.com</description>
 <instance part="SUPPLY69" gate="GND" x="-425.45" y="-2.54"/>
 <instance part="U$5" gate="G$1" x="236.22" y="86.36"/>
 <instance part="SUPPLY70" gate="GND" x="236.22" y="78.74"/>
+<instance part="SUPPLY71" gate="GND" x="327.66" y="13.97"/>
 </instances>
 <busses>
 </busses>
@@ -7611,6 +7613,13 @@ Source: www.kingbright.com</description>
 <pinref part="U$5" gate="G$1" pin="2"/>
 <pinref part="SUPPLY70" gate="GND" pin="GND"/>
 <junction x="236.22" y="81.28"/>
+</segment>
+<segment>
+<pinref part="X4" gate="G$1" pin="5"/>
+<wire x1="332.74" y1="20.32" x2="327.66" y2="20.32" width="0.1524" layer="91"/>
+<wire x1="327.66" y1="20.32" x2="327.66" y2="16.51" width="0.1524" layer="91"/>
+<pinref part="SUPPLY71" gate="GND" pin="GND"/>
+<junction x="327.66" y="16.51"/>
 </segment>
 </net>
 <net name="N$16" class="0">

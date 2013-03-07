@@ -121,10 +121,10 @@
 <packages>
 <package name="C1206">
 <description>&lt;b&gt;CAPACITOR&lt;/b&gt;</description>
-<wire x1="-2.473" y1="0.983" x2="2.473" y2="0.983" width="0.0508" layer="39"/>
-<wire x1="2.473" y1="-0.983" x2="-2.473" y2="-0.983" width="0.0508" layer="39"/>
-<wire x1="-2.473" y1="-0.983" x2="-2.473" y2="0.983" width="0.0508" layer="39"/>
-<wire x1="2.473" y1="0.983" x2="2.473" y2="-0.983" width="0.0508" layer="39"/>
+<wire x1="-2.473" y1="0.983" x2="2.473" y2="0.983" width="0.0508" layer="21"/>
+<wire x1="2.473" y1="-0.983" x2="-2.473" y2="-0.983" width="0.0508" layer="21"/>
+<wire x1="-2.473" y1="-0.983" x2="-2.473" y2="0.983" width="0.0508" layer="21"/>
+<wire x1="2.473" y1="0.983" x2="2.473" y2="-0.983" width="0.0508" layer="21"/>
 <wire x1="-0.965" y1="0.787" x2="0.965" y2="0.787" width="0.1016" layer="51"/>
 <wire x1="-0.965" y1="-0.787" x2="0.965" y2="-0.787" width="0.1016" layer="51"/>
 <smd name="1" x="-1.4" y="0" dx="1.6" dy="1.8" layer="1"/>
@@ -139,10 +139,10 @@
 <description>&lt;b&gt;RESISTOR&lt;/b&gt;</description>
 <wire x1="0.9525" y1="-0.8128" x2="-0.9652" y2="-0.8128" width="0.1524" layer="51"/>
 <wire x1="0.9525" y1="0.8128" x2="-0.9652" y2="0.8128" width="0.1524" layer="51"/>
-<wire x1="-2.473" y1="0.983" x2="2.473" y2="0.983" width="0.0508" layer="39"/>
-<wire x1="2.473" y1="0.983" x2="2.473" y2="-0.983" width="0.0508" layer="39"/>
-<wire x1="2.473" y1="-0.983" x2="-2.473" y2="-0.983" width="0.0508" layer="39"/>
-<wire x1="-2.473" y1="-0.983" x2="-2.473" y2="0.983" width="0.0508" layer="39"/>
+<wire x1="-2.473" y1="0.983" x2="2.473" y2="0.983" width="0.0508" layer="21"/>
+<wire x1="2.473" y1="0.983" x2="2.473" y2="-0.983" width="0.0508" layer="21"/>
+<wire x1="2.473" y1="-0.983" x2="-2.473" y2="-0.983" width="0.0508" layer="21"/>
+<wire x1="-2.473" y1="-0.983" x2="-2.473" y2="0.983" width="0.0508" layer="21"/>
 <smd name="2" x="1.422" y="0" dx="1.6" dy="1.803" layer="1"/>
 <smd name="1" x="-1.422" y="0" dx="1.6" dy="1.803" layer="1"/>
 <text x="-1.27" y="1.27" size="0.6096" layer="25">&gt;NAME</text>
@@ -225,8 +225,8 @@
 <smd name="2" x="0" y="-2.825" dx="4.7" dy="2.45" layer="1"/>
 <wire x1="2.1" y1="-1.6" x2="2.1" y2="1.6" width="0.127" layer="21"/>
 <wire x1="-2.1" y1="-1.6" x2="-2.1" y2="1.6" width="0.127" layer="21"/>
-<text x="-0.4664" y="4.72" size="0.8128" layer="25" rot="R90">&gt;NAME</text>
-<text x="0.752" y="4.52" size="0.8128" layer="27" rot="R90">&gt;VALUE</text>
+<text x="-2.6064" y="-3.33" size="0.8128" layer="25" rot="R90">&gt;NAME</text>
+<text x="3.392" y="-0.63" size="0.8128" layer="27" rot="R90">&gt;VALUE</text>
 </package>
 </packages>
 <symbols>
@@ -826,8 +826,8 @@ Mating wall wart : TOL-00298 (and others)</description>
 <part name="U$1" library="MinotaurParts" deviceset="BQ34Z100" device=""/>
 <part name="L1" library="MinotaurParts" deviceset="SDR0403" device="" value="2.2uH"/>
 <part name="+3V2" library="supply1" deviceset="+3V3" device=""/>
-<part name="U$3" library="MinotaurParts" deviceset="R-US" device="&quot;" value="16k"/>
-<part name="U$4" library="MinotaurParts" deviceset="R-US" device="&quot;" value="240k"/>
+<part name="U$3" library="MinotaurParts" deviceset="R-US" device="&quot;" value="16.5k"/>
+<part name="U$4" library="MinotaurParts" deviceset="R-US" device="&quot;" value="255k"/>
 <part name="SUPPLY1" library="supply2" deviceset="GND" device=""/>
 <part name="SUPPLY2" library="supply2" deviceset="GND" device=""/>
 <part name="U$5" library="MinotaurParts" deviceset="C-US-1206" device="" value="0.1uF"/>
@@ -847,6 +847,8 @@ Mating wall wart : TOL-00298 (and others)</description>
 <part name="3.3OUT" library="SparkFun-Connectors" deviceset="POWER_JACK" device="PTH"/>
 <part name="UNREG_OUT" library="SparkFun-Connectors" deviceset="POWER_JACK" device="PTH"/>
 <part name="BAT_IN" library="SparkFun-Connectors" deviceset="POWER_JACK" device="PTH"/>
+<part name="U$2" library="MinotaurParts" deviceset="C-US-1206" device="" value="1uF"/>
+<part name="SUPPLY5" library="supply2" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -892,6 +894,8 @@ Mating wall wart : TOL-00298 (and others)</description>
 <instance part="3.3OUT" gate="G$1" x="43.18" y="-17.78" rot="R180"/>
 <instance part="UNREG_OUT" gate="G$1" x="43.18" y="5.08" rot="R180"/>
 <instance part="BAT_IN" gate="G$1" x="-203.2" y="17.78"/>
+<instance part="U$2" gate="G$1" x="-73.66" y="-2.54"/>
+<instance part="SUPPLY5" gate="GND" x="-83.82" y="12.7"/>
 </instances>
 <busses>
 </busses>
@@ -942,9 +946,12 @@ Mating wall wart : TOL-00298 (and others)</description>
 <pinref part="U$5" gate="G$1" pin="2"/>
 <wire x1="-43.18" y1="-7.62" x2="-63.5" y2="-7.62" width="0.1524" layer="91"/>
 <pinref part="SUPPLY2" gate="GND" pin="GND"/>
-<wire x1="-63.5" y1="-7.62" x2="-81.28" y2="-7.62" width="0.1524" layer="91"/>
+<wire x1="-63.5" y1="-7.62" x2="-73.66" y2="-7.62" width="0.1524" layer="91"/>
 <junction x="-63.5" y="-7.62"/>
 <junction x="-43.18" y="2.54"/>
+<pinref part="U$2" gate="G$1" pin="2"/>
+<wire x1="-73.66" y1="-7.62" x2="-81.28" y2="-7.62" width="0.1524" layer="91"/>
+<junction x="-73.66" y="-7.62"/>
 </segment>
 <segment>
 <pinref part="U$9" gate="G$1" pin="2"/>
@@ -955,6 +962,8 @@ Mating wall wart : TOL-00298 (and others)</description>
 <wire x1="-20.32" y1="-20.32" x2="-20.32" y2="-25.4" width="0.1524" layer="91"/>
 <pinref part="SUPPLY3" gate="GND" pin="GND"/>
 <junction x="-25.4" y="-20.32"/>
+<junction x="-25.4" y="-27.94"/>
+<junction x="-25.4" y="-15.24"/>
 </segment>
 <segment>
 <wire x1="-200.66" y1="22.86" x2="-198.12" y2="22.86" width="0.1524" layer="91"/>
@@ -976,6 +985,21 @@ Mating wall wart : TOL-00298 (and others)</description>
 <junction x="-200.66" y="22.86"/>
 <junction x="-200.66" y="20.32"/>
 <junction x="-198.12" y="22.86"/>
+<junction x="-142.24" y="-5.08"/>
+</segment>
+<segment>
+<pinref part="U$1" gate="G$1" pin="P2"/>
+<wire x1="-73.66" y1="17.78" x2="-78.74" y2="17.78" width="0.1524" layer="91"/>
+<wire x1="-78.74" y1="17.78" x2="-83.82" y2="17.78" width="0.1524" layer="91"/>
+<wire x1="-83.82" y1="17.78" x2="-83.82" y2="15.24" width="0.1524" layer="91"/>
+<pinref part="U$1" gate="G$1" pin="P1"/>
+<wire x1="-73.66" y1="12.7" x2="-78.74" y2="12.7" width="0.1524" layer="91"/>
+<wire x1="-78.74" y1="12.7" x2="-78.74" y2="17.78" width="0.1524" layer="91"/>
+<pinref part="SUPPLY5" gate="GND" pin="GND"/>
+<junction x="-78.74" y="17.78"/>
+<junction x="-73.66" y="17.78"/>
+<junction x="-73.66" y="12.7"/>
+<junction x="-83.82" y="15.24"/>
 </segment>
 </net>
 <net name="+3V3" class="0">
@@ -1003,6 +1027,7 @@ Mating wall wart : TOL-00298 (and others)</description>
 <junction x="-5.08" y="63.5"/>
 <pinref part="L1" gate="G$1" pin="2"/>
 <junction x="-43.18" y="58.42"/>
+<junction x="-5.08" y="68.58"/>
 </segment>
 <segment>
 <pinref part="U$1" gate="G$1" pin="CE"/>
@@ -1113,6 +1138,8 @@ Mating wall wart : TOL-00298 (and others)</description>
 <pinref part="U$7" gate="G$1" pin="2"/>
 <wire x1="-132.08" y1="-17.78" x2="-119.38" y2="-17.78" width="0.1524" layer="91"/>
 <junction x="-43.18" y="7.62"/>
+<junction x="-132.08" y="-17.78"/>
+<junction x="-20.32" y="-2.54"/>
 </segment>
 </net>
 <net name="N$1" class="0">
@@ -1132,6 +1159,9 @@ Mating wall wart : TOL-00298 (and others)</description>
 <pinref part="U$6" gate="G$1" pin="2"/>
 <wire x1="-114.3" y1="-5.08" x2="-132.08" y2="-5.08" width="0.1524" layer="91"/>
 <junction x="-43.18" y="5.08"/>
+<junction x="-132.08" y="-5.08"/>
+<junction x="-33.02" y="-15.24"/>
+<junction x="-27.94" y="-2.54"/>
 </segment>
 </net>
 <net name="GNDA" class="0">
@@ -1184,6 +1214,7 @@ Mating wall wart : TOL-00298 (and others)</description>
 <junction x="40.64" y="2.54"/>
 <junction x="40.64" y="0"/>
 <junction x="38.1" y="2.54"/>
+<junction x="-142.24" y="-17.78"/>
 </segment>
 <segment>
 <pinref part="3.3OUT" gate="G$1" pin="GND"/>
@@ -1196,6 +1227,15 @@ Mating wall wart : TOL-00298 (and others)</description>
 <junction x="40.64" y="-20.32"/>
 <junction x="40.64" y="-22.86"/>
 <junction x="38.1" y="-30.48"/>
+</segment>
+</net>
+<net name="N$7" class="0">
+<segment>
+<pinref part="U$1" gate="G$1" pin="REG25"/>
+<pinref part="U$2" gate="G$1" pin="1"/>
+<wire x1="-73.66" y1="0" x2="-73.66" y2="2.54" width="0.1524" layer="91"/>
+<junction x="-73.66" y="2.54"/>
+<junction x="-73.66" y="0"/>
 </segment>
 </net>
 </nets>
