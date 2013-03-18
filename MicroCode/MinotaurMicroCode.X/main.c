@@ -46,10 +46,21 @@ void delay(void) {
 
 int main(int argc, char** argv) {
     //char *toPrint = "Hello Neil";   //string of size 10
+    char motor_direction = 'F';  //dictates the direction the robot will travel
+                           //'F' - Forward
+                           //'B' - Backwards
+                           //'L' - Left
+                           //'R' - Right
+    char left_speed = 255;       //the speed of the left motor
+    char right_speed = 255;      //the speed of the right motor
 
     // Setup PortA IOs as digital outputs
     TRISA = 0;
     //AD1PCFG = 0xffff;
+
+    //setup port B as digital output
+    TRISE = 0;
+    
 
     //initialize peripherals
     initADC();
@@ -120,13 +131,43 @@ int main(int argc, char** argv) {
             }
             
         }
-
+        //If the UART module is ready to receive a character, place the char
+        //in the receive buffer for later use
         if (READY_TO_REC == 1) {
             if (BUFF_status(&RX_DATA_BUFFER) != BUFF_FULL) {
                 BUFF_push(&RX_DATA_BUFFER, U2RXREG);
                 READY_TO_REC = 0;
             }
         }
+        //take the character received from UART and use it to determine motor direction
+        if (BUFF_status(&RX_DATA_BUFFER) != BUFF_EMPTY) {
+            motor_direction = BUFF_pop(&RX_DATA_BUFFER);
+        }
+
+
+
+        //adjust the direction of the motors
+        switch(motor_direction) {
+            case 'F':
+                LATE = 0x14;
+                break;
+            case 'B':
+                LATE = 0xA;
+                break;
+            case 'L':
+                LATE = 0x12;
+                break;
+            case 'R':
+                LATE = 0xC;
+                break;
+            case 'S':
+                LATE = 0x00;
+                break;
+            default:
+                break;
+        }
+
+    
         
         //light up LEDs based on ATD value
         if(SENSOR4 > 50) {
