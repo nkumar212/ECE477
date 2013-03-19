@@ -53,7 +53,7 @@ void initTimer();
 
 //uart functions
 void initUART();
-char *intToString(int, char *);
+void prInt(int);
 void printString(char *);
 
 #ifdef	__cplusplus

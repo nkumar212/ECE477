@@ -32,15 +32,20 @@ void initUART() {
 }
 
 
-char *intToString(int num, char *end) {
-    *end = 0;
+void prInt(int num) {
+    char temp_string[64];
+    int i;
 
+    temp_string[63] = '\0';
+
+    i = 63;
     while (num != 0) {
-        *--end = '0' + (num%10);
+        temp_string[--i] = '0' + (num%10);
         num /= 10;
     }
 
-    return end;
+    printString(temp_string+i);
+    return;
 
 }
 

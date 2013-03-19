@@ -46,7 +46,7 @@ void delay(void) {
 
 int main(int argc, char** argv) {
     //char *toPrint = "Hello Neil";   //string of size 10
-    char motor_direction = 'F';  //dictates the direction the robot will travel
+    char motor_direction = ' ';  //dictates the direction the robot will travel
                            //'F' - Forward
                            //'B' - Backwards
                            //'L' - Left
@@ -54,6 +54,7 @@ int main(int argc, char** argv) {
     char left_speed = 255;       //the speed of the left motor
     char right_speed = 255;      //the speed of the right motor
 
+    char tempC;
     // Setup PortA IOs as digital outputs
     TRISA = 0;
     //AD1PCFG = 0xffff;
@@ -108,19 +109,22 @@ int main(int argc, char** argv) {
             AD1CON1bits.ASAM = 1;  //turn sampling back on
             SENSORS_READY = 0;
             
+            
 
             OC3RS = SENSOR4 >> 2; //set dutycycle of PWM based on POT val
-            OC4RS = SENSOR4 >> 2; 
+            OC4RS = SENSOR4 >> 2;
             //toPrint = intToString(SENSOR1, (toPrint+10));
             //
         }
 
-        /* TEST THE UART BY SENDING A MESSAGE WHEN TIMER INTERRUPTS
+        //TEST THE UART BY SENDING A MESSAGE WHEN TIMER INTERRUPTS
+        
         if (PRINT == 1) {
-            printString(toPrint);
+            prInt(SENSOR4);
+            printString("\n\r");
             PRINT = 0;
         }
-        */
+        
         
         //If the UART module is ready to send a character, place the
         //next character in the TX buffer in the send register
@@ -135,8 +139,10 @@ int main(int argc, char** argv) {
         //in the receive buffer for later use
         if (READY_TO_REC == 1) {
             if (BUFF_status(&RX_DATA_BUFFER) != BUFF_FULL) {
-                BUFF_push(&RX_DATA_BUFFER, U2RXREG);
+                tempC = U2RXREG;
+                BUFF_push(&RX_DATA_BUFFER, tempC);
                 READY_TO_REC = 0;
+                BUFF_push(&TX_DATA_BUFFER, tempC);
             }
         }
         //take the character received from UART and use it to determine motor direction
@@ -148,19 +154,19 @@ int main(int argc, char** argv) {
 
         //adjust the direction of the motors
         switch(motor_direction) {
-            case 'F':
+            case 'W':
                 LATE = 0x14;
                 break;
-            case 'B':
+            case 'S':
                 LATE = 0xA;
                 break;
-            case 'L':
+            case 'A':
                 LATE = 0x12;
                 break;
-            case 'R':
+            case 'D':
                 LATE = 0xC;
                 break;
-            case 'S':
+            case ' ':
                 LATE = 0x00;
                 break;
             default:
