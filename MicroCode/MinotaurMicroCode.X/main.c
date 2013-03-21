@@ -23,7 +23,11 @@ _CONFIG2( FCKSM_CSDCMD & OSCIOFNC_OFF & POSCMOD_XT & FNOSC_PRI)
 void __attribute__((__interrupt__,__auto_psv__)) _ADC1Interrupt();
 void __attribute__((__interrupt__,__auto_psv__)) _U2RXInterrupt();
 void __attribute__((__interrupt__,__auto_psv__)) _U2TXInterrupt();
-void __attribute__((__interrupt__,__auto_psv__)) _T3Interrupt();
+//void __attribute__((__interrupt__,__auto_psv__)) _T3Interrupt();
+void __attribute__((__interrupt__,__auto_psv__)) _IC1Interrupt();
+void __attribute__((__interrupt__,__auto_psv__)) _IC2Interrupt();
+void __attribute__((__interrupt__,__auto_psv__)) _IC3Interrupt();
+void __attribute__((__interrupt__,__auto_psv__)) _IC4Interrupt();
 
 
 //flags
@@ -32,11 +36,20 @@ int READY_TO_SEND = 1;    //One when there is space in the TX buffer
 int READY_TO_REC = 0;
 int PRINT = 0;
 
-char PREV_LAT = 0x00;
 //SENSOR range values
 int SENSOR1, SENSOR2, SENSOR3, SENSOR4, SENSOR5;
 BUFFER TX_DATA_BUFFER;
 BUFFER RX_DATA_BUFFER;
+
+
+//TIME BETWEEN PULSES FROM MOTOR ENCODERS
+int ENCODER1[4];
+int ENCODER2[4];
+int ENCODER3[4];
+int ENCODER4[4];
+
+int LEFT_DISTANCE = 0; //distance left motor has traveled since start in ticks
+int RIGHT_DISTANCE = 0;//distance right motor has traveled since start in ticks
 
 void delay(void) {
     long i = 65535;
@@ -68,6 +81,7 @@ int main(int argc, char** argv) {
     initPWM();
     initTimer();
     initUART();
+    initInputCapture();
 
     //set up transmit data buffer
     TX_DATA_BUFFER.head = 0;
@@ -87,6 +101,10 @@ int main(int argc, char** argv) {
     IFS1bits.U2RXIF = 0;
     IEC1bits.U2TXIE = 1; //enable UART Tx interrupts
     IEC0bits.AD1IE = 1;  //enable ADC interrupts
+    IEC0bits.IC1IE = 1;  //enable input capture interrupts
+    IEC0bits.IC2IE = 1;  //^
+    IEC2bits.IC3IE = 1;  //^
+    IEC2bits.IC4IE = 1;  //^
 
     // =====================================================================
     // =========================   MAIN LOOP   =============================
@@ -120,7 +138,7 @@ int main(int argc, char** argv) {
         //TEST THE UART BY SENDING A MESSAGE WHEN TIMER INTERRUPTS
         
         if (PRINT == 1) {
-            prInt(SENSOR4);
+            prInt(ENCODER1[0]);   //print the value of the first motor encoder
             printString("\n\r");
             PRINT = 0;
         }
@@ -248,8 +266,45 @@ void __attribute__((__interrupt__,__auto_psv__)) _U2TXInterrupt() {
 
 //ISR for when timer3 has expired. This means that no command has been received
 //in the last 1.5 seconds and the robot should stop moving.
-void __attribute__((__interrupt__,__auto_psv__)) _T3Interrupt() {
-    IFS0bits.T3IF = 0;        //clear interrupt flag
+
+void __attribute__((__interrupt__,__auto_psv__)) _T4Interrupt() {
+    IFS1bits.T4IF = 0;        //clear interrupt flag
     PRINT = 1;
     return;
+}
+
+
+//ISR for Input capture 1. Occurrs every 4 events (4 ticks of the encoder). So
+//read all 4 timer values from the buffers and return
+void __attribute__((__interrupt__,__auto_psv__)) _IC1Interrupt() {
+    IFS0bits.IC1IF = 0;
+    ENCODER1[0] = IC1BUF;
+    ENCODER1[1] = IC1BUF;
+    ENCODER1[2] = IC1BUF;
+    ENCODER1[3] = IC1BUF;
+
+    RIGHT_DISTANCE += 4;
+}
+//IC2
+void __attribute__((__interrupt__,__auto_psv__)) _IC2Interrupt() {
+    IFS0bits.IC2IF = 0;
+    ENCODER2[0] = IC2BUF;
+    ENCODER2[1] = IC2BUF;
+    ENCODER2[2] = IC2BUF;
+    ENCODER2[3] = IC2BUF;
+}
+//IC3
+void __attribute__((__interrupt__,__auto_psv__)) _IC3Interrupt() {
+    IFS2bits.IC3IF = 0;
+    ENCODER3[0] = IC3BUF;
+    ENCODER3[1] = IC3BUF;
+    ENCODER3[2] = IC3BUF;
+    ENCODER3[3] = IC3BUF;
+}
+void __attribute__((__interrupt__,__auto_psv__)) _IC4Interrupt() {
+    IFS2bits.IC4IF = 0;
+    ENCODER4[0] = IC4BUF;
+    ENCODER4[1] = IC4BUF;
+    ENCODER4[2] = IC4BUF;
+    ENCODER4[3] = IC4BUF;
 }

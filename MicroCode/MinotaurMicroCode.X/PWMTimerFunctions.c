@@ -40,14 +40,41 @@ void initPWM() {
 
 //Initialize timer 3 as a timeout timer. If no command is received when the
 //timer expires, stop moving the robot. Reset the timer when a command is
-//received. 
+//received.
+
 void initTimer() {
     //set timer to expire afer 1.5 seconds
-    PR3 = 0x5B8D;
-    T3CON = 0x8030; //enable timer and set prescalar to 256
+    PR4 = 0x5B8D;
+    T4CON = 0x8030; //enable timer and set prescalar to 256
 
 
     return;
+}
+
+void initInputCapture() {
+    T3CONbits.TON = 1; //timer 3 on with no prescalar (FOSC/2) = 8MHz
+
+    //IC1
+    IC1CONbits.ICTMR = 0; //use timer 3
+    IC1CONbits.ICI = 0x3; //interrupt every 4th capture
+    IC1CONbits.ICM = 0x3; //capture every rising edge
+
+
+    //IC2
+    IC2CONbits.ICTMR = 0; //use timer 3
+    IC2CONbits.ICI = 0x3; //interrupt every 4th capture
+    IC2CONbits.ICM = 0x3; //capture every rising edge
+
+    //IC3
+    IC3CONbits.ICTMR = 0; //use timer 3
+    IC3CONbits.ICI = 0x3; //interrupt every 4th capture
+    IC3CONbits.ICM = 0x3; //capture every rising edge
+
+    //IC4
+    IC4CONbits.ICTMR = 0; //use timer 3
+    IC4CONbits.ICI = 0x3; //interrupt every 4th capture
+    IC4CONbits.ICM = 0x3; //capture every rising edge
+
 }
 
 

@@ -51,6 +51,9 @@ void initPWM();
 //Timer related functions
 void initTimer();
 
+//Input capture
+void initInputCapture();
+
 //uart functions
 void initUART();
 void prInt(int);
