@@ -1,0 +1,76 @@
+<html>
+<head>
+<script>
+
+//Constants
+var KEY_W = 1;
+var KEY_A = 2;
+var KEY_S = 4;
+var KEY_D = 8;
+var KEY_SPACE = 16;
+
+var ws = new WebSocket("ws://localhost:9999/");
+
+ws.onopen = function() {
+    function schedule(i) {
+        setTimeout(function() { 
+          ws.send('Hello from the client! (iteration ' + i + ')');
+          schedule(i + 1);
+        }, 1000);            
+    };
+    schedule(1);            
+};
+
+//Global variable holding which gKeys are down
+var gKeys = 0;
+
+window.onload = function(){
+	function getgKeys(){
+		setTimeout(function() {
+			gKeys = 
+			ws.send("" + String.fromCharCode(gKeys));
+			getgKeys();
+		},100);
+	}
+	
+	canvas = document.getElementById("canvas");
+	output = document.getElementById('output');
+
+	canvas.onload = function(){
+		gKeys = 0;
+	}
+
+	canvas.onfocus = function(){
+		gKeys = 0;
+	}
+
+	canvas.onblur = function(){
+		gKeys = 0;
+	}
+
+	canvas.onkeyup = function(e){
+		if(e == null) e = window.event;
+		output.value = key = e.keyCode;
+
+		if(key == 65) //A
+			gKeys |= KEY_A
+		else if(key == 83) //S
+			gKeys |= KEY_S
+		else if(key == 68) //D
+			gKeys |= KEY_D
+		else if(key == 87) //W
+			gKeys |= KEY_W
+		else if(key == 32) //Space
+			gKeys |= KEY_SPACE
+
+		
+	}
+}
+
+</script>
+</head>
+<body style="background-color:black;">
+<canvas tabindex=1 style="background-color:white;border: thin red solid;" width=640 height=480 id="canvas"></canvas>
+<input type="text" value="" id="output" />
+</body>
+</html>
