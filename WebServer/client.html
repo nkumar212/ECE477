@@ -12,29 +12,18 @@ var KEY_SPACE = 16;
 var ws = new WebSocket("ws://localhost:9999/");
 
 ws.onopen = function() {
-    function schedule(i) {
-        setTimeout(function() { 
-          ws.send('Hello from the client! (iteration ' + i + ')');
-          schedule(i + 1);
-        }, 1000);            
-    };
-    schedule(1);            
 };
 
 //Global variable holding which gKeys are down
 var gKeys = 0;
 
-window.onload = function(){
-	function getgKeys(){
-		setTimeout(function() {
-			gKeys = 
-			ws.send("" + String.fromCharCode(gKeys));
-			getgKeys();
-		},100);
-	}
+ws.onopen = function(){
+
+	ws.send('Hello from the client!');
 	
 	canvas = document.getElementById("canvas");
-	output = document.getElementById('output');
+	output = document.getElementById("output");
+	robotid = document.getElementById("robotid").value;
 
 	canvas.onload = function(){
 		gKeys = 0;
@@ -50,7 +39,23 @@ window.onload = function(){
 
 	canvas.onkeyup = function(e){
 		if(e == null) e = window.event;
-		output.value = key = e.keyCode;
+		key = e.keyCode;
+
+		if(key == 65) //A
+			gKeys &= 0xFFFF ^ KEY_A
+		else if(key == 83) //S
+			gKeys &= 0xFFFF ^ KEY_S
+		else if(key == 68) //D
+			gKeys &= 0xFFFF ^ KEY_D
+		else if(key == 87) //W
+			gKeys &= 0xFFFF ^ KEY_W
+		else if(key == 32) //Space
+			gKeys &= 0xFFFF ^ KEY_SPACE
+	}
+
+	canvas.onkeydown = function(e){
+		if(e == null) e = window.event;
+		key = e.keyCode;
 
 		if(key == 65) //A
 			gKeys |= KEY_A
@@ -62,15 +67,26 @@ window.onload = function(){
 			gKeys |= KEY_W
 		else if(key == 32) //Space
 			gKeys |= KEY_SPACE
-
-		
 	}
+
+	function getKeys(){
+		setTimeout(function() {
+			msg = robotid + " " + gKeys + "\n";
+			output.value = msg;
+			ws.send(msg);
+		
+			getKeys();
+		},100);
+	}
+
+	getKeys();
 }
 
 </script>
 </head>
 <body style="background-color:black;">
 <canvas tabindex=1 style="background-color:white;border: thin red solid;" width=640 height=480 id="canvas"></canvas>
-<input type="text" value="" id="output" />
+<input type="hidden" id="robotid" value="MINOTAUR_1" />
+<input type="text" id="output" />
 </body>
 </html>

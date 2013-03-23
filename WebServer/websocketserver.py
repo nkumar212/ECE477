@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import sys
 import struct
 import SocketServer
 from base64 import b64encode
@@ -14,6 +15,7 @@ class WebSocketsHandler(SocketServer.StreamRequestHandler):
         SocketServer.StreamRequestHandler.setup(self)
         print "connection established", self.client_address
         self.handshake_done = False
+	self.count = 0
 
     def handle(self):
         while True:
@@ -62,9 +64,9 @@ class WebSocketsHandler(SocketServer.StreamRequestHandler):
         self.handshake_done = self.request.send(response)
 
     def on_message(self, message):
-        print message
+	sys.stdout.write(message)
 
 if __name__ == "__main__":
     server = SocketServer.TCPServer(
-        ("localhost", 9999), WebSocketsHandler)
+        ("localhost", int(sys.argv[1])), WebSocketsHandler)
     server.serve_forever()
