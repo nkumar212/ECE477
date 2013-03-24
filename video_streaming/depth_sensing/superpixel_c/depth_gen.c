@@ -88,7 +88,6 @@ void Bitmap2Yuv420p( uint8_t *destination, uint8_t *rgb,
 			*dst_u++ = ( ( -38*rgb[3*i] + -74*rgb[3*i+1] + 112*rgb[3*i+2] ) >> 8 ) + 128;
 		}
 	}
-	fprintf(stderr,"%d\n",j);
 
 	// V plane
 	for( y=0; y<height; y+=4 ) {
@@ -98,52 +97,6 @@ void Bitmap2Yuv420p( uint8_t *destination, uint8_t *rgb,
 		}
 	}
 }
-
-/*void Bitmap2Yuv420p(uint8_t *destination, uint8_t *rgb, size_t width, size_t height)
-{
-    size_t image_size = width * height;
-    size_t upos = image_size;
-    size_t vpos = upos + upos / 4;
-    size_t i = 0;
-	size_t line;
-	size_t x;
-	uint8_t r,g,b;
-
-    for( line = 0; line < height; ++line )
-    {
-        if( !(line % 2) )
-        {
-            for( x = 0; x < width; x += 2 )
-            {
-                r = rgb[3 * i];
-                g = rgb[3 * i + 1];
-                b = rgb[3 * i + 2];
-
-                destination[i++] = ((66*r + 129*g + 25*b) >> 8) + 16;
-
-                destination[upos++] = ((-38*r + -74*g + 112*b) >> 8) + 128;
-                destination[vpos++] = ((112*r + -94*g + -18*b) >> 8) + 128;
-
-                r = rgb[3 * i];
-                g = rgb[3 * i + 1];
-                b = rgb[3 * i + 2];
-
-                destination[i++] = ((66*r + 129*g + 25*b) >> 8) + 16;
-            }
-        }
-        else
-        {
-            for( x = 0; x < width; x += 1 )
-            {
-                r = rgb[3 * i];
-                g = rgb[3 * i + 1];
-                b = rgb[3 * i + 2];
-
-                destination[i++] = ((66*r + 129*g + 25*b) >> 8) + 16;
-            }
-        }
-    }
-}*/
 
 int write_jpeg_file(unsigned char* raw_image, char *filename)
 {
@@ -197,10 +150,20 @@ void depth_cb(freenect_device *dev, void *v_depth, uint32_t timestamp)
 {
 	int i;
 	uint16_t *depth = (uint16_t*)v_depth;
+	fwrite(depth,640*2,480,stdout);
+	got_depth++;
+	return;
 
 	for (i=0; i<640*480; i++) {
 		int pval = t_gamma[depth[i]];
 		int lb = pval & 0xff;
+
+		depth_mid[3*i] = lb;
+		depth_mid[3*i+1] = lb;
+		depth_mid[3*i+2] = lb;
+		
+		continue;
+
 		switch (pval>>8) {
 			case 0:
 				depth_mid[3*i+0] = 255;
@@ -250,6 +213,7 @@ void rgb_cb(freenect_device *dev, void *rgb, uint32_t timestamp)
 	freenect_set_video_buffer(dev, rgb_back);
 	rgb_mid = (uint8_t*)rgb;
 	//write_jpeg_file(rgb_mid, "test.jpg");
+	fprintf(stderr,"0x%X\n", rgb);
 
 	got_rgb++;
 }
@@ -263,19 +227,29 @@ int64_t timespecDiff(struct timespec *timeA_p, struct timespec *timeB_p)
 void *transcode(void* arg)
 {
 	struct timespec start, end;
+	int iwait = 0;
 	clock_gettime(CLOCK_MONOTONIC, &start);
 	clock_gettime(CLOCK_MONOTONIC, &end);
+	uint8_t* rgb_tmp;
 
 	while (!die)
 	{
-		while(timespecDiff(&end, &start) < 1000000000 / 20)
+		iwait = 0;
+		while(timespecDiff(&end, &start) < 1000000000 / 23.98)
 		{
+			iwait++;
 			usleep(500);
 			clock_gettime(CLOCK_MONOTONIC, &end);
 		}
 		start = end;
 
-		Bitmap2Yuv420p(yuv_out, rgb_mid, 640, 480);
+		rgb_tmp = rgb_mid;
+		rgb_mid = rgb_front;
+		rgb_front = rgb_tmp;
+
+		fprintf(stderr,"Frame %d 0x%X\n",iwait, rgb_front);
+
+		Bitmap2Yuv420p(yuv_out, rgb_front, 640, 480);
 		fwrite(yuv_out,320*6/4,240,stdout);
 	}
 
@@ -295,8 +269,8 @@ void *freenect_threadfunc()
 	freenect_set_depth_mode(f_dev, freenect_find_depth_mode(FREENECT_RESOLUTION_MEDIUM, FREENECT_DEPTH_11BIT));
 	freenect_set_video_buffer(f_dev, rgb_back);
 
-//	freenect_start_depth(f_dev);
-	freenect_start_video(f_dev);
+	freenect_start_depth(f_dev);
+//	freenect_start_video(f_dev);
 
 	while (!die && freenect_process_events(f_ctx) >= 0) {
 		if (requested_format != current_format) {
@@ -367,7 +341,7 @@ int main(int argc, char **argv)
 		return 1;
 	}
 
-	res = pthread_create(&freenect_thread, NULL, transcode, NULL);
+//	res = pthread_create(&freenect_thread, NULL, transcode, NULL);
 
 /*	getc(stdin);
 
