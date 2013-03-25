@@ -8,6 +8,9 @@ from hashlib import sha1
 from mimetools import Message
 from StringIO import StringIO
 
+class ThreadedTCPServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
+	    pass
+
 class WebSocketsHandler(SocketServer.StreamRequestHandler):
     magic = '258EAFA5-E914-47DA-95CA-C5AB0DC85B11'
 
@@ -70,6 +73,6 @@ class WebSocketsHandler(SocketServer.StreamRequestHandler):
 	sys.stdout.write(message)
 
 if __name__ == "__main__":
-    server = SocketServer.TCPServer(
+    server = ThreadedTCPServer(
         ("localhost", int(sys.argv[1])), WebSocketsHandler)
     server.serve_forever()
