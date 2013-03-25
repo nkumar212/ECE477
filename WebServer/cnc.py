@@ -18,6 +18,9 @@ class WebSocketsHandler(SocketServer.StreamRequestHandler):
 	self.count = 0
 
     def handle(self):
+        self.cb_handle()
+
+    def cb_handle(self):
         while True:
             if not self.handshake_done:
                 self.handshake()

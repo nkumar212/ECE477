@@ -23,7 +23,6 @@ ws.onopen = function(){
 	
 	canvas = document.getElementById("canvas");
 	output = document.getElementById("output");
-	robotid = document.getElementById("robotid").value;
 
 	canvas.onload = function(){
 		gKeys = 0;
@@ -71,6 +70,7 @@ ws.onopen = function(){
 
 	function getKeys(){
 		setTimeout(function() {
+			robotid = document.getElementById("username").value;
 			msg = robotid + " " + gKeys + "\n";
 			output.value = msg;
 			ws.send(msg);
@@ -87,6 +87,7 @@ ws.onopen = function(){
 <body style="background-color:black;">
 <canvas tabindex=1 style="background-color:white;border: thin red solid;" width=640 height=480 id="canvas"></canvas>
 <input type="hidden" id="robotid" value="MINOTAUR_1" />
+Username: <input type="text" id="username"/>
 <input type="text" id="output" />
 </body>
 </html>
