@@ -4,6 +4,7 @@
 #include <queue>
 #include <pthread>
 #include <ctime>
+#include <stdexcept>
 
 #include "command.h"
 
