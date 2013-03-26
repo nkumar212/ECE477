@@ -22,7 +22,7 @@ static inline void gen_periodic(CommandQueue* cmd_q, Periodic* per_cmds, int pnu
 	{
 		if(now_ms - per_cmds[p].next >= 0)
 		{
-			cmd_q->push_back(per_cmds[p].cmd);
+			cmd_q->push(per_cmds[p].cmd);
 			if(per_cmds[p].next == 0) per_cmds[p].next = now_ms;
 			per_cmds[p].next += per_cmds[p].period;
 		}
@@ -46,7 +46,7 @@ int mainCommandQueue(void* vCmdQueue)
 
 		if(cmd_q->size() > 0)
 		{
-			cmd = cmd_q->pop_front();
+			cmd = cmd_q->pop();
 			handle_cmd(cmd);
 		}
 
