@@ -70,9 +70,10 @@ class WebSocketsHandler(SocketServer.StreamRequestHandler):
         self.handshake_done = self.request.send(response)
 
     def on_message(self, message):
-	sys.stdout.write(message)
+	print(message)
 
 if __name__ == "__main__":
     server = ThreadedTCPServer(
         ("localhost", int(sys.argv[1])), WebSocketsHandler)
     server.serve_forever()
+
