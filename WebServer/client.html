@@ -9,10 +9,7 @@ var KEY_S = 4;
 var KEY_D = 8;
 var KEY_SPACE = 16;
 
-var ws = new WebSocket("ws://localhost:9999/");
-
-ws.onopen = function() {
-};
+var ws = new WebSocket("ws://10.0.1.125:9999/");
 
 //Global variable holding which gKeys are down
 var gKeys = 0;
