@@ -13,6 +13,7 @@ class Command
 		Command(std::string name);
 	public:
 		virtual int action(IDS* main) = 0;
+		std::string getName();
 };
 
 #endif

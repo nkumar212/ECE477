@@ -7,6 +7,7 @@ IDS::IDS()
 	if(singleton)
 		throw std::runtime_error("Attempted to initialize two copies of singleton class: IDS");
 	singleton = this;
+	sock_desc = 0;
 }
 
 IDS* IDS::getSingleton()
@@ -57,14 +58,18 @@ void IDS::cnc_connect(std::string cnc_host, size_t port)
 
 	serv_addr.sin_port = htons(port);
 	if(connect(sock_desc, (struct sockaddr*) &serv_addr, sizeof(serv_addr)) < 0)
-		throw("Failed to connect to C&C Server\n");
+		throw std::runtime_error("Failed to connect to C&C Server\n");
 
 	this->sock_desc = sock_desc;
 }
 
 int IDS::cnc_rawmsg(const void* msg, size_t msg_size)
 {
+	if(sock_desc == 0)
+		throw std::runtime_error("Not connected to a C&C Server.  Cannot send message.\n");
+
 	int count = write(sock_desc, msg, msg_size);
+
 	if(count != msg_size)
-		throw("Lost Connection to C&C server\n");
+		throw std::runtime_error("Lost Connection to C&C server\n");
 }
