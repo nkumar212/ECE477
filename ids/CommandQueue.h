@@ -7,6 +7,7 @@
 #include <stdexcept>
 #include <ctime>
 #include <vector>
+#include <cstdio>
 
 #include "Command.h"
 

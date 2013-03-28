@@ -14,7 +14,7 @@ void* mainCommandQueue(void* vIDS)
 	CommandQueue* cmd_q = ids->getCmdQueue();
 	Command* cmd = NULL;
 
-	cmd_q->add_periodic(new ComKeepalive(), 100);
+	cmd_q->add_periodic(new ComKeepalive(), 2000);
 
 	while(!ids->quit())
 	{

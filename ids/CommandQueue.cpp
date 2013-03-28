@@ -49,16 +49,17 @@ void CommandQueue::push(Command* c)
 void CommandQueue::gen_periodic()
 {
 	timespec t1;
-	unsigned long now_ms;
+	long now_ms;
 	std::vector<Periodic>::iterator it;
 
 	clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &t1);
-	now_ms = (t1.tv_sec * 1000 + t1.tv_nsec/1000000000);
+	now_ms = (t1.tv_sec * 1000 + t1.tv_nsec/1000000);
 
 	for(it = per_cmds.begin(); it != per_cmds.end(); it++)
 	{
 		if(now_ms - it->next >= 0)
 		{
+			printf("%lu %lu %lu\n",now_ms, it->next, it->period);
 			push(it->cmd);
 			if(it->next == 0) it->next = now_ms;
 			it->next += it->period;
