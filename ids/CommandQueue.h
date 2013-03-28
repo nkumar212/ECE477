@@ -2,11 +2,13 @@
 #define COMMAND_QUEUE_H
 
 #include <queue>
-#include <pthread>
+#include <pthread.h>
 #include <ctime>
 #include <stdexcept>
+#include <ctime>
+#include <vector>
 
-#include "command.h"
+#include "Command.h"
 
 class CommandQueue
 {
@@ -23,29 +25,20 @@ class CommandQueue
 		//Implements singleton pattern
 		static class CommandQueue* singleton;
 
-		//Configuration for periodic commands to be added to the queue
-		static Periodic per_cmds[];
-		static int per_cmd_num;
-
 	protected: //Properties
 		std::queue<Command*> q;
+		std::vector<Periodic> per_cmds;
 
 	protected: //Constructor (Singleton)
-		CommandQueue()
-		{
-			if(singleton)
-				throw sd::runtime_error("Attempted to initialize two copies of singleton class: CommandQueue");
-			singleton = this;
-		}
+		CommandQueue();
 
 	public: //Static Members
-		static CommandQueue* getSingleton()
-		{
-			if(singleton) return singleton;
-			else return new CommandQueue();
-		}
+		static CommandQueue* getSingleton();
 
 	public: //Instance Members
+		void gen_periodic();
+		void add_periodic(Command* c, long per);
+
 		Command* front();
 		Command* back();
 		void pop();

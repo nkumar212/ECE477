@@ -15,6 +15,16 @@ IDS* IDS::getSingleton()
 	else return new IDS();
 }
 
+CommandQueue* IDS::getCmdQueue()
+{
+	return CommandQueue::getSingleton();
+}
+
+bool IDS::quit()
+{
+	return false;
+}
+
 IDS::~IDS()
 {
 	singleton = NULL;
