@@ -14,6 +14,8 @@ int main(int argc, char* argv[])
 
 	IDS* ids = IDS::getSingleton();
 
+	ids->cnc_connect("localhost", 50000);
+
 	rc = pthread_create(&t_command_queue, NULL, mainCommandQueue, (void*)ids);
 	assert(!rc);
 
