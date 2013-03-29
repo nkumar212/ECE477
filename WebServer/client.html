@@ -16,6 +16,7 @@ ws.onopen = function() {
 
 //Global variable holding which gKeys are down
 var gKeys = 0;
+var msgInfo = new Object();
 
 ws.onopen = function(){
 
@@ -70,9 +71,14 @@ ws.onopen = function(){
 
 	function getKeys(){
 		setTimeout(function() {
-			robotid = document.getElementById("username").value;
-			msg = robotid + " " + gKeys + "\n";
-			output.value = msg;
+			msgInfo.command=document.getElementById("command").value;
+			msgInfo.gKeys=gKeys;
+			msgInfo.speed=document.getElementById("speedslider").value;
+			msgInfo.robotid=document.getElementById("username").value;
+			msgInfo.sessionid=document.getElementById("sessionid").value;
+
+			msg = JSON.stringify(msgInfo);
+			output.value = msg 
 			ws.send(msg);
 		
 			getKeys();
@@ -84,10 +90,14 @@ ws.onopen = function(){
 
 </script>
 </head>
-<body style="background-color:black;">
+<body>
 <canvas tabindex=1 style="background-color:white;border: thin red solid;" width=640 height=480 id="canvas"></canvas>
 <input type="hidden" id="robotid" value="MINOTAUR_1" />
-Username: <input type="text" id="username"/>
-<input type="text" id="output" />
+<input type="hidden" id="sessionid" value="127.0.0.1" />
+<input type="hidden" id="command" value="0" />
+<br>Username:<input type="text" id="username"/>
+<br>Speed:<input type="range" id="speedslider" min="0" max="100"/>
+<br>Outdata:<textarea id="output" cols=80 rows=5></textarea>
 </body>
 </html>
+
