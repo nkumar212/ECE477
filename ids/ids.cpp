@@ -21,6 +21,11 @@ CommandQueue* IDS::getCmdQueue()
 	return CommandQueue::getSingleton();
 }
 
+Kinect* IDS::getKinect()
+{
+	return Kinect::getSingleton();
+}
+
 bool IDS::quit()
 {
 	return false;

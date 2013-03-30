@@ -1,6 +1,6 @@
 CPPFLAGS = --debug -lpthread
 A = commands.a
-OBJ = ids.o Command.o CommandQueue.o
+OBJ = ids.o Command.o CommandQueue.o kinect.o
 LIBS = -lpthread -lrt
 subdirs = commands
 

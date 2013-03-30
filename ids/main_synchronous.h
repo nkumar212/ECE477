@@ -5,12 +5,15 @@
 
 #include "commandqueue.h"
 
-int mainSynchronous(void* vCmdQueue)
+int mainSynchronous(void* vids)
 {
-	CommandQueue* cmd_q = vCmdQueue;
-	while(!cmd_q.quit())
+	IDS* ids = vids;
+	Kinect* kinect = ids->getKinect();
+	Kinect::video_buffer* vbuff;
+
+	while(!ids->quit())
 	{
-		//Synchronous loop
+		vbuff = kinect->getVideoFrame();
 	}
 }
 #endif

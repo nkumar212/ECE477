@@ -13,6 +13,7 @@
 #include <unistd.h>
 
 #include "CommandQueue.h"
+#include "kinect.h"
 
 class IDS
 {
@@ -27,6 +28,7 @@ class IDS
 	public:
 		void cnc_connect(std::string host, size_t port);
 		int cnc_rawmsg(const void* msg, size_t msg_size);
+		Kinect* getKinect();
 		CommandQueue* getCmdQueue();
 		bool quit();
 };
