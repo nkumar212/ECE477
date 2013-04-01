@@ -25,6 +25,7 @@
       <itemPath>ADCfunctions.c</itemPath>
       <itemPath>PWMTimerFunctions.c</itemPath>
       <itemPath>UARTfunctions.c</itemPath>
+      <itemPath>i2c.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

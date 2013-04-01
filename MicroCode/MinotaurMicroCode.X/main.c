@@ -31,16 +31,23 @@ void __attribute__((__interrupt__,__auto_psv__)) _IC4Interrupt();
 
 
 //flags
-int SENSORS_READY = 0;    //1 when SENSOR adc scan is complete
-int READY_TO_SEND = 1;    //One when there is space in the TX buffer
-int READY_TO_REC = 0;
-int PRINT = 0;
+char SENSORS_READY = 0;    //1 when SENSOR adc scan is complete
+char READY_TO_SEND = 1;    //One when there is space in the TX buffer
+char READY_TO_REC = 0;
+char PRINT = 0;
+char I2C_READY_TO_SEND = 0;
+char I2C_READY_TO_REC = 0;
 
 //SENSOR range values
 int SENSOR1, SENSOR2, SENSOR3, SENSOR4, SENSOR5;
+
+//The UART transmit and recieve data buffers
 BUFFER TX_DATA_BUFFER;
 BUFFER RX_DATA_BUFFER;
 
+//The I2C transmit and receive buffers
+BUFFER I2C_RX_BUFFER;
+BUFFER I2C_TX_BUFFER;
 
 //TIME BETWEEN PULSES FROM MOTOR ENCODERS
 int ENCODER1[4];
@@ -51,11 +58,6 @@ int ENCODER4[4];
 int LEFT_DISTANCE = 0; //distance left motor has traveled since start in ticks
 int RIGHT_DISTANCE = 0;//distance right motor has traveled since start in ticks
 
-void delay(void) {
-    long i = 65535;
-    while(i--)
-        ;
-}
 
 int main(int argc, char** argv) {
     //char *toPrint = "Hello Neil";   //string of size 10
@@ -111,7 +113,9 @@ int main(int argc, char** argv) {
     //======================================================================
     while(1) {
         U2STAbits.UTXEN = 1;
-        
+
+        //------------------------- ATD -------------------------------
+
         //If the SENSORs have recieved new values update the variables
         if (SENSORS_READY == 1) {
             
@@ -130,15 +134,15 @@ int main(int argc, char** argv) {
             
 
             OC3RS = SENSOR4 >> 2; //set dutycycle of PWM based on POT val
-            OC4RS = SENSOR4 >> 2;
-            //toPrint = intToString(SENSOR1, (toPrint+10));
-            //
+            OC4RS = SENSOR4 >> 2; //TEMP
         }
 
-        //TEST THE UART BY SENDING A MESSAGE WHEN TIMER INTERRUPTS
-        
+
+        //------------------------- UART ----------------------------
+
+        //TEST THE UART BY SENDING A MESSAGE WHEN TIMER INTERRUPTS     
         if (PRINT == 1) {
-            prInt(ENCODER1[0]);   //print the value of the first motor encoder
+            printInt(ENCODER1[0]);   //print the value of the first motor encoder
             printString("\n\r");
             PRINT = 0;
         }
@@ -160,15 +164,69 @@ int main(int argc, char** argv) {
                 tempC = U2RXREG;
                 BUFF_push(&RX_DATA_BUFFER, tempC);
                 READY_TO_REC = 0;
-                BUFF_push(&TX_DATA_BUFFER, tempC);
+                BUFF_push(&TX_DATA_BUFFER, tempC);  //TEMP --echo back char
             }
         }
-        //take the character received from UART and use it to determine motor direction
+
+
+        //(to read a byte from UART just use this...
+        /*
+        if (BUFF_status(&RX_DATA_BUFFER) != BUFF_EMPTY) {
+            <BYTE> = BUFF_pop(&RX_DATA_BUFFER);
+        }
+        */
+
+        //to write a byte to UART just use this...
+        /*
+        if (BUFF_status(&TX_DATA_BUFFER) != BUFF_FULL) {
+            BUFF_push(&TX_DATA_BUFFER, <BYTE HERE>);
+        }
+        */
+
+
+        //----------------------- I2C -------------------------------
+
+        //I2C -if I2C is ready to receive a byte then receive the byte and
+        //  place it in the receive buffer
+        if (I2C_READY_TO_REC == 1) {
+            if (BUFF_status(&I2C_RX_BUFFER) != BUFF_FULL) {
+                tempC = read_i2c_byte();
+                BUFF_push(&I2C_RX_BUFFER, tempC);
+                I2C_READY_TO_REC = 0;
+            }
+        }
+
+
+        //I2C - if any data to be sent, transmit it
+        if (I2C_READY_TO_SEND == 1) {
+            if (BUFF_status(&I2C_TX_BUFFER) != BUFF_EMPTY) {
+                send_byte_i2c(BUFF_pop(&I2C_TX_BUFFER));
+                I2C_READY_TO_SEND = 0;
+            }
+        }
+
+        //(to read a byte from i2c just use this...
+        /*
+        if (BUFF_status(&I2C_RX_BUFFER) != BUFF_EMPTY) {
+            <BYTE> = BUFF_pop(&I2C_RX_BUFFER);
+        }
+        */
+
+        //to write a byte to i2c just use this...
+        /*
+        if (BUFF_status(&I2C_TX_BUFFER) != BUFF_FULL) {
+            BUFF_push(&I2C_TX_BUFFER, <BYTE HERE>);
+        }
+        */
+
+
+        //--------------------- MOTORS --------------------------
+
+        //TEMP take the character received from UART and use it to determine
+        //motor direction
         if (BUFF_status(&RX_DATA_BUFFER) != BUFF_EMPTY) {
             motor_direction = BUFF_pop(&RX_DATA_BUFFER);
         }
-
-
 
         //adjust the direction of the motors
         switch(motor_direction) {
@@ -301,6 +359,7 @@ void __attribute__((__interrupt__,__auto_psv__)) _IC3Interrupt() {
     ENCODER3[2] = IC3BUF;
     ENCODER3[3] = IC3BUF;
 }
+//IC4
 void __attribute__((__interrupt__,__auto_psv__)) _IC4Interrupt() {
     IFS2bits.IC4IF = 0;
     ENCODER4[0] = IC4BUF;

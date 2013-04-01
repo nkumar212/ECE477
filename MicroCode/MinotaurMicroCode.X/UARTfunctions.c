@@ -13,7 +13,6 @@
 #include <p24Fxxxx.h>
 #include "minotaur.h"
 
-
 //Set up the UART module to communicate with ATOM board
 //Use 19200 baud rate
 void initUART() {
@@ -32,7 +31,7 @@ void initUART() {
 }
 
 
-void prInt(int num) {
+void printInt(int num) {
     char temp_string[64];
     int i;
 
@@ -60,7 +59,6 @@ void printString(char *string) {
         j++;
     }
 }
-
 
 
 //FUNCTIONS TO IMPLEMENT CIRCULAR BUFFER
