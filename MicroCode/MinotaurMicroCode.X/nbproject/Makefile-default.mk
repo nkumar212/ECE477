@@ -68,8 +68,8 @@ FIXDEPS=fixDeps
 .build-conf:  ${BUILD_SUBPROJECTS}
 	${MAKE} ${MAKE_OPTIONS} -f nbproject/Makefile-default.mk dist/${CND_CONF}/${IMAGE_TYPE}/MinotaurMicroCode.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
 
-MP_PROCESSOR_OPTION=24FJ128GA010
-MP_LINKER_FILE_OPTION=,--script=p24FJ128GA010.gld
+MP_PROCESSOR_OPTION=24FJ128GA006
+MP_LINKER_FILE_OPTION=,--script=p24FJ128GA006.gld
 # ------------------------------------------------------------------------------------
 # Rules for buildStep: compile
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
