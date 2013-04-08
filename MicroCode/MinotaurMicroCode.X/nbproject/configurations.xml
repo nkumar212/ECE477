@@ -25,6 +25,7 @@
       <itemPath>ADCfunctions.c</itemPath>
       <itemPath>PWMTimerFunctions.c</itemPath>
       <itemPath>UARTfunctions.c</itemPath>
+      <itemPath>i2c.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -37,7 +38,7 @@
     <conf name="default" type="2">
       <toolsSet>
         <developmentServer>localhost</developmentServer>
-        <targetDevice>PIC24FJ128GA010</targetDevice>
+        <targetDevice>PIC24FJ128GA006</targetDevice>
         <targetHeader></targetHeader>
         <targetPluginBoard></targetPluginBoard>
         <platformTool>ICD3PlatformTool</platformTool>
