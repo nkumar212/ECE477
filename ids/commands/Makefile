@@ -1,5 +1,4 @@
-CPPFLAGS = --debug -lpthread
-OBJS = keepalive.o
+OBJS = keepalive.o freenect_sync.o swapdepth.o planedist.o distframe.o dumpdist.o
 
 target : ../commands.a
 

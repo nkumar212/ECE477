@@ -59,7 +59,6 @@ void CommandQueue::gen_periodic()
 	{
 		if(now_ms - it->next >= 0)
 		{
-			printf("%s %ld/%ld\n", it->cmd->getName().c_str(), now_ms, it->period);
 			push(it->cmd);
 			if(it->next == 0) it->next = now_ms;
 			it->next += it->period;

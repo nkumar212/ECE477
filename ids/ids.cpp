@@ -8,6 +8,18 @@ IDS::IDS()
 		throw std::runtime_error("Attempted to initialize two copies of singleton class: IDS");
 	singleton = this;
 	sock_desc = 0;
+	mutex_output = PTHREAD_MUTEX_INITIALIZER;
+	pthread_mutex_init(&mutex_output,NULL);
+}
+
+void IDS::lock_output()
+{
+	pthread_mutex_lock(&mutex_output);
+}
+
+void IDS::unlock_output()
+{
+	pthread_mutex_unlock(&mutex_output);
 }
 
 IDS* IDS::getSingleton()
@@ -35,6 +47,27 @@ IDS::~IDS()
 {
 	singleton = NULL;
 	close(sock_desc);
+}
+
+void IDS::swapDepth()
+{
+	dbuffer = getKinect()->getDepthFrame();
+}
+
+Kinect::depth_buffer* IDS::getDepth()
+{
+	return dbuffer;
+}
+
+int IDS::cnc_checkmsg()
+{
+	int cnt = recv(sock_desc, cnc_buffer, sizeof(cnc_buffer), 0);
+	cnc_buffer[cnt] = '\0';
+}
+
+char* IDS::cnc_getbuffer()
+{
+	return cnc_buffer;
 }
 
 void IDS::cnc_connect(std::string cnc_host, size_t port)
@@ -66,6 +99,8 @@ void IDS::cnc_connect(std::string cnc_host, size_t port)
 		throw std::runtime_error("Failed to connect to C&C Server\n");
 
 	this->sock_desc = sock_desc;
+	int flags = fcntl(sock_desc, F_GETFL, 0);
+	fcntl(sock_desc, F_SETFL, flags & ~O_NONBLOCK);
 }
 
 int IDS::cnc_rawmsg(const void* msg, size_t msg_size)

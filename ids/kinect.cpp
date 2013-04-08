@@ -6,7 +6,20 @@ Kinect::Kinect()
 {
 	if(Singleton) throw std::runtime_error("Tried to create second instatiation of singleton class: Kinect");
 	Singleton = this;
+	pthread_mutex_init(&depth_lock,NULL);
+	pthread_mutex_init(&video_lock,NULL);
 	initFreenect();
+
+	video_back = (video_buffer*)malloc(sizeof(video_buffer));
+	video_mid = (video_buffer*)malloc(sizeof(video_buffer));
+	video_front = (video_buffer*)malloc(sizeof(video_buffer));
+
+	depth_back = (depth_buffer*)malloc(sizeof(depth_buffer));
+	depth_mid = (depth_buffer*)malloc(sizeof(depth_buffer));
+	depth_front = (depth_buffer*)malloc(sizeof(depth_buffer));
+
+	yuv_front = (uint8_t*)malloc(sizeof(yuv_buffer));
+	alt_video_source = NULL;
 }
 
 Kinect::~Kinect()
@@ -23,6 +36,8 @@ Kinect::~Kinect()
 	free(video_back);
 	free(video_mid);
 	free(video_front);
+
+	free(yuv_front);
 }
 
 Kinect* Kinect::getSingleton()
@@ -55,7 +70,7 @@ void Kinect::initFreenect()
 		throw std::runtime_error("Could not open Kinect");
 	}
 
-	freenect_set_tilt_degs(f_dev, 0);
+	freenect_set_tilt_degs(f_dev, -5);
 	freenect_set_led(f_dev, LED_GREEN);
 
 	freenect_set_depth_buffer(f_dev, depth_back);
@@ -94,7 +109,7 @@ void Kinect::swapVideoFrontBuffer()
 
 void Kinect::swapDepthBackBuffer()
 {
-	depth_buffer* depth_tmp;
+	depth_buffer* depth_tmp = NULL;
 
 	pthread_mutex_lock(&depth_lock);
 	depth_tmp = depth_back;
@@ -106,7 +121,7 @@ void Kinect::swapDepthBackBuffer()
 
 void Kinect::swapDepthFrontBuffer()
 {
-	depth_buffer* depth_tmp;
+	depth_buffer* depth_tmp = NULL;
 
 	pthread_mutex_lock(&depth_lock);
 	depth_tmp = depth_front;
@@ -131,8 +146,30 @@ Kinect::video_buffer* Kinect::getVideoFrame()
 	return video_front;
 }
 
+uint8_t* Kinect::getVideoFrameYUV()
+{
+	swapVideoFrontBuffer();
+
+	if(alt_video_source == NULL)
+		Bitmap2Yuv420p(yuv_front, (uint8_t*)video_front, 640, 480);
+	else
+		Bitmap2Yuv420p(yuv_front, alt_video_source, 640, 480);
+
+	return yuv_front;
+}
+
 Kinect::depth_buffer* Kinect::getDepthFrame()
 {
 	swapDepthFrontBuffer();
 	return depth_front;
+}
+
+void Kinect::process_events()
+{
+	assert(freenect_process_events(f_ctx) >= 0);
+}
+
+void Kinect::setVideoSource(uint8_t* frame)
+{
+	alt_video_source = frame;
 }
