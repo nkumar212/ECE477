@@ -52,7 +52,6 @@ int window;
 uint8_t *depth_mid, *depth_front;
 uint8_t *rgb_back, *rgb_mid, *rgb_front, *yuv_out;
 
-
 freenect_context *f_ctx;
 freenect_device *f_dev;
 int freenect_angle = 0;

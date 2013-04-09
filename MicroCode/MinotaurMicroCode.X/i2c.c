@@ -1,21 +1,23 @@
 
 
-#include<stdio.h>
+//#include<stdio.h>
 #include<string.h>
-#include<stdlib.h>
-
-
+//#include<stdlib.h>
+#include <p24Fxxxx.h>
+#include "minotaur.h"
 
 /********************************
  *          i2c functions
  */
 
-
+//NEIL -- interrupts need to be initialized for both transmit and receive.
+//        If its an option, interrupt after every byte is received and after
+//        every byte is transmitted (i.e. not after it receives 4 bytes or
+//        something...idk if this is an option tho)
 void i2c_init()
 {
-
+    int BRG = 100;
     int temp;
-
 
     //clock divider
     I2C1BRG = BRG;
@@ -24,7 +26,7 @@ void i2c_init()
     IFS1bits.MI2C1IF = 0;       //Clear Interrupt
     I2C1CONbits.I2CEN = 1;      //Enable i2c mode
 
-    temp = I2CRCV;              //read buffer to clear buffer full
+    temp = I2C1RCV;              //read buffer to clear buffer full
 
     reset_i2c_bus();            //set bus to idle;
 
@@ -35,14 +37,11 @@ void i2c_init()
  *      i2c Start Bit
  *
  ******************************/
-
-
 void i2c_start()
 {
-
     int x = 0;
     I2C1CONbits.ACKDT = 0;      //Reset previous ACK
-    delay(10);
+    //delay(10);
     I2C1CONbits.SEN = 1;        //Initiate Start Condition
     Nop();
 
@@ -51,16 +50,14 @@ void i2c_start()
 
     while(I2C1CONbits.SEN)
     {
-        delay(1);
+        //delay(1);
         x++;
         if(x > 20)
         {
             break;
         }
     }
-
-    delay(2);
-
+    //delay(2);
 }
 
 
@@ -69,10 +66,8 @@ void i2c_start()
  *          Sends Reset bit
  *
 ******************************************/
-
 void i2c_restart()
 {
-
     int x = 0;
 
     I2C1CONbits.RSEN = 1;
@@ -80,13 +75,11 @@ void i2c_restart()
 
     while(I2C1CONbits.RSEN)
     {
-        delay(1);
+        //delay(1);
         x++;
         if(x > 20) break;
     }
-
-    delay(2);
-
+    //delay(2);
 }
 
 /**********************************
@@ -94,10 +87,8 @@ void i2c_restart()
  *          Resets i2c bus
  *
  * *******************************/
-
 void reset_i2c_bus()
 {
-
     int x = 0;
 
     //begin stop bit
@@ -107,7 +98,7 @@ void reset_i2c_bus()
     //wait for stop bit to clear
     while(I2C1CONbits.PEN)
     {
-        delay(1)
+        //delay(1)
         x++;
         if(x>20) break;
     }
@@ -116,7 +107,7 @@ void reset_i2c_bus()
     IFS1bits.MI2C1IF = 0;           //Clear interrupt
     I2C1STATbits.IWCOL = 0;
     I2C1STATbits.BCL = 0;
-    delay(10);
+    //delay(10);
 
 }
 /***********************************
@@ -124,23 +115,21 @@ void reset_i2c_bus()
  *        send byte: input integer and returns 0 if successfull
  *
  ***********************************/
-
-char send_byte_i2c(int data)
+//NEIL -- this should basically just put the char into the transmit buffer
+//        and send it. Put the error checking in the interrupt service routine
+char send_byte_i2c(char data)
 {
-
     int i;
 
     while(I2C1STATbits.TBF){}
     IFS1bits.MI2C1IF = 0;           //Clear Interrupt
-    I2CTRN = data;                  //Load outgoing data byte
+    I2C1TRN = data;                 //Load outgoing data byte
 
     //wait for it to transmit
-
     for(i = 0; i<500; i++)
     {
-
         if(!I2C1STATbits.TRSTAT) break;
-        delay(1);
+        //delay(1);
     }
 
     if(i==500){
@@ -150,13 +139,11 @@ char send_byte_i2c(int data)
     //check for NACK from slave
     if(I2C1STATbits.ACKSTAT == 1)
     {
-
         reset_i2c_bus();
         return(1);
-
     }
 
-    delay(2);
+    //delay(2);
     return(0);
 }
 
@@ -181,7 +168,7 @@ char read_i2c()
     }
 
     //get data from I2CRCV reg
-    data = I2CRCV;
+    data = I2C1RCV;
 
     return data;
 
@@ -193,8 +180,9 @@ char read_i2c()
  *
  *
  ********************************************/
-
-char read_i2c_wbyte()
+//NEIL -- this needs to just read the byte from the register and return it
+//       no waiting to see if successful
+char read_i2c_byte()
 {
     int i = 0;
     char data = 0;
@@ -213,13 +201,13 @@ char read_i2c_wbyte()
 
     //get data from reg
 
-    data = I2CRCV;
+    data = I2C1RCV;
 
     //set ACK to high
     I2C1CONbits.ACKEN = 1;
 
     //delay
-    delay(10);
+    //delay(10);
 
     //return
     return data;
