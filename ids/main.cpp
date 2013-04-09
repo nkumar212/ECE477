@@ -10,24 +10,25 @@
 
 int main(int argc, char* argv[])
 {
-	setvbuf(stdout, NULL, _IONBF, 0);
+//	setvbuf(stdout, NULL, _IONBF, 0);
 	pthread_t t_timer_loop;
 	pthread_t t_command_queue;
 	int rc;
 
 	IDS* ids = IDS::getSingleton();
+	CommandQueue* cmdq = CommandQueue::getSingleton();
 	Kinect* kinect = ids->getKinect();
 
-	ids->cnc_connect("localhost", 50000);
+/*	ids->cnc_connect("localhost", 50000);
 
 	rc = pthread_create(&t_command_queue, NULL, mainCommandQueue, (void*)ids);
-	assert(!rc);
+	assert(!rc);*/
 
-	rc = pthread_create(&t_timer_loop, NULL, mainSynchronous, (void*)ids);
-	assert(!rc);
+/*	rc = pthread_create(&t_timer_loop, NULL, mainSynchronous, (void*)ids);
+	assert(!rc);*/
 
-	rc = pthread_create(&t_timer_loop, NULL, mainCncWait, (void*)ids);
-	assert(!rc);
+/*	rc = pthread_create(&t_timer_loop, NULL, mainCncWait, (void*)ids);
+	assert(!rc);*/
 
 	while(1)
 		kinect->process_events();

@@ -7,5 +7,6 @@
 #include "planedist.h"
 #include "distframe.h"
 #include "dumpdist.h"
+#include "slopeframe.h"
 
 #endif

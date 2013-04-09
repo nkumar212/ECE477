@@ -1,5 +1,5 @@
-#ifndef MAIN_SYNCHRONOUS_H
-#define MAIN_SYNCHRONOUS_H
+#ifndef MAIN_CNCWAIT_H
+#define MAIN_CNCWAIT_H
 #include <pthread.h>
 #include <iostream>
 #include <cstdio>
@@ -13,9 +13,9 @@
 #include "commands/commands.h"
 #include "ids.h"
 
-#define LOOP_TIME (1000.0/23.98)
+#define CNCWAIT_LOOP_TIME (1000.0/15.00)
 
-void* mainSynchronous(void* vids)
+void* mainCncWait(void* vids)
 { 
 	cpu_set_t cpuset;
 	CPU_ZERO(&cpuset);
@@ -39,8 +39,12 @@ void* mainSynchronous(void* vids)
 	{
 		loop_ms += LOOP_TIME;
 
-		vbuff = kinect->getVideoFrameYUV();
-		fwrite(vbuff,320*6/4,240,stdout);
+		datalen = ids->cnc_checkmsg();
+		if(errno != EWOULDBLOCK)
+		{
+			fprintf(stderr,"%s",ids->cnc_getbuffer());
+			cmdq->push(&cmdDumpDist);
+		}
 
 		clock_gettime(CLOCK_MONOTONIC, &t1);
 		now_ms = (t1.tv_sec * 1000 + t1.tv_nsec/1000000);

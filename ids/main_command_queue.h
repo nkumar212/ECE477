@@ -19,13 +19,13 @@ void* mainCommandQueue(void* vIDS)
 	CommandQueue* cmd_q = ids->getCmdQueue();
 	Command* cmd = NULL;
 
-	ComDistFrame* cmdDistFrame = new ComDistFrame();
+	ComSlopeFrame* cmdSlopeFrame = new ComSlopeFrame();
 
 	cmd_q->add_periodic(new ComKeepalive(), 10000);
 	cmd_q->add_periodic(new ComSwapDepth(), 99);
 	//cmd_q->add_periodic(new ComPlaneDist(), 100);
-	cmd_q->add_periodic(cmdDistFrame, 100);
-	ids->getKinect()->setVideoSource((uint8_t*)cmdDistFrame->frame);
+	//cmd_q->add_periodic(cmdSlopeFrame, 1000);
+	//ids->getKinect()->setVideoSource((uint8_t*)cmdSlopeFrame->frame);
 
 	ids->swapDepth();
 
@@ -39,6 +39,7 @@ void* mainCommandQueue(void* vIDS)
 			cmd_q->pop();
 			ids->lock_output();
 			cmd->action(ids);
+			std::cerr << cmd->getName() << std::endl;
 			ids->unlock_output();
 		}else{
 			usleep(500);
