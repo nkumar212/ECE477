@@ -36,9 +36,18 @@ typedef struct _controlData {
     char value;
 } controlData;
 
-
+//UART DATA BUFFERS
 extern BUFFER TX_DATA_BUFFER;
 extern BUFFER RX_DATA_BUFFER;
+
+//I2C DATA BUFFERS
+extern BUFFER I2C_RX_BUFFER;
+extern BUFFER I2C_TX_BUFFER;
+
+
+//---------------------------------------------
+//             FUNCTIONS
+//---------------------------------------------
 
 //declare ADC related functions
 long getIrSensorRange(char);
@@ -46,7 +55,6 @@ void initADC();
 
 //PWM related functions
 void initPWM();
-
 
 //Timer related functions
 void initTimer();
@@ -56,8 +64,20 @@ void initInputCapture();
 
 //uart functions
 void initUART();
-void prInt(int);
+void printInt(int);
 void printString(char *);
+
+//I2C functions
+void i2c_init();
+void i2c_start();
+void i2c_restart();
+void reset_i2c_bus();
+char read_i2c();
+char send_byte_i2c(char data);
+char read_i2c_byte();
+
+
+
 
 #ifdef	__cplusplus
 }

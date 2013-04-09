@@ -1,13 +1,20 @@
-CPPFLAGS = --debug -lpthread
 A = commands.a
-OBJ = ids.o Command.o CommandQueue.o kinect.o
+OBJ = ids.o Command.o CommandQueue.o kinect.o yuv.o
 LIBS = -lpthread -lrt
 subdirs = commands
+ROOT=$(PWD)
+export ROOT
+export CPPFLAGS
+CPPFLAGS = --debug -I $(ROOT)/libfreenect/include -L $(ROOT)/libfreenect/build/lib
 
 target : ids
 
-ids : main.cpp $(OBJ) $(A)
-	g++ main.cpp $(OBJ) $(LIBS) $(A) -o ids
+ids : main.cpp $(A) $(OBJ) main_command_queue.h
+	-echo $(CPPFLAGS)
+	-echo $(OBJ)
+	-echo $(LIBS)
+	-echo $(A)
+	g++ main.cpp $(OBJ) $(A) $(LIBS)  $(CPPFLAGS) -lfreenect -o ids
 
 $(A) : $(subdirs)
 
@@ -17,8 +24,10 @@ depends : *.cpp
 clean :
 	@rm -f *.o *.a depends
 
+	$(MAKE) -C commands clean
+
 $(subdirs) : .PHONY
-	-cd $@ ; $(MAKE)
+	$(MAKE) -C $@
 
 .PHONY : 
 

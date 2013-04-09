@@ -8,22 +8,23 @@
  */
 
 
-#include <stdio.h>
-#include <stdlib.h>
+//#include <stdio.h>
+//#include <stdlib.h>
 #include <p24Fxxxx.h>
 #include "minotaur.h"
 
-_CONFIG1( JTAGEN_OFF & GCP_OFF & GWRP_OFF & COE_OFF & FWDTEN_OFF & ICS_PGx2)
+
+_CONFIG1( JTAGEN_OFF & GCP_OFF & GWRP_OFF & COE_OFF & FWDTEN_OFF & ICS_PGx1 & BKBUG_OFF)
 //Use external oscillator -- use this for eval board but not final board
-_CONFIG2( FCKSM_CSDCMD & OSCIOFNC_OFF & POSCMOD_XT & FNOSC_PRI)
+//_CONFIG2( FCKSM_CSDCMD & OSCIOFNC_OFF & POSCMOD_XT & FNOSC_PRI)
 //Use internal oscillator instead of crystal
-//_CONFIG2( FCKSM_CSDCMD & OSCIOFNC_ON & POSCMOD_NONE & FNOSC_FRC)
+_CONFIG2( FCKSM_CSECME & OSCIOFNC_ON & POSCMOD_NONE & FNOSC_FRC)
 
 //ISR function prototypes
 void __attribute__((__interrupt__,__auto_psv__)) _ADC1Interrupt();
-void __attribute__((__interrupt__,__auto_psv__)) _U2RXInterrupt();
-void __attribute__((__interrupt__,__auto_psv__)) _U2TXInterrupt();
-//void __attribute__((__interrupt__,__auto_psv__)) _T3Interrupt();
+void __attribute__((__interrupt__,__auto_psv__)) _U1RXInterrupt();
+void __attribute__((__interrupt__,__auto_psv__)) _U1TXInterrupt();
+void __attribute__((__interrupt__,__auto_psv__)) _T4Interrupt();
 void __attribute__((__interrupt__,__auto_psv__)) _IC1Interrupt();
 void __attribute__((__interrupt__,__auto_psv__)) _IC2Interrupt();
 void __attribute__((__interrupt__,__auto_psv__)) _IC3Interrupt();
@@ -31,16 +32,23 @@ void __attribute__((__interrupt__,__auto_psv__)) _IC4Interrupt();
 
 
 //flags
-int SENSORS_READY = 0;    //1 when SENSOR adc scan is complete
-int READY_TO_SEND = 1;    //One when there is space in the TX buffer
-int READY_TO_REC = 0;
-int PRINT = 0;
+char SENSORS_READY = 0;    //1 when SENSOR adc scan is complete
+char READY_TO_SEND = 1;    //One when there is space in the TX buffer
+char READY_TO_REC = 0;
+char PRINT = 0;
+char I2C_READY_TO_SEND = 0;
+char I2C_READY_TO_REC = 0;
 
 //SENSOR range values
 int SENSOR1, SENSOR2, SENSOR3, SENSOR4, SENSOR5;
+
+//The UART transmit and recieve data buffers
 BUFFER TX_DATA_BUFFER;
 BUFFER RX_DATA_BUFFER;
 
+//The I2C transmit and receive buffers
+BUFFER I2C_RX_BUFFER;
+BUFFER I2C_TX_BUFFER;
 
 //TIME BETWEEN PULSES FROM MOTOR ENCODERS
 int ENCODER1[4];
@@ -51,11 +59,6 @@ int ENCODER4[4];
 int LEFT_DISTANCE = 0; //distance left motor has traveled since start in ticks
 int RIGHT_DISTANCE = 0;//distance right motor has traveled since start in ticks
 
-void delay(void) {
-    long i = 65535;
-    while(i--)
-        ;
-}
 
 int main(int argc, char** argv) {
     //char *toPrint = "Hello Neil";   //string of size 10
@@ -64,24 +67,23 @@ int main(int argc, char** argv) {
                            //'B' - Backwards
                            //'L' - Left
                            //'R' - Right
-    char left_speed = 255;       //the speed of the left motor
-    char right_speed = 255;      //the speed of the right motor
+    unsigned char left_speed = 128;       //the speed of the left motor
+    unsigned char right_speed = 128;      //the speed of the right motor
 
     char tempC;
     // Setup PortA IOs as digital outputs
-    TRISA = 0;
-    //AD1PCFG = 0xffff;
+    //TRISA = 0;
 
     //setup port B as digital output
     TRISE = 0;
-    
+    TRISB = 0x0FFF;
 
     //initialize peripherals
     initADC();
     initPWM();
     initTimer();
     initUART();
-    initInputCapture();
+    //initInputCapture();
 
     //set up transmit data buffer
     TX_DATA_BUFFER.head = 0;
@@ -96,10 +98,10 @@ int main(int argc, char** argv) {
     //OC4RS = 0x007F;
 
     //enable interrupts for the required molules
-    IEC0bits.T3IE = 1;   //enable timer 3 interrupts
-    IEC1bits.U2RXIE = 1; //enable UART Rx interrupts
-    IFS1bits.U2RXIF = 0;
-    IEC1bits.U2TXIE = 1; //enable UART Tx interrupts
+    IEC1bits.T4IE = 1;   //enable timer 3 interrupts
+    IEC0bits.U1RXIE = 1; //enable UART Rx interrupts
+    IFS0bits.U1RXIF = 0;
+    IEC0bits.U1TXIE = 1; //enable UART Tx interrupts
     IEC0bits.AD1IE = 1;  //enable ADC interrupts
     IEC0bits.IC1IE = 1;  //enable input capture interrupts
     IEC0bits.IC2IE = 1;  //^
@@ -110,37 +112,40 @@ int main(int argc, char** argv) {
     // =========================   MAIN LOOP   =============================
     //======================================================================
     while(1) {
-        U2STAbits.UTXEN = 1;
-        
+        U1STAbits.UTXEN = 1;
+
+        //LATE = 0x14;  //move motors forward
+        //------------------------- ATD -------------------------------
+
         //If the SENSORs have recieved new values update the variables
         if (SENSORS_READY == 1) {
             
-            LATA = 1;
+            //LATA = 1;
             AD1CON1bits.ASAM = 0;   //turn off sampling temporarily
             
-            SENSOR1 = ADC1BUF0;
-            SENSOR2 = ADC1BUF1;
-            SENSOR3 = ADC1BUF2;
-            SENSOR4 = ADC1BUF3;
+            SENSOR4 = ADC1BUF0;
+            SENSOR3 = ADC1BUF1;
+            SENSOR2 = ADC1BUF2;
+            SENSOR1 = ADC1BUF3;
             SENSOR5 = ADC1BUF4;
 
             AD1CON1bits.ASAM = 1;  //turn sampling back on
             SENSORS_READY = 0;
             
-            
-
-            OC3RS = SENSOR4 >> 2; //set dutycycle of PWM based on POT val
-            OC4RS = SENSOR4 >> 2;
-            //toPrint = intToString(SENSOR1, (toPrint+10));
-            //
         }
 
-        //TEST THE UART BY SENDING A MESSAGE WHEN TIMER INTERRUPTS
-        
+
+        //------------------------- UART ----------------------------
+
+        //TEST THE UART BY SENDING A MESSAGE WHEN TIMER INTERRUPTS     
         if (PRINT == 1) {
-            prInt(ENCODER1[0]);   //print the value of the first motor encoder
+            //printInt(ENCODER1[0]);   //print the value of the first motor encoder
+            //printString("hi\n\r");
+            printString("Right ticks:");
+            printInt(RIGHT_DISTANCE);
             printString("\n\r");
             PRINT = 0;
+            LATB ^= 0x8000;
         }
         
         
@@ -148,7 +153,7 @@ int main(int argc, char** argv) {
         //next character in the TX buffer in the send register
         if (READY_TO_SEND == 1) {
             if (BUFF_status(&TX_DATA_BUFFER) != BUFF_EMPTY) {
-                U2TXREG = BUFF_pop(&TX_DATA_BUFFER);
+                U1TXREG = BUFF_pop(&TX_DATA_BUFFER);
                 READY_TO_SEND = 0;
             }
             
@@ -157,72 +162,138 @@ int main(int argc, char** argv) {
         //in the receive buffer for later use
         if (READY_TO_REC == 1) {
             if (BUFF_status(&RX_DATA_BUFFER) != BUFF_FULL) {
-                tempC = U2RXREG;
+                tempC = U1RXREG;
                 BUFF_push(&RX_DATA_BUFFER, tempC);
                 READY_TO_REC = 0;
-                BUFF_push(&TX_DATA_BUFFER, tempC);
+                BUFF_push(&TX_DATA_BUFFER, tempC);  //TEMP --echo back char
             }
         }
-        //take the character received from UART and use it to determine motor direction
+
+
+        //(to read a byte from UART just use this...
+        /*
         if (BUFF_status(&RX_DATA_BUFFER) != BUFF_EMPTY) {
-            motor_direction = BUFF_pop(&RX_DATA_BUFFER);
+            <BYTE> = BUFF_pop(&RX_DATA_BUFFER);
+        }
+        */
+
+        //to write a byte to UART just use this...
+        /*
+        if (BUFF_status(&TX_DATA_BUFFER) != BUFF_FULL) {
+            BUFF_push(&TX_DATA_BUFFER, <BYTE HERE>);
+        }
+        */
+
+
+        //----------------------- I2C -------------------------------
+
+        //I2C -if I2C is ready to receive a byte then receive the byte and
+        //  place it in the receive buffer
+        if (I2C_READY_TO_REC == 1) {
+            if (BUFF_status(&I2C_RX_BUFFER) != BUFF_FULL) {
+                tempC = read_i2c_byte();
+                BUFF_push(&I2C_RX_BUFFER, tempC);
+                I2C_READY_TO_REC = 0;
+            }
         }
 
+
+        //I2C - if any data to be sent, transmit it
+        if (I2C_READY_TO_SEND == 1) {
+            if (BUFF_status(&I2C_TX_BUFFER) != BUFF_EMPTY) {
+                send_byte_i2c(BUFF_pop(&I2C_TX_BUFFER));
+                I2C_READY_TO_SEND = 0;
+            }
+        }
+
+        //(to read a byte from i2c just use this...
+        /*
+        if (BUFF_status(&I2C_RX_BUFFER) != BUFF_EMPTY) {
+            <BYTE> = BUFF_pop(&I2C_RX_BUFFER);
+        }
+        */
+
+        //to write a byte to i2c just use this...
+        /*
+        if (BUFF_status(&I2C_TX_BUFFER) != BUFF_FULL) {
+            BUFF_push(&I2C_TX_BUFFER, <BYTE HERE>);
+        }
+        */
+
+
+        //--------------------- MOTORS --------------------------
+
+        //TEMP take the character received from UART and use it to determine
+        //motor direction/speed
+        if (BUFF_status(&RX_DATA_BUFFER) != BUFF_EMPTY) {
+            tempC = BUFF_pop(&RX_DATA_BUFFER);
+            switch(tempC) {
+                case 'w':
+                    motor_direction = 'F';
+                    break;
+                case 's':
+                    motor_direction = 'B';
+                    break;
+                case 'a':
+                    motor_direction = 'L';
+                    break;
+                case 'd':
+                    motor_direction = 'R';
+                    break;
+                case ' ':
+                    motor_direction = 'S';
+                case '.':
+                    left_speed += 2;
+                    right_speed += 2;
+                    break;
+                case ',':
+                    left_speed -= 2;
+                    right_speed -= 2;
+                    break;
+            }
+        }
+
+
+        //Set the speed of the motors
+        OC3RS = right_speed << 1; //set dutycycle of PWM based on POT val
+        OC2RS = left_speed << 1;
 
 
         //adjust the direction of the motors
         switch(motor_direction) {
-            case 'W':
+            case 'F':
                 LATE = 0x14;
                 break;
-            case 'S':
+            case 'B':
                 LATE = 0xA;
                 break;
-            case 'A':
-                LATE = 0x12;
-                break;
-            case 'D':
+            case 'L':
                 LATE = 0xC;
                 break;
-            case ' ':
+            case 'R':
+                LATE = 0x12;
+                break;
+            case 'S':
                 LATE = 0x00;
                 break;
             default:
                 break;
         }
+         
+        
+        //light up LED if any sensor gets too close
+        if(SENSOR1 > 800 | SENSOR4 > 800 | SENSOR3 > 800 | SENSOR2 > 800 | SENSOR5 > 800) {
+            LATB |= 0x8000;
+            //LATE = 0x00; //stop the robot
+        }
+        else {
+            LATB &= 0x7FFF;
+        }
 
-    
-        
-        //light up LEDs based on ATD value
-        if(SENSOR4 > 50) {
-            LATA = 0x01;
-        }
-        if(SENSOR4 > 100){
-            LATA = 0x03;
-        }
-        if(SENSOR4 > 200){
-            LATA = 0x07;
-        }
-        if(SENSOR4 > 300){
-            LATA = 0x0F;
-        }
-        if(SENSOR4 > 400)
-        {
-            LATA = 0x1F;
-        }
-        if(SENSOR4 > 500){
-            LATA = 0x3F;
-        }
-        if(SENSOR4 > 600){
-            LATA = 0x7F;
-        }
-        if(SENSOR4 > 1000){
-            LATA = 0xFF;
-        }
-        
+
     }
     
-    return (EXIT_SUCCESS);
+    return (0);
 }
 
 
@@ -241,12 +312,12 @@ void __attribute__((__interrupt__,__auto_psv__)) _ADC1Interrupt() {
 
 
 //ISR for when a character is received from UART
-void __attribute__((__interrupt__,__auto_psv__)) _U2RXInterrupt() {
-    IFS1bits.U2RXIF = 0;    //clear interrupt flag
+void __attribute__((__interrupt__,__auto_psv__)) _U1RXInterrupt() {
+    IFS0bits.U1RXIF = 0;    //clear interrupt flag
     //char c;
 
     //if framing error or parity error don't do anything
-    if (U2STAbits.PERR == 1 || U2STAbits.FERR == 1) {
+    if (U1STAbits.PERR == 1 || U1STAbits.FERR == 1) {
         return;
     }
 
@@ -256,15 +327,15 @@ void __attribute__((__interrupt__,__auto_psv__)) _U2RXInterrupt() {
 }
 
 //ISR for when TX buffer is empty for UART so that another byte can be sent
-void __attribute__((__interrupt__,__auto_psv__)) _U2TXInterrupt() {
-    IFS1bits.U2TXIF = 0;     //clear interrupt flag
+void __attribute__((__interrupt__,__auto_psv__)) _U1TXInterrupt() {
+    IFS0bits.U1TXIF = 0;     //clear interrupt flag
 
     READY_TO_SEND = 1;
 
     return;
 }
 
-//ISR for when timer3 has expired. This means that no command has been received
+//ISR for when timer4 has expired. This means that no command has been received
 //in the last 1.5 seconds and the robot should stop moving.
 
 void __attribute__((__interrupt__,__auto_psv__)) _T4Interrupt() {
@@ -300,7 +371,10 @@ void __attribute__((__interrupt__,__auto_psv__)) _IC3Interrupt() {
     ENCODER3[1] = IC3BUF;
     ENCODER3[2] = IC3BUF;
     ENCODER3[3] = IC3BUF;
+
+    LEFT_DISTANCE += 4;
 }
+//IC4
 void __attribute__((__interrupt__,__auto_psv__)) _IC4Interrupt() {
     IFS2bits.IC4IF = 0;
     ENCODER4[0] = IC4BUF;

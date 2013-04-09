@@ -13,26 +13,25 @@
 #include <p24Fxxxx.h>
 #include "minotaur.h"
 
-
 //Set up the UART module to communicate with ATOM board
 //Use 19200 baud rate
 void initUART() {
     //set baud rate to 19200
-    U2BRG = 12;
+    U1BRG = 12;
 
     //Enable the UART module -- 8-bit mode even parity
-    U2MODE = 0x8002;      //1000000000000010
+    U1MODE = 0x8002;      //1000000000000010
 
     //Status register
     //Interrupt when transmit buffer becomes empty
     //Interrupt when any character is received
-    U2STA = 0x8400;  //1000010000000000
+    U1STA = 0x8400;  //1000010000000000
     
     return;
 }
 
 
-void prInt(int num) {
+void printInt(int num) {
     char temp_string[64];
     int i;
 
@@ -60,7 +59,6 @@ void printString(char *string) {
         j++;
     }
 }
-
 
 
 //FUNCTIONS TO IMPLEMENT CIRCULAR BUFFER

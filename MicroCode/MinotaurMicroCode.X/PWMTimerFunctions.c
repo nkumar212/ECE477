@@ -17,19 +17,19 @@
 //motors.
 void initPWM() {
     //set Timer 2 period to be about 15ms
-    PR2 = 0x00FF;
+    PR2 = 0x01FF;
 
     //set initial duty cycle to 0% (use OC3RS to set duty cycle in future code)
     OC3RS = 0x0000;
     OC3R = 0x0000;
     
-    OC4RS = 0x0000;
-    OC4R = 0x0000;
+    OC2RS = 0x0000;
+    OC2R = 0x0000;
 
     //configure OC3 and OC4 to PWM mode -- no fault detection -- sleep on CPU
     //sleep -- use timer 2
     OC3CON = 0x2006;
-    OC4CON = 0x2006;
+    OC2CON = 0x2006;
 
     //enable Timer 2 to start PWM
     //set prescalar to 256

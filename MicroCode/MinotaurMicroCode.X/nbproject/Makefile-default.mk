@@ -45,11 +45,11 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/main.o ${OBJECTDIR}/ADCfunctions.o ${OBJECTDIR}/PWMTimerFunctions.o ${OBJECTDIR}/UARTfunctions.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/main.o.d ${OBJECTDIR}/ADCfunctions.o.d ${OBJECTDIR}/PWMTimerFunctions.o.d ${OBJECTDIR}/UARTfunctions.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/main.o ${OBJECTDIR}/ADCfunctions.o ${OBJECTDIR}/PWMTimerFunctions.o ${OBJECTDIR}/UARTfunctions.o ${OBJECTDIR}/i2c.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/main.o.d ${OBJECTDIR}/ADCfunctions.o.d ${OBJECTDIR}/PWMTimerFunctions.o.d ${OBJECTDIR}/UARTfunctions.o.d ${OBJECTDIR}/i2c.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/main.o ${OBJECTDIR}/ADCfunctions.o ${OBJECTDIR}/PWMTimerFunctions.o ${OBJECTDIR}/UARTfunctions.o
+OBJECTFILES=${OBJECTDIR}/main.o ${OBJECTDIR}/ADCfunctions.o ${OBJECTDIR}/PWMTimerFunctions.o ${OBJECTDIR}/UARTfunctions.o ${OBJECTDIR}/i2c.o
 
 
 CFLAGS=
@@ -68,8 +68,8 @@ FIXDEPS=fixDeps
 .build-conf:  ${BUILD_SUBPROJECTS}
 	${MAKE} ${MAKE_OPTIONS} -f nbproject/Makefile-default.mk dist/${CND_CONF}/${IMAGE_TYPE}/MinotaurMicroCode.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
 
-MP_PROCESSOR_OPTION=24FJ128GA010
-MP_LINKER_FILE_OPTION=,--script=p24FJ128GA010.gld
+MP_PROCESSOR_OPTION=24FJ128GA006
+MP_LINKER_FILE_OPTION=,--script=p24FJ128GA006.gld
 # ------------------------------------------------------------------------------------
 # Rules for buildStep: compile
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
@@ -97,6 +97,12 @@ ${OBJECTDIR}/UARTfunctions.o: UARTfunctions.c  nbproject/Makefile-${CND_CONF}.mk
 	${MP_CC} $(MP_EXTRA_CC_PRE)  UARTfunctions.c  -o ${OBJECTDIR}/UARTfunctions.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/UARTfunctions.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_ICD3=1  -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/UARTfunctions.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
+${OBJECTDIR}/i2c.o: i2c.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/i2c.o.d 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  i2c.c  -o ${OBJECTDIR}/i2c.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/i2c.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_ICD3=1  -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/i2c.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
 else
 ${OBJECTDIR}/main.o: main.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
@@ -121,6 +127,12 @@ ${OBJECTDIR}/UARTfunctions.o: UARTfunctions.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/UARTfunctions.o.d 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  UARTfunctions.c  -o ${OBJECTDIR}/UARTfunctions.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/UARTfunctions.o.d"        -g -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/UARTfunctions.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/i2c.o: i2c.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/i2c.o.d 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  i2c.c  -o ${OBJECTDIR}/i2c.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/i2c.o.d"        -g -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/i2c.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 endif
 

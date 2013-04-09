@@ -2,5 +2,10 @@
 #define COMMANDS_H
 
 #include "keepalive.h"
+#include "freenect_sync.h"
+#include "swapdepth.h"
+#include "planedist.h"
+#include "distframe.h"
+#include "dumpdist.h"
 
 #endif
