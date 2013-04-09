@@ -67,8 +67,8 @@ int main(int argc, char** argv) {
                            //'B' - Backwards
                            //'L' - Left
                            //'R' - Right
-    //char left_speed = 255;       //the speed of the left motor
-    //char right_speed = 255;      //the speed of the right motor
+    unsigned char left_speed = 128;       //the speed of the left motor
+    unsigned char right_speed = 128;      //the speed of the right motor
 
     char tempC;
     // Setup PortA IOs as digital outputs
@@ -114,7 +114,7 @@ int main(int argc, char** argv) {
     while(1) {
         U1STAbits.UTXEN = 1;
 
-        LATE = 0x14;  //move motors forward
+        //LATE = 0x14;  //move motors forward
         //------------------------- ATD -------------------------------
 
         //If the SENSORs have recieved new values update the variables
@@ -123,19 +123,15 @@ int main(int argc, char** argv) {
             //LATA = 1;
             AD1CON1bits.ASAM = 0;   //turn off sampling temporarily
             
-            SENSOR1 = ADC1BUF0;
-            SENSOR2 = ADC1BUF1;
-            SENSOR3 = ADC1BUF2;
-            SENSOR4 = ADC1BUF3;
+            SENSOR4 = ADC1BUF0;
+            SENSOR3 = ADC1BUF1;
+            SENSOR2 = ADC1BUF2;
+            SENSOR1 = ADC1BUF3;
             SENSOR5 = ADC1BUF4;
 
             AD1CON1bits.ASAM = 1;  //turn sampling back on
             SENSORS_READY = 0;
             
-            
-
-            OC3RS = SENSOR4 >> 2; //set dutycycle of PWM based on POT val
-            OC4RS = SENSOR4 >> 2; //TEMP
         }
 
 
@@ -144,7 +140,10 @@ int main(int argc, char** argv) {
         //TEST THE UART BY SENDING A MESSAGE WHEN TIMER INTERRUPTS     
         if (PRINT == 1) {
             //printInt(ENCODER1[0]);   //print the value of the first motor encoder
-            printString("hi\n\r");
+            //printString("hi\n\r");
+            printString("Right ticks:");
+            printInt(RIGHT_DISTANCE);
+            printString("\n\r");
             PRINT = 0;
             LATB ^= 0x8000;
         }
@@ -225,66 +224,73 @@ int main(int argc, char** argv) {
         //--------------------- MOTORS --------------------------
 
         //TEMP take the character received from UART and use it to determine
-        //motor direction
+        //motor direction/speed
         if (BUFF_status(&RX_DATA_BUFFER) != BUFF_EMPTY) {
-            motor_direction = BUFF_pop(&RX_DATA_BUFFER);
+            tempC = BUFF_pop(&RX_DATA_BUFFER);
+            switch(tempC) {
+                case 'w':
+                    motor_direction = 'F';
+                    break;
+                case 's':
+                    motor_direction = 'B';
+                    break;
+                case 'a':
+                    motor_direction = 'L';
+                    break;
+                case 'd':
+                    motor_direction = 'R';
+                    break;
+                case ' ':
+                    motor_direction = 'S';
+                case '.':
+                    left_speed += 2;
+                    right_speed += 2;
+                    break;
+                case ',':
+                    left_speed -= 2;
+                    right_speed -= 2;
+                    break;
+            }
         }
+
+
+        //Set the speed of the motors
+        OC3RS = right_speed << 1; //set dutycycle of PWM based on POT val
+        OC2RS = left_speed << 1;
+
 
         //adjust the direction of the motors
         switch(motor_direction) {
-            case 'W':
+            case 'F':
                 LATE = 0x14;
                 break;
-            case 'S':
+            case 'B':
                 LATE = 0xA;
                 break;
-            case 'A':
-                LATE = 0x12;
-                break;
-            case 'D':
+            case 'L':
                 LATE = 0xC;
                 break;
-            case ' ':
+            case 'R':
+                LATE = 0x12;
+                break;
+            case 'S':
                 LATE = 0x00;
                 break;
             default:
                 break;
         }
-
-    
+         
         
-        //light up LEDs based on ATD value
-        if(SENSOR5 > 400) {
+        //light up LED if any sensor gets too close
+        if(SENSOR1 > 800 | SENSOR4 > 800 | SENSOR3 > 800 | SENSOR2 > 800 | SENSOR5 > 800) {
             LATB |= 0x8000;
+            //LATE = 0x00; //stop the robot
         }
         else {
             LATB &= 0x7FFF;
         }
 
-        /*
-        if(SENSOR4 > 100){
-            LATA = 0x03;
-        }
-        if(SENSOR4 > 200){
-            LATA = 0x07;
-        }
-        if(SENSOR4 > 300){
-            LATA = 0x0F;
-        }
-        if(SENSOR4 > 400)
-        {
-            LATA = 0x1F;
-        }
-        if(SENSOR4 > 500){
-            LATA = 0x3F;
-        }
-        if(SENSOR4 > 600){
-            LATA = 0x7F;
-        }
-        if(SENSOR4 > 1000){
-            LATA = 0xFF;
-        }
-        */
+
     }
     
     return (0);
@@ -365,6 +371,8 @@ void __attribute__((__interrupt__,__auto_psv__)) _IC3Interrupt() {
     ENCODER3[1] = IC3BUF;
     ENCODER3[2] = IC3BUF;
     ENCODER3[3] = IC3BUF;
+
+    LEFT_DISTANCE += 4;
 }
 //IC4
 void __attribute__((__interrupt__,__auto_psv__)) _IC4Interrupt() {
