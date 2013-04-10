@@ -35,51 +35,36 @@ void i2c_init()
 /*******************************
  *
  *      i2c Start Bit
+ * returns a one to to designate that a start condition has been initiatied (set i2c_START flag)
  *
  ******************************/
-void i2c_start()
+int i2c_start()
 {
-    int x = 0;
     I2C1CONbits.ACKDT = 0;      //Reset previous ACK
-    //delay(10);
     I2C1CONbits.SEN = 1;        //Initiate Start Condition
-    Nop();
+	Nop();
 
     //Start bit is cleared automatically;
     //wait for automatic clear
 
-    while(I2C1CONbits.SEN)
-    {
-        //delay(1);
-        x++;
-        if(x > 20)
-        {
-            break;
-        }
-    }
-    //delay(2);
+	return 1;	
 }
 
 
 /******************************************
  *
  *          Sends Reset bit
+ * returns one to designate that we are in a RESTART Condition (set restart flag)
  *
 ******************************************/
-void i2c_restart()
+int i2c_restart()
 {
-    int x = 0;
 
     I2C1CONbits.RSEN = 1;
     Nop();
 
-    while(I2C1CONbits.RSEN)
-    {
-        //delay(1);
-        x++;
-        if(x > 20) break;
-    }
-    //delay(2);
+	return 1;
+
 }
 
 /**********************************
@@ -98,7 +83,6 @@ void reset_i2c_bus()
     //wait for stop bit to clear
     while(I2C1CONbits.PEN)
     {
-        //delay(1)
         x++;
         if(x>20) break;
     }
@@ -107,9 +91,9 @@ void reset_i2c_bus()
     IFS1bits.MI2C1IF = 0;           //Clear interrupt
     I2C1STATbits.IWCOL = 0;
     I2C1STATbits.BCL = 0;
-    //delay(10);
 
 }
+
 /***********************************
  *
  *        send byte: input integer and returns 0 if successfull
@@ -117,7 +101,7 @@ void reset_i2c_bus()
  ***********************************/
 //NEIL -- this should basically just put the char into the transmit buffer
 //        and send it. Put the error checking in the interrupt service routine
-char send_byte_i2c(char data)
+int send_byte_i2c(char data)
 {
     int i;
 
@@ -125,26 +109,7 @@ char send_byte_i2c(char data)
     IFS1bits.MI2C1IF = 0;           //Clear Interrupt
     I2C1TRN = data;                 //Load outgoing data byte
 
-    //wait for it to transmit
-    for(i = 0; i<500; i++)
-    {
-        if(!I2C1STATbits.TRSTAT) break;
-        //delay(1);
-    }
-
-    if(i==500){
-        return(1);
-    }
-
-    //check for NACK from slave
-    if(I2C1STATbits.ACKSTAT == 1)
-    {
-        reset_i2c_bus();
-        return(1);
-    }
-
-    //delay(2);
-    return(0);
+    return 1;
 }
 
 /********************************************
