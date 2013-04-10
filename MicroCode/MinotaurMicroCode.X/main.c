@@ -187,24 +187,10 @@ int main(int argc, char** argv) {
 
         //----------------------- I2C -------------------------------
 
-        //I2C -if I2C is ready to receive a byte then receive the byte and
-        //  place it in the receive buffer
-        if (I2C_READY_TO_REC == 1) {
-            if (BUFF_status(&I2C_RX_BUFFER) != BUFF_FULL) {
-                tempC = read_i2c_byte();
-                BUFF_push(&I2C_RX_BUFFER, tempC);
-                I2C_READY_TO_REC = 0;
-            }
-        }
-
-
-        //I2C - if any data to be sent, transmit it
-        if (I2C_READY_TO_SEND == 1) {
-            if (BUFF_status(&I2C_TX_BUFFER) != BUFF_EMPTY) {
-                send_byte_i2c(BUFF_pop(&I2C_TX_BUFFER));
-                I2C_READY_TO_SEND = 0;
-            }
-        }
+        if( /*READY TO READ FUEL VAL*/)
+		{
+			I2C_START = 
+						
 
         //(to read a byte from i2c just use this...
         /*
@@ -297,6 +283,27 @@ int main(int argc, char** argv) {
 }
 
 
+/*********************************************************************
+
+	Interrupt Service Routines
+
+*********************************************************************/
+
+/* 	ISR for i2c: interrupt is set on completion of these evets:
+
+		-start conditiion
+		-stop condition
+		-data transfer byte transmitted/recieved
+		-ACK/NACK transmit
+		-Repeated Start
+		-Bus Collision Event
+*/
+void __attribute__((__interrupt__,__auto_psv__)) _I2C1Interrupt() {
+
+		IFS0bits.MI2C1IF = 0;
+
+		return;
+}	
 
 
 
@@ -326,11 +333,6 @@ void __attribute__((__interrupt__,__auto_psv__)) _U1RXInterrupt() {
     return;
 }
 
-/*********************************************************************
-
-	Interrupt Service Routines
-
-*********************************************************************/
 
 
 //ISR for when TX buffer is empty for UART so that another byte can be sent
