@@ -24,7 +24,7 @@
 	* Could not open the port.
 	*/
 
-	perror("open_port: Unable to open /dev/ttyS0 - ");
+	perror("open_port: Unable to open /dev/ttyUSB0 - ");
       }
       else
 	fcntl(fd, F_SETFL, 0);
@@ -62,6 +62,6 @@ int main(void){
 	printf("Bytes received are %d\n",rd);
 	printf("%s",buff);
 
-	close fd;
+	close(fd);
 	return 1;
 }

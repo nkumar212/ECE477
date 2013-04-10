@@ -96,14 +96,13 @@ void reset_i2c_bus()
 
 /***********************************
  *
- *        send byte: input integer and returns 0 if successfull
+ *        send byte: loads tx register to send and return 1 to set the BYTE_SENDING FLAG
+ *
  *
  ***********************************/
-//NEIL -- this should basically just put the char into the transmit buffer
-//        and send it. Put the error checking in the interrupt service routine
 int send_byte_i2c(char data)
 {
-    int i;
+
 
     while(I2C1STATbits.TBF){}
     IFS1bits.MI2C1IF = 0;           //Clear Interrupt
@@ -113,29 +112,16 @@ int send_byte_i2c(char data)
 }
 
 /********************************************
- *              read byte from i2c but no ACK after
+ *     i2c_read_set: set master to read ready so byte can be recieved. will be interrupt when byte has been recieved. 
  *******************************************/
 
-char read_i2c()
+char i2c_read_set(void)
 {
-
-    int i = 0;
-    char data = 0;
 
     //set i2c to recieve
     I2C1CONbits.RCEN = 1;
 
-    //if no response break
-    while(!I2C1STATbits.RBF)
-    {
-        i++;
-        if(i>2000) break;
-    }
-
-    //get data from I2CRCV reg
-    data = I2C1RCV;
-
-    return data;
+    return 1;
 
 }
 
@@ -145,37 +131,44 @@ char read_i2c()
  *
  *
  ********************************************/
-//NEIL -- this needs to just read the byte from the register and return it
-//       no waiting to see if successful
-char read_i2c_byte()
+char read_i2c_byte_ack(void)
 {
-    int i = 0;
+		
     char data = 0;
 
-    //set i2c to recieve
-    I2C1CONbits.RCEN = 1;
-
-    //break if no response
-    while(!I2C1STATbits.RBF)
-    {
-
-        i++;
-        if(i > 2000) break;
-
-    }
-
     //get data from reg
-
     data = I2C1RCV;
 
-    //set ACK to high
+		//set ACK sequence to send ACK
+		I2C1CONbits.ACKDT = 0;
+
+    //start ACK sequence
     I2C1CONbits.ACKEN = 1;
 
-    //delay
-    //delay(10);
-
-    //return
     return data;
 
 }
+
+/**********************************************
+*							Read byte with NACK (used to recieve last byte of sequence, else use other (w/ ACK))
+*
+***********************************************/
+
+char read_i2c_byte_nack(void)
+{
+
+		char data = 0;
+	
+		//get data from reg
+		data = I2C1RCV;
+
+		//set ACK sequence to send NACK
+		I2C1CON.bits.ACKDT = 1;
+	
+		//start ACK sequence;
+		I2C1CON.bits.ACKEN = 1;
+
+		return data;
+}
+
 

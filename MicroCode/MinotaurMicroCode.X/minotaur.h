@@ -68,15 +68,14 @@ void printInt(int);
 void printString(char *);
 
 //I2C functions
-void i2c_init();
-int i2c_start();
-int i2c_restart();
-void reset_i2c_bus();
-int read_i2c();
+void i2c_init(void);
+int i2c_start(void);
+int i2c_restart(void);
+void reset_i2c_bus(void);
 int send_byte_i2c(char data);
-char read_i2c_byte();
-
-
+char i2c_read_set(void);
+char read_i2c_byte_ack(void);
+char read_i2c_byte_nack(void);
 
 
 #ifdef	__cplusplus

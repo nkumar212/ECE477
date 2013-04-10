@@ -24,7 +24,7 @@
 	* Could not open the port.
 	*/
 
-	perror("open_port: Unable to open /dev/ttyS0 - ");
+	perror("open_port: Unable to open /dev/ttyUSB0 - ");
       }
       else
 	fcntl(fd, F_SETFL, 0);
@@ -57,10 +57,13 @@ int main(void){
 	int rd;
 	char *buff;
 
+	// RCV TEST
 	fcntl(fd, F_SETFL, FNDELAY);
 	rd=read(fd, buff, 100);
 	printf("Bytes received are %d\n",rd);
 	printf("%s",buff);
+
+	// SEND TEST
 
 	close(fd);
 	return 1;

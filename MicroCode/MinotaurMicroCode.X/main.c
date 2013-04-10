@@ -326,6 +326,13 @@ void __attribute__((__interrupt__,__auto_psv__)) _U1RXInterrupt() {
     return;
 }
 
+/*********************************************************************
+
+	Interrupt Service Routines
+
+*********************************************************************/
+
+
 //ISR for when TX buffer is empty for UART so that another byte can be sent
 void __attribute__((__interrupt__,__auto_psv__)) _U1TXInterrupt() {
     IFS0bits.U1TXIF = 0;     //clear interrupt flag
