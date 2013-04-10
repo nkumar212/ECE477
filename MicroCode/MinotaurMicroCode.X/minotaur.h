@@ -69,11 +69,11 @@ void printString(char *);
 
 //I2C functions
 void i2c_init();
-void i2c_start();
-void i2c_restart();
+int i2c_start();
+int i2c_restart();
 void reset_i2c_bus();
-char read_i2c();
-char send_byte_i2c(char data);
+int read_i2c();
+int send_byte_i2c(char data);
 char read_i2c_byte();
 
 
