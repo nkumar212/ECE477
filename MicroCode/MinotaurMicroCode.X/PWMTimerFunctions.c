@@ -53,27 +53,28 @@ void initTimer() {
 
 void initInputCapture() {
     T3CONbits.TON = 1; //timer 3 on with no prescalar (FOSC/2) = 8MHz
+    T3CONbits.TCKPS = 0x3; //prescalar of 256 = 31.25kHz
 
     //IC1
     IC1CONbits.ICTMR = 0; //use timer 3
-    IC1CONbits.ICI = 0x3; //interrupt every 4th capture
-    IC1CONbits.ICM = 0x3; //capture every rising edge
+    IC1CONbits.ICI = 0x0; //interrupt every capture
+    IC1CONbits.ICM = 0x1; //capture every edge
 
 
     //IC2
     IC2CONbits.ICTMR = 0; //use timer 3
-    IC2CONbits.ICI = 0x3; //interrupt every 4th capture
-    IC2CONbits.ICM = 0x3; //capture every rising edge
+    IC2CONbits.ICI = 0x0; //interrupt every capture
+    IC2CONbits.ICM = 0x1; //capture every  edge
 
     //IC3
     IC3CONbits.ICTMR = 0; //use timer 3
-    IC3CONbits.ICI = 0x3; //interrupt every 4th capture
-    IC3CONbits.ICM = 0x3; //capture every rising edge
+    IC3CONbits.ICI = 0x0; //interrupt every capture
+    IC3CONbits.ICM = 0x1; //capture every edge
 
     //IC4
     IC4CONbits.ICTMR = 0; //use timer 3
-    IC4CONbits.ICI = 0x3; //interrupt every 4th capture
-    IC4CONbits.ICM = 0x3; //capture every rising edge
+    IC4CONbits.ICI = 0x0; //interrupt every capture
+    IC4CONbits.ICM = 0x1; //capture every edge
 
 }
 

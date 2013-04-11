@@ -5,18 +5,30 @@
  * Created on February 12, 2013, 5:02 PM
  */
 
-#ifndef ADC_H
-#define	ADC_H
+#ifndef MIN_H
+#define	MIN_H
 
 #ifdef	__cplusplus
 extern "C" {
 #endif
 
-#define MAX_BUFFSIZE 50
+#define MAX_BUFFSIZE 100
 
 #define BUFF_FULL 1
 #define BUFF_EMPTY -1
 #define BUFF_NORMAL 0
+
+#define CMD_MOTORS 0x01
+#define CMD_GET_SENSOR_DATA 0xB0
+#define CMD_SENSOR1 0xB1
+#define CMD_SENSOR2 0xB2
+#define CMD_SENSOR3 0xB3
+#define CMD_SENSOR4 0xB4
+#define CMD_SENSOR5 0xB5
+#define CMD_RIGHT_ENCODER 0xB6
+#define CMD_LEFT_ENCODER 0xB7
+#define CMD_BATTERY 0x02
+
 
 //Buffer used for transmitting and recieving data
 typedef struct _BUFFER {
@@ -32,8 +44,13 @@ int BUFF_status(BUFFER*);
 
 //structure for recieving control data
 typedef struct _controlData {
+    char bytesRecieved;  //the number of bytes that have been recieved in the
+                         //current packet (should be a total of 5
+    
+    char sequence;
     char command;
-    char value;
+    char data1;
+    char data2;
 } controlData;
 
 //UART DATA BUFFERS
@@ -82,5 +99,5 @@ char read_i2c_byte_nack(void);
 }
 #endif
 
-#endif	/* ADC_H */
+#endif	/* MIN_H */
 
