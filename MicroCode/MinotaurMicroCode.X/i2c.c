@@ -163,10 +163,10 @@ char read_i2c_byte_nack(void)
 		data = I2C1RCV;
 
 		//set ACK sequence to send NACK
-		I2C1CON.bits.ACKDT = 1;
+		I2C1CONbits.ACKDT = 1;
 	
 		//start ACK sequence;
-		I2C1CON.bits.ACKEN = 1;
+		I2C1CONbits.ACKEN = 1;
 
 		return data;
 }
