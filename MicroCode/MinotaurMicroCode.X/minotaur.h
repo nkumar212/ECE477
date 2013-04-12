@@ -92,7 +92,7 @@ void printString(char *);
 void i2c_init(void);
 int i2c_start(void);
 int i2c_restart(void);
-void reset_i2c_bus(void);
+void i2c_stop(void); 
 int send_byte_i2c(char data);
 char i2c_read_set(void);
 char read_i2c_byte_ack(void);

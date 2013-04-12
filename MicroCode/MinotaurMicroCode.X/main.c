@@ -21,6 +21,7 @@ _CONFIG1( JTAGEN_OFF & GCP_OFF & GWRP_OFF & COE_OFF & FWDTEN_OFF & ICS_PGx1 & BK
 _CONFIG2( FCKSM_CSECME & OSCIOFNC_ON & POSCMOD_NONE & FNOSC_FRC)
 
 //ISR function prototypes
+void __attribute__((__interrupt__,__auto_psv__)) _I2C1Interrupt();
 void __attribute__((__interrupt__,__auto_psv__)) _ADC1Interrupt();
 void __attribute__((__interrupt__,__auto_psv__)) _U1RXInterrupt();
 void __attribute__((__interrupt__,__auto_psv__)) _U1TXInterrupt();
@@ -34,14 +35,20 @@ void __attribute__((__interrupt__,__auto_psv__)) _MI2C1Interrupt();
 void wait();
 
 //flags
-char SENSORS_READY = 0;    //1 when SENSOR adc scan is complete
-char READY_TO_SEND = 1;    //One when there is space in the TX buffer
+char SENSORS_READY = 0;    	//1 when SENSOR adc scan is complete
+char READY_TO_SEND = 1;   	//One when there is space in the TX buffer
 char READY_TO_REC = 0;
-char PRINT = 0; //TEMP
+char PRINT = 0; 			//TEMP
 char I2C_READY_TO_SEND = 0;
 char I2C_READY_TO_REC = 0;
-char TIMEOUT = 0; // if 1 then stop all motor movement b/c communication has
-                  //been lost
+char TIMEOUT = 0; 			// if 1 then stop all motor movement b/c communication has been lost
+char I2C_START = 0;			// if start sequence has been started, interrupt when 1 means start has finished
+char I2C_RESTART = 0;		// 1 if restatrt sequence has been started
+char I2C_STOP = 0;			// 1 if stop sequence has been started
+char I2C_SEND_BYTE = 0;		// incremented for each byte sent (1 after byte 1 sending has begun
+							// incremented to 2 when byte one has finished sending and been ACK'd
+char I2C_RECV_BYTE = 0;		// same principle as above except for recieving
+char I2C_ISR = 0;			// set when i2c interrupts
 
 //SENSOR range values
 int SENSOR1, SENSOR2, SENSOR3, SENSOR4, SENSOR5;
@@ -229,6 +236,7 @@ int main(int argc, char** argv) {
 
 
         //----------------------- I2C -------------------------------
+
         //
         //if( /*READY TO READ FUEL VAL*/)
 	//{
@@ -242,12 +250,69 @@ int main(int argc, char** argv) {
         }
         */
 
-        //to write a byte to i2c just use this...
-        /*
-        if (BUFF_status(&I2C_TX_BUFFER) != BUFF_FULL) {
-            BUFF_push(&I2C_TX_BUFFER, <BYTE HERE>);
-        }
-        */
+
+        if( 0/*READY TO READ FUEL VAL*/)
+		{
+			I2C_START = i2c_start();
+		}
+
+		if( I2C_ISR == 1)
+		{
+			
+			if( I2C_START == 1)
+			{
+				I2C_START = 0;
+				I2C_SEND_BYTE += send_byte_i2c( 0xAA );		//send first byte: fuel gauge address in write mode
+			}
+
+			else if(I2C_SEND_BYTE == 1)
+			{
+				I2C_SEND_BYTE += send_byte_i2c( 0x02 ); 	//send first command byte StateOfCharge() command -- returns an unsigned int value 0-100%
+			}
+
+			else if(I2C_SEND_BYTE == 2)
+			{
+				I2C_SEND_BYTE += send_byte_i2c( 0x03 );		//send second command byte
+			}
+
+			else if(I2C_SEND_BYTE == 3)
+			{
+				I2C_SEND_BYTE = 0;
+				I2C_RESTART += i2c_restart();				//after they ack second command byte send restart
+			}
+
+			else if(I2C_RESTART == 1)						//send 0xAB to designate read mode
+			{
+				I2C_RESTART = 0;
+				I2C_SEND_BYTE += send_byte_i2c( 0xAB );
+				if(I2C_SEND_BYTE == 1)
+				{
+					I2C_SEND_BYTE = 4;
+				}
+				
+			}
+	
+			else if(I2C_SEND_BYTE == 4)						//recieve 1 byte - unsigned int from 0 to 100 %
+			{
+				I2C_SEND_BYTE = 0;
+				battery_percentage = read_i2c_byte_nack();
+				I2C_RECV_BYTE = 1;
+			}
+
+			else if(I2C_RECV_BYTE == 1)					//send stop condition
+			{
+				I2C_RECV_BYTE = 0;
+				I2C_STOP += i2c_stop();
+			}
+
+			else if(I2C_STOP == 1)
+			{
+				I2C_STOP = 0;								//stop condition has completed clear stop i2c_stop flag
+			}
+
+	}
+			
+
 
 
 
@@ -566,9 +631,8 @@ int main(int argc, char** argv) {
 		-Bus Collision Event
 */
 void __attribute__((__interrupt__,__auto_psv__)) _MI2C1Interrupt() {
-
 		IFS1bits.MI2C1IF = 0;
-
+		I2C_ISR = 1;
 		return;
 }	
 
