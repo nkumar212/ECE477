@@ -20,7 +20,8 @@ extern "C" {
 
 #define CMD_MOTORS 0x01
 #define CMD_GET_SENSOR_DATA 0xB0
-#define CMD_SENSOR1 0xB1
+#define CMD_SENSOR 0xB1
+//#define CMD_SENSOR1 0xB1
 #define CMD_SENSOR2 0xB2
 #define CMD_SENSOR3 0xB3
 #define CMD_SENSOR4 0xB4
@@ -29,6 +30,9 @@ extern "C" {
 #define CMD_LEFT_ENCODER 0xB7
 #define CMD_BATTERY 0x02
 
+
+#define SEN_MIN 400    //the minimum distance that the downward IR sensors have to sense
+#define SEN_MAX 1000    //the distance at which the robot tries to avoid an object
 
 //Buffer used for transmitting and recieving data
 typedef struct _BUFFER {
@@ -44,13 +48,13 @@ int BUFF_status(BUFFER*);
 
 //structure for recieving control data
 typedef struct _controlData {
-    char bytesRecieved;  //the number of bytes that have been recieved in the
+    unsigned char bytesRecieved;  //the number of bytes that have been recieved in the
                          //current packet (should be a total of 5
     
-    char sequence;
-    char command;
-    char data1;
-    char data2;
+    unsigned char sequence;
+    unsigned char command;
+    unsigned char data1;
+    unsigned char data2;
 } controlData;
 
 //UART DATA BUFFERS
@@ -88,7 +92,7 @@ void printString(char *);
 void i2c_init(void);
 int i2c_start(void);
 int i2c_restart(void);
-void reset_i2c_bus(void);
+void i2c_stop(void); 
 int send_byte_i2c(char data);
 char i2c_read_set(void);
 char read_i2c_byte_ack(void);
