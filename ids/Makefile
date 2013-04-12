@@ -2,18 +2,14 @@ A = commands.a
 OBJ = ids.o Command.o CommandQueue.o kinect.o yuv.o
 LIBS = -lpthread -lrt
 subdirs = commands
-ROOT=$(PWD)
+ROOT=$(shell pwd)
 export ROOT
 export CPPFLAGS
-CPPFLAGS = --debug -I $(ROOT)/libfreenect/include -L $(ROOT)/libfreenect/build/lib
+CPPFLAGS = --debug -I $(ROOT)/libfreenect/include -L $(ROOT)/libfreenect/build/lib -L $(ROOT)/libfreenect/build-alaric/lib
 
 target : ids
 
 ids : main.cpp $(A) $(OBJ) main_command_queue.h
-	-echo $(CPPFLAGS)
-	-echo $(OBJ)
-	-echo $(LIBS)
-	-echo $(A)
 	g++ main.cpp $(OBJ) $(A) $(LIBS)  $(CPPFLAGS) -lfreenect -o ids
 
 $(A) : $(subdirs)

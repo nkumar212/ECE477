@@ -1,5 +1,5 @@
-#ifndef MAIN_CNCWAIT_H
-#define MAIN_CNCWAIT_H
+#ifndef MAIN_MINOSWAIT_H
+#define MAIN_MINOSWAIT_H
 #include <pthread.h>
 #include <iostream>
 #include <cstdio>
@@ -13,9 +13,9 @@
 #include "commands/commands.h"
 #include "ids.h"
 
-#define CNCWAIT_LOOP_TIME (1000.0/15.00)
+#define MINOSWAIT_LOOP_TIME (1000.0/15.00)
 
-void* mainCncWait(void* vids)
+void* mainMinosWait(void* vids)
 { 
 	cpu_set_t cpuset;
 	CPU_ZERO(&cpuset);
@@ -35,30 +35,13 @@ void* mainCncWait(void* vids)
 	ComDumpDist cmdDumpDist;
 	CommandQueue* cmdq = CommandQueue::getSingleton();
 
-	uint16_t minos_commands[] = {
-		0xFFFF,
-		0x0000,
-		0x7F7F,
-		0x0000,
-		0x007F,
-		0x0000,
-		0x7F00,
-		0x0000
-	};
-	int minos_count = 0;
+	ids->minos_sendpacket(0x01,0x0000);
 
 	while(!ids->quit())
 	{
 		loop_ms += LOOP_TIME;
 
-		datalen = ids->cnc_checkmsg();
-		if(errno != EWOULDBLOCK)
-		{
-			fprintf(stderr,"%s",ids->cnc_getbuffer());
-//			cmdq->push(&cmdDumpDist);
-			ids->minos_sendpacket(0x01,minos_commands[minos_count]);
-			minos_count = (minos_count + 1) % 8;
-		}
+		ids->minos_recv();
 
 		clock_gettime(CLOCK_MONOTONIC, &t1);
 		now_ms = (t1.tv_sec * 1000 + t1.tv_nsec/1000000);

@@ -1,4 +1,5 @@
 #include "ids.h"
+#include "serial.c"
 
 IDS* IDS::singleton = NULL;
 
@@ -7,9 +8,18 @@ IDS::IDS()
 	if(singleton)
 		throw std::runtime_error("Attempted to initialize two copies of singleton class: IDS");
 	singleton = this;
-	sock_desc = 0;
+	cnc_desc = 0;
 	mutex_output = PTHREAD_MUTEX_INITIALIZER;
 	pthread_mutex_init(&mutex_output,NULL);
+	pthread_mutex_init(&minos_outgoing_mutex,NULL);
+	pthread_mutex_init(&cnc_outgoing_mutex,NULL);
+	minos_seq = 0;
+	minos_desc = 0;
+	minos_buffer_start = 0;
+	minos_buffer_end = 0;
+	int i;
+	for(i = 0; i < 256; i++)
+		pthread_mutex_init(minos_command_locks + i, NULL);
 }
 
 void IDS::lock_output()
@@ -46,7 +56,7 @@ bool IDS::quit()
 IDS::~IDS()
 {
 	singleton = NULL;
-	close(sock_desc);
+	close(cnc_desc);
 }
 
 void IDS::swapDepth()
@@ -61,8 +71,9 @@ Kinect::depth_buffer* IDS::getDepth()
 
 int IDS::cnc_checkmsg()
 {
-	int cnt = recv(sock_desc, cnc_buffer, sizeof(cnc_buffer), 0);
+	int cnt = recv(cnc_desc, cnc_buffer, sizeof(cnc_buffer), 0);
 	cnc_buffer[cnt] = '\0';
+	return cnt;
 }
 
 char* IDS::cnc_getbuffer()
@@ -72,13 +83,13 @@ char* IDS::cnc_getbuffer()
 
 void IDS::cnc_connect(std::string cnc_host, size_t port)
 {
-	int sock_desc;
+	int cnc_desc;
 	struct sockaddr_in serv_addr;
 	struct hostent* server;
 	char buff[4096];
 	
-	sock_desc = socket(AF_INET, SOCK_STREAM, 0);
-	if(sock_desc < 0)
+	cnc_desc = socket(AF_INET, SOCK_STREAM, 0);
+	if(cnc_desc < 0)
 		throw std::runtime_error("Failed to allocate a socket to the cnc server");
 
 	bzero((char*) &serv_addr, sizeof(serv_addr));
@@ -95,21 +106,124 @@ void IDS::cnc_connect(std::string cnc_host, size_t port)
 	      );
 
 	serv_addr.sin_port = htons(port);
-	if(connect(sock_desc, (struct sockaddr*) &serv_addr, sizeof(serv_addr)) < 0)
+	if(connect(cnc_desc, (struct sockaddr*) &serv_addr, sizeof(serv_addr)) < 0)
 		throw std::runtime_error("Failed to connect to C&C Server\n");
 
-	this->sock_desc = sock_desc;
-	int flags = fcntl(sock_desc, F_GETFL, 0);
-	fcntl(sock_desc, F_SETFL, flags & ~O_NONBLOCK);
+	this->cnc_desc = cnc_desc;
+	int flags = fcntl(cnc_desc, F_GETFL, 0);
+	fcntl(cnc_desc, F_SETFL, flags & ~O_NONBLOCK);
 }
 
 int IDS::cnc_rawmsg(const void* msg, size_t msg_size)
 {
-	if(sock_desc == 0)
+	if(cnc_desc == 0)
 		throw std::runtime_error("Not connected to a C&C Server.  Cannot send message.\n");
 
-	int count = write(sock_desc, msg, msg_size);
+	int count = write(cnc_desc, msg, msg_size);
 
 	if(count != msg_size)
 		throw std::runtime_error("Lost Connection to C&C server\n");
+}
+
+int IDS::minos_sendpacket(uint8_t command, uint16_t data)
+{
+	MinosPacket packet;
+
+	if(minos_desc == 0)
+		throw std::runtime_error("Not connected to Minos Microcontroller.  Cannot Send packet.\n");
+
+	packet.sync = 0xAA;
+	packet.command = command;
+	packet.udata16 = data;
+
+	while(!minos_checkpacket(++minos_seq))
+		;
+
+	packet.seq = minos_seq;
+
+	pthread_mutex_lock(&minos_outgoing_mutex);
+	int count = write(minos_desc, &packet, 5);
+	pthread_mutex_unlock(&minos_outgoing_mutex);
+
+	if(count != sizeof(packet))
+		throw std::runtime_error("Lost Connection to Minos Microcontroller\n");
+
+	return minos_seq;
+}
+
+bool IDS::minos_recv()
+{
+	int cnt = recv(minos_desc, minos_buffer + minos_buffer_start, std::min<int>(sizeof(MinosPacket),sizeof(minos_buffer)-minos_buffer_start), 0);
+
+	if(errno == EWOULDBLOCK || cnt == -1)
+		return false;
+
+	minos_buffer_end = (minos_buffer_end + cnt) % sizeof(minos_buffer);
+
+	while((minos_buffer[minos_buffer_start] != 0xAA) && (minos_buffer_start != minos_buffer_end))
+	{
+		minos_buffer_start = (minos_buffer_start + 1) % sizeof(minos_buffer);
+		std::cerr << "Dropping out of sync packet from Minos Microcontroller" << std::endl;
+	}
+
+	if((minos_buffer_end - minos_buffer_start + sizeof(minos_buffer)) > sizeof(MinosPacket))
+	{
+		minos_packetize();
+		return 1;
+	}
+
+	return 0;
+}
+
+bool IDS::minos_checkpacket(uint8_t seq)
+{
+	if(pthread_mutex_trylock(&minos_command_locks[seq]) == 0)
+	{
+		pthread_mutex_unlock(minos_command_locks+seq);
+		return true;
+	}
+	return false;
+}
+
+IDS::MinosPacket IDS::minos_getpacket(uint8_t seq)
+{
+	pthread_mutex_lock(minos_command_locks+seq);
+	pthread_mutex_unlock(minos_command_locks+seq);
+
+	return minos_incoming[seq];
+}
+
+IDS::MinosPacket IDS::minos_packetize()
+{
+	MinosPacket ret;
+	uint8_t* cpy = (uint8_t*)(&ret);
+	int i = 0;
+
+	while(((minos_buffer_start + i) % sizeof(minos_buffer) != minos_buffer_end) && i < sizeof(minos_buffer))
+		*cpy = minos_buffer[(minos_buffer_start + i) % sizeof(minos_buffer)];
+
+	minos_buffer_start = (minos_buffer_start + i) % sizeof(minos_buffer);
+
+	minos_incoming[ret.seq] = ret;
+
+	pthread_mutex_trylock(minos_command_locks + ret.seq);
+	pthread_mutex_unlock(minos_command_locks + ret.seq);
+
+	return ret;
+}
+
+void IDS::minos_connect()
+{
+	minos_desc = serial_init();
+	minos_seq = 0;
+}
+
+uint64_t IDS::getVideoCount()
+{
+	return getKinect()->getVideoCount();
+}
+
+uint64_t IDS::getDepthCount()
+{
+	return getKinect()->getDepthCount();
 }

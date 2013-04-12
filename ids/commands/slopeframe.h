@@ -11,7 +11,7 @@ class ComSlopeFrame : public Command
 	public:
 		ComSlopeFrame();
 		virtual int action(IDS* main);
-		Kinect::video_buffer* frame;
+		Kinect::video_buffer frame;
 };
 
 #endif

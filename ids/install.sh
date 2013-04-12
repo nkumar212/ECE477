@@ -1,0 +1,1 @@
+../ids_proto/basic_server/install.sh

@@ -13,7 +13,7 @@
 #include "commands/commands.h"
 #include "ids.h"
 
-#define LOOP_TIME (1000.0/23.98)
+#define LOOP_TIME (1000000.0/23.98)
 
 void* mainSynchronous(void* vids)
 { 
@@ -22,7 +22,7 @@ void* mainSynchronous(void* vids)
 	CPU_SET(1, &cpuset);
 	pthread_setaffinity_np(pthread_self(), sizeof(cpu_set_t), &cpuset);
 
-	long now_ms, loop_ms;
+	long now_us, loop_ms;
 	timespec t1;
 	IDS* ids = static_cast<IDS*>(vids);
 	Kinect* kinect = ids->getKinect();
@@ -30,7 +30,7 @@ void* mainSynchronous(void* vids)
 	int datalen;
 
 	clock_gettime(CLOCK_MONOTONIC, &t1);
-	loop_ms = (t1.tv_sec * 1000 + t1.tv_nsec/1000000);
+	loop_ms = (t1.tv_sec * 1000000 + t1.tv_nsec/1000);
 
 	ComDumpDist cmdDumpDist;
 	CommandQueue* cmdq = CommandQueue::getSingleton();
@@ -43,13 +43,13 @@ void* mainSynchronous(void* vids)
 		fwrite(vbuff,320*6/4,240,stdout);
 
 		clock_gettime(CLOCK_MONOTONIC, &t1);
-		now_ms = (t1.tv_sec * 1000 + t1.tv_nsec/1000000);
+		now_us = (t1.tv_sec * 1000000 + t1.tv_nsec/1000);
 
-		while(loop_ms > now_ms)
+		while(loop_ms > now_us)
 		{
 			usleep(20);
 			clock_gettime(CLOCK_MONOTONIC, &t1);
-			now_ms = (t1.tv_sec * 1000 + t1.tv_nsec/1000000);
+			now_us = (t1.tv_sec * 1000000 + t1.tv_nsec/1000);
 		}
 	}
 

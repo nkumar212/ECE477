@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <stdexcept>
+#include <algorithm>
 
 #include <cstdlib>
 #include <cstring>
@@ -18,15 +19,42 @@
 
 class IDS
 {
+	public:
+		//Minos Types
+		struct MinosPacket
+		{
+			uint8_t sync;
+			uint8_t seq;
+			uint8_t command;
+			union {
+				uint8_t udata8[2];
+				uint8_t udata16;
+				int8_t sdata8[2];
+				int8_t sdata16;
+			};
+		};
 	protected: //Hidden Singleton Setup
 		static class IDS* singleton;
 		IDS();
 		~IDS();
 	protected: //Hidden Member attributes
-		int sock_desc;
-		pthread_mutex_t mutex_output;
 		Kinect::depth_buffer* dbuffer;
+
 		char cnc_buffer[1024];
+		int cnc_desc;
+
+		uint8_t minos_buffer[sizeof(MinosPacket)*16];
+		int minos_desc;
+		uint8_t minos_buffer_start, minos_buffer_end;
+		uint8_t minos_seq;
+
+		pthread_mutex_t minos_command_locks[256];
+		MinosPacket minos_incoming[256];
+
+		pthread_mutex_t mutex_output;
+		pthread_mutex_t minos_outgoing_mutex;
+		pthread_mutex_t cnc_outgoing_mutex;
+
 	public: //Singleton constructor
 		static IDS* getSingleton();
 	public:
@@ -35,13 +63,24 @@ class IDS
 		int cnc_checkmsg();
 		char* cnc_getbuffer();
 
+		void minos_connect();
+		int minos_sendpacket(uint8_t command, uint16_t data = 0);
+		bool minos_checkpacket(uint8_t seq);
+		MinosPacket minos_getpacket(uint8_t);
+		MinosPacket minos_waitpacket(uint8_t command, uint16_t data = 0);
+		MinosPacket minos_packetize();
+		bool minos_recv();
+
 		Kinect* getKinect();
 		CommandQueue* getCmdQueue();
 		bool quit();
 		void lock_output();
 		void unlock_output();
 		void swapDepth();
+		uint64_t getDepthCount();
+		uint64_t getVideoCount();
 		Kinect::depth_buffer* getDepth();
+
 };
 
 #endif

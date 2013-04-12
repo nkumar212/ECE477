@@ -2,13 +2,16 @@
 
 Kinect* Kinect::Singleton = NULL;
 
+uint64_t Kinect::video_count = 0;
+uint64_t Kinect::depth_count = 0;
+
 Kinect::Kinect()
 {
 	if(Singleton) throw std::runtime_error("Tried to create second instatiation of singleton class: Kinect");
 	Singleton = this;
+
 	pthread_mutex_init(&depth_lock,NULL);
 	pthread_mutex_init(&video_lock,NULL);
-	initFreenect();
 
 	video_back = (video_buffer*)malloc(sizeof(video_buffer));
 	video_mid = (video_buffer*)malloc(sizeof(video_buffer));
@@ -17,6 +20,8 @@ Kinect::Kinect()
 	depth_back = (depth_buffer*)malloc(sizeof(depth_buffer));
 	depth_mid = (depth_buffer*)malloc(sizeof(depth_buffer));
 	depth_front = (depth_buffer*)malloc(sizeof(depth_buffer));
+
+	initFreenect();
 
 	yuv_front = (uint8_t*)malloc(sizeof(yuv_buffer));
 	alt_video_source = NULL;
@@ -133,11 +138,13 @@ void Kinect::swapDepthFrontBuffer()
 void Kinect::video_cb(freenect_device *dev, void *rgb, uint32_t timestamp)
 {
 	getSingleton()->swapVideoBackBuffer();
+	++video_count;
 }
 
 void Kinect::depth_cb(freenect_device *dev, void *rgb, uint32_t timestamp)
 {
 	getSingleton()->swapDepthBackBuffer();
+	++depth_count;
 }
 
 Kinect::video_buffer* Kinect::getVideoFrame()
@@ -151,9 +158,13 @@ uint8_t* Kinect::getVideoFrameYUV()
 	swapVideoFrontBuffer();
 
 	if(alt_video_source == NULL)
+	{
 		Bitmap2Yuv420p(yuv_front, (uint8_t*)video_front, 640, 480);
+	}
 	else
+	{
 		Bitmap2Yuv420p(yuv_front, alt_video_source, 640, 480);
+	}
 
 	return yuv_front;
 }
@@ -172,4 +183,14 @@ void Kinect::process_events()
 void Kinect::setVideoSource(uint8_t* frame)
 {
 	alt_video_source = frame;
+}
+
+uint64_t Kinect::getDepthCount()
+{
+	return depth_count;
+}
+
+uint64_t Kinect::getVideoCount()
+{
+	return video_count;
 }

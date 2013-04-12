@@ -44,6 +44,10 @@ class Kinect
 		/*Buffer for video source input*/
 		uint8_t* alt_video_source;
 
+		/*Count of video and depth frames*/
+		static uint64_t depth_count;
+		static uint64_t video_count;
+
 		/*Buffer for YUV output*/		
 		uint8_t* yuv_front;
 
@@ -72,6 +76,9 @@ class Kinect
 		depth_buffer* getDepthFrame();
 		void process_events();
 		void setVideoSource(uint8_t* newvideobuffer);
+
+		uint64_t getDepthCount();
+		uint64_t getVideoCount();
 
 		/*Deconstructor*/
 		~Kinect();
