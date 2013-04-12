@@ -10,10 +10,6 @@
  *          i2c functions
  */
 
-//NEIL -- interrupts need to be initialized for both transmit and receive.
-//        If its an option, interrupt after every byte is received and after
-//        every byte is transmitted (i.e. not after it receives 4 bytes or
-//        something...idk if this is an option tho)
 void i2c_init()
 {
     int BRG = 100;
@@ -35,51 +31,36 @@ void i2c_init()
 /*******************************
  *
  *      i2c Start Bit
+ * returns a one to to designate that a start condition has been initiatied (set i2c_START flag)
  *
  ******************************/
-void i2c_start()
+int i2c_start()
 {
-    int x = 0;
     I2C1CONbits.ACKDT = 0;      //Reset previous ACK
-    //delay(10);
     I2C1CONbits.SEN = 1;        //Initiate Start Condition
-    Nop();
+	Nop();
 
     //Start bit is cleared automatically;
     //wait for automatic clear
 
-    while(I2C1CONbits.SEN)
-    {
-        //delay(1);
-        x++;
-        if(x > 20)
-        {
-            break;
-        }
-    }
-    //delay(2);
+	return 1;	
 }
 
 
 /******************************************
  *
  *          Sends Reset bit
+ * returns one to designate that we are in a RESTART Condition (set restart flag)
  *
 ******************************************/
-void i2c_restart()
+int i2c_restart()
 {
-    int x = 0;
 
     I2C1CONbits.RSEN = 1;
     Nop();
 
-    while(I2C1CONbits.RSEN)
-    {
-        //delay(1);
-        x++;
-        if(x > 20) break;
-    }
-    //delay(2);
+	return 1;
+
 }
 
 /**********************************
@@ -87,90 +68,41 @@ void i2c_restart()
  *          Resets i2c bus
  *
  * *******************************/
-void reset_i2c_bus()
+void i2c_stop(void)
 {
-    int x = 0;
-
-    //begin stop bit
 
     I2C1CONbits.PEN=1;
 
-    //wait for stop bit to clear
-    while(I2C1CONbits.PEN)
-    {
-        //delay(1)
-        x++;
-        if(x>20) break;
-    }
-
-    I2C1CONbits.RCEN = 0;
-    IFS1bits.MI2C1IF = 0;           //Clear interrupt
-    I2C1STATbits.IWCOL = 0;
-    I2C1STATbits.BCL = 0;
-    //delay(10);
-
 }
+
 /***********************************
  *
- *        send byte: input integer and returns 0 if successfull
+ *        send byte: loads tx register to send and return 1 to set the BYTE_SENDING FLAG
+ *
  *
  ***********************************/
-//NEIL -- this should basically just put the char into the transmit buffer
-//        and send it. Put the error checking in the interrupt service routine
-char send_byte_i2c(char data)
+int send_byte_i2c(char data)
 {
-    int i;
+
 
     while(I2C1STATbits.TBF){}
     IFS1bits.MI2C1IF = 0;           //Clear Interrupt
     I2C1TRN = data;                 //Load outgoing data byte
 
-    //wait for it to transmit
-    for(i = 0; i<500; i++)
-    {
-        if(!I2C1STATbits.TRSTAT) break;
-        //delay(1);
-    }
-
-    if(i==500){
-        return(1);
-    }
-
-    //check for NACK from slave
-    if(I2C1STATbits.ACKSTAT == 1)
-    {
-        reset_i2c_bus();
-        return(1);
-    }
-
-    //delay(2);
-    return(0);
+    return 1;
 }
 
 /********************************************
- *              read byte from i2c but no ACK after
+ *     i2c_read_set: set master to read ready so byte can be recieved. will be interrupt when byte has been recieved. 
  *******************************************/
 
-char read_i2c()
+char i2c_read_set(void)
 {
-
-    int i = 0;
-    char data = 0;
 
     //set i2c to recieve
     I2C1CONbits.RCEN = 1;
 
-    //if no response break
-    while(!I2C1STATbits.RBF)
-    {
-        i++;
-        if(i>2000) break;
-    }
-
-    //get data from I2CRCV reg
-    data = I2C1RCV;
-
-    return data;
+    return 1;
 
 }
 
@@ -180,37 +112,44 @@ char read_i2c()
  *
  *
  ********************************************/
-//NEIL -- this needs to just read the byte from the register and return it
-//       no waiting to see if successful
-char read_i2c_byte()
+char read_i2c_byte_ack(void)
 {
-    int i = 0;
+		
     char data = 0;
 
-    //set i2c to recieve
-    I2C1CONbits.RCEN = 1;
-
-    //break if no response
-    while(!I2C1STATbits.RBF)
-    {
-
-        i++;
-        if(i > 2000) break;
-
-    }
-
     //get data from reg
-
     data = I2C1RCV;
 
-    //set ACK to high
+		//set ACK sequence to send ACK
+		I2C1CONbits.ACKDT = 0;
+
+    //start ACK sequence
     I2C1CONbits.ACKEN = 1;
 
-    //delay
-    //delay(10);
-
-    //return
     return data;
 
 }
+
+/**********************************************
+*							Read byte with NACK (used to recieve last byte of sequence, else use other (w/ ACK))
+*
+***********************************************/
+
+char read_i2c_byte_nack(void)
+{
+
+		char data = 0;
+	
+		//get data from reg
+		data = I2C1RCV;
+
+		//set ACK sequence to send NACK
+		I2C1CONbits.ACKDT = 1;
+	
+		//start ACK sequence;
+		I2C1CONbits.ACKEN = 1;
+
+		return data;
+}
+
 

@@ -37,6 +37,9 @@ void printInt(int num) {
 
     temp_string[63] = '\0';
 
+    if (num == 0) {
+        temp_string[--i] = '0';
+    }
     i = 63;
     while (num != 0) {
         temp_string[--i] = '0' + (num%10);
