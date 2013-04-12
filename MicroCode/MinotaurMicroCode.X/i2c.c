@@ -10,10 +10,6 @@
  *          i2c functions
  */
 
-//NEIL -- interrupts need to be initialized for both transmit and receive.
-//        If its an option, interrupt after every byte is received and after
-//        every byte is transmitted (i.e. not after it receives 4 bytes or
-//        something...idk if this is an option tho)
 void i2c_init()
 {
     int BRG = 100;
@@ -72,25 +68,10 @@ int i2c_restart()
  *          Resets i2c bus
  *
  * *******************************/
-void reset_i2c_bus()
+void i2c_stop(void)
 {
-    int x = 0;
-
-    //begin stop bit
 
     I2C1CONbits.PEN=1;
-
-    //wait for stop bit to clear
-    while(I2C1CONbits.PEN)
-    {
-        x++;
-        if(x>20) break;
-    }
-
-    I2C1CONbits.RCEN = 0;
-    IFS1bits.MI2C1IF = 0;           //Clear interrupt
-    I2C1STATbits.IWCOL = 0;
-    I2C1STATbits.BCL = 0;
 
 }
 
