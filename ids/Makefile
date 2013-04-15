@@ -1,32 +1,42 @@
+ROOT=$(shell pwd)
+SED=$(shell which sed)
+MV=$(shell which mv)
+RM=$(shell which rm)
+
+LIBS = -lpthread -lrt
+CPPFLAGS = --debug -I $(ROOT)/libfreenect/include -L $(ROOT)/libfreenect/build/lib -L $(ROOT)/libfreenect/build-alaric/lib
+CLEAN_TARGETS=*.o *.d *.a
+
 A = commands.a
 OBJ = ids.o Command.o CommandQueue.o kinect.o yuv.o
-LIBS = -lpthread -lrt
 subdirs = commands
-ROOT=$(shell pwd)
+
 export ROOT
 export CPPFLAGS
-CPPFLAGS = --debug -I $(ROOT)/libfreenect/include -L $(ROOT)/libfreenect/build/lib -L $(ROOT)/libfreenect/build-alaric/lib
+
+define make-depend
+	@$(CC) $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -M $1 | \
+		$(SED) 's,\($$(notdir $2)\) *:,$$(dir $2) $3: ,' > $3.tmp
+	@$(MV) $3.tmp $3
+endef
 
 target : ids
 
 ids : main.cpp $(A) $(OBJ) main_command_queue.h
 	g++ main.cpp $(OBJ) $(A) $(LIBS)  $(CPPFLAGS) -lfreenect -o ids
 
-$(A) : $(subdirs)
+commands.a : commands
+	$(MAKE) -C commands
 
-depends : *.cpp
-	@g++ -M $(CPPFLAGS) $^ > depends
-
-clean :
-	@rm -f *.o *.a depends
-
+clean:
+	rm -f $(CLEAN_TARGETS)
 	$(MAKE) -C commands clean
 
-$(subdirs) : .PHONY
-	$(MAKE) -C $@
+%.a:
+	ar crf $@ $^
 
-.PHONY : 
+%.o: %.cpp
+	$(call make-depend,$<,$@,$(subst .o,.d,$@))
+	$(COMPILE.cpp) -o $@ $<
 
-%.o : depends
-
--include depends
+.PHONY : $(subdirs)

@@ -148,7 +148,7 @@ int ComWallFrame::action(IDS* main)
 			}
 		}
 	}
-	//std::cerr << "Average Floor Height: %f" << floor_height / floor_count << std::endl;
-//	std::cerr << "Command Queue Depth: " << CommandQueue::getSingleton()->size() << std::endl;
+
 	return 0;
 }
+

@@ -1,16 +1,30 @@
-OBJS = keepalive.o freenect_sync.o swapdepth.o planedist.o distframe.o dumpdist.o slopeframe.o
+ROOT=$(shell pwd)
+SED=$(shell which sed)
+MV=$(shell which mv)
+RM=$(shell which rm)
+
+define make-depend
+	@$(CC) $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -M $1 | \
+		$(SED) 's,\($$(notdir $2)\) *:,$$(dir $2) $3: ,' > $3.tmp
+	@$(MV) $3.tmp $3
+endef
+
+OBJS = keepalive.o freenect_sync.o swapdepth.o planedist.o distframe.o dumpdist.o slopeframe.o wallframe.o
+CLEAN_TARGETS=*.o *.d *.a
+subdirs = 
 
 target : ../commands.a
 
 ../commands.a : $(OBJS)
+
+clean:
+	rm -f $(CLEAN_TARGETS)
+
+%.a:
 	ar crf $@ $^
 
-depends : *.cpp
-	@g++ -M $(CPPFLAGS) $^ > depends
+%.o: %.cpp
+	$(call make-depend,$<,$@,$(subst .o,.d,$@))
+	$(COMPILE.cpp) -o $@ $<
 
-clean :
-	@rm -f *.o *.a depends
-
-%.o : depends
-
--include depends
+.PHONY : $(subdirs)
