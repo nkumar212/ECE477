@@ -22,7 +22,7 @@ endef
 
 target : ids
 
-ids : main.cpp $(A) $(OBJ) main_command_queue.h
+ids : main.cpp $(A) $(OBJ) main_command_queue.h main_cnc_wait.h main_minos_wait.h
 	g++ main.cpp $(OBJ) $(A) $(LIBS)  $(CPPFLAGS) -lfreenect -o ids
 
 commands.a : commands

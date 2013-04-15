@@ -96,7 +96,6 @@ int ComSlopeFrame::action(IDS* main)
 						++ycount;
 					}
 				}
-//				fprintf(stderr,"\n");
 
 				if((ycount > 6))
 				{
@@ -104,9 +103,7 @@ int ComSlopeFrame::action(IDS* main)
 					if(pbar != 0 && xscount > 0)
 					{
 						xslope[xscount] = (pbar - ybar) / (pxscount - xscount);
-//						fprintf(stderr,"%d (%d - %d) / (%d - %d)\n", xslope[xscount], pbar, ybar, pxscount, xscount);
 						xslopebar += xslope[xscount];
-						//(stderr,"%d ",xslope[xscount]);
 					}
 					pbar = ybar;
 					pxscount = xscount;

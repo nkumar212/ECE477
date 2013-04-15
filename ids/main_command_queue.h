@@ -19,16 +19,20 @@ void* mainCommandQueue(void* vIDS)
 	CommandQueue* cmd_q = ids->getCmdQueue();
 	Command* cmd = NULL;
 
-	ComSlopeFrame* cmdSlopeFrame = new ComSlopeFrame();
+	ComWallFrame* cmdWallFrame = new ComWallFrame();
 
-	cmd_q->add_periodic(new ComKeepalive(), 10000);
+	cmd_q->add_periodic(new ComKeepalive(), 100);
 	cmd_q->add_periodic(new ComSwapDepth(), 99);
 	//cmd_q->add_periodic(new ComPlaneDist(), 100);
-	cmd_q->add_periodic(cmdSlopeFrame, 100);
+	cmd_q->add_periodic(cmdWallFrame, 100);
 
-	ids->getKinect()->setVideoSource((uint8_t*)cmdSlopeFrame->frame);
+//	ids->getKinect()->setVideoSource((uint8_t*)cmdWallFrame->frame);
 
 	ids->swapDepth();
+
+
+	long start_ms, end_ms;
+	timespec t1;
 
 	while(!ids->quit())
 	{
@@ -38,9 +42,20 @@ void* mainCommandQueue(void* vIDS)
 		{
 			cmd = cmd_q->front();
 			cmd_q->pop();
+
 			ids->lock_output();
+
+			clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &t1);
+			start_ms = (t1.tv_sec * 1000000 + t1.tv_nsec/1000);
+
 			cmd->action(ids);
-			//std::cerr << cmd->getName() << std::endl;
+
+			clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &t1);
+			end_ms = (t1.tv_sec * 1000000 + t1.tv_nsec/1000);
+
+			if(end_ms - start_ms > 1000)
+				std::cerr << "Command '" << cmd->getName() << "' took " << (end_ms - start_ms) << "us" << std::endl;
+
 			ids->unlock_output();
 		}else{
 			usleep(500);

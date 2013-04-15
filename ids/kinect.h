@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include <cassert>
 #include <cstdio>
+#include <cmath>
 
 #include "libfreenect.h"
 
@@ -54,6 +55,26 @@ class Kinect
 		/*Buffer Mutexes*/
 		pthread_mutex_t depth_lock;
 		pthread_mutex_t video_lock;
+
+		float x3dTrig[480/8][640/8][8][8];
+		float y3dTrig[480/8][640/8][8][8];
+		float z3dTrig[480/8][640/8][8][8];
+
+	public:
+		inline float x3d(int x, int y, int x0, int y0, float d)
+		{
+			return d * x3dTrig[y][x][y0][x0];
+		}
+
+		inline float y3d(int x, int y, int x0, int y0, float d)
+		{
+			return d * y3dTrig[y][x][y0][x0];
+		}
+
+		inline float z3d(int x, int y, int x0, int y0, float d)
+		{
+			return d * z3dTrig[y][x][y0][x0];
+		}
 
 	protected: //Internal Members
 
