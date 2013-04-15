@@ -24,7 +24,7 @@ void i2c_init()
 
     temp = I2C1RCV;              //read buffer to clear buffer full
 
-    reset_i2c_bus();            //set bus to idle;
+  //  reset_i2c_bus();            //set bus to idle;
 
 
 }
