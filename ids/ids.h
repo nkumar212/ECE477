@@ -21,18 +21,22 @@ class IDS
 {
 	public:
 		//Minos Types
+		
+		 #pragma pack(push,1)
 		struct MinosPacket
 		{
 			uint8_t sync;
 			uint8_t seq;
 			uint8_t command;
-			union {
+			union
+			{
 				uint8_t udata8[2];
-				uint8_t udata16;
+				uint16_t udata16;
 				int8_t sdata8[2];
-				int8_t sdata16;
+				int16_t sdata16;
 			};
 		};
+		 #pragma pack(pop)
 	protected: //Hidden Singleton Setup
 		static class IDS* singleton;
 		IDS();

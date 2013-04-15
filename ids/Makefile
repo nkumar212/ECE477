@@ -5,11 +5,11 @@ subdirs = commands
 ROOT=$(shell pwd)
 export ROOT
 export CPPFLAGS
-CPPFLAGS = --debug -I $(ROOT)/libfreenect/include -L $(ROOT)/libfreenect/build/lib -L $(ROOT)/libfreenect/build-alaric/lib
+CPPFLAGS = -O3 -I $(ROOT)/libfreenect/include -L $(ROOT)/libfreenect/build/lib -L $(ROOT)/libfreenect/build-alaric/lib -lm
 
 target : ids
 
-ids : main.cpp $(A) $(OBJ) main_command_queue.h
+ids : main.cpp $(A) $(OBJ) main_command_queue.h main_cnc_wait.h main_minos_wait.h
 	g++ main.cpp $(OBJ) $(A) $(LIBS)  $(CPPFLAGS) -lfreenect -o ids
 
 $(A) : $(subdirs)

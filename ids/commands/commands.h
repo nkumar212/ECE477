@@ -8,5 +8,6 @@
 #include "distframe.h"
 #include "dumpdist.h"
 #include "slopeframe.h"
+#include "wallframe.h"
 
 #endif

@@ -1,4 +1,12 @@
-OBJS = keepalive.o freenect_sync.o swapdepth.o planedist.o distframe.o dumpdist.o slopeframe.o
+OBJS = keepalive.o \
+		freenect_sync.o \
+		swapdepth.o \
+		planedist.o \
+		distframe.o \
+		dumpdist.o \
+		slopeframe.o \
+		wallframe.o
+
 
 target : ../commands.a
 

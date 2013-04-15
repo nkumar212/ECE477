@@ -9,7 +9,7 @@ var KEY_S = 4;
 var KEY_D = 8;
 var KEY_SPACE = 16;
 
-var ws = new WebSocket("ws://alaric.no-ip.org:9999/");
+var ws = new WebSocket("ws://128.46.100.114:9999/");
 
 //Global variable holding which gKeys are down
 var gKeys = 0;
@@ -88,7 +88,11 @@ ws.onopen = function(){
 </script>
 </head>
 <body>
-<canvas tabindex=1 style="background-color:white;border: thin red solid;" width=640 height=480 id="canvas"></canvas>
+<canvas tabindex=1 style="background-color:white;border: thin red solid;" width=320 height=240 id="canvas"></canvas>
+<video style="background-color:white;border: thin red solid;" width=320 height=240>
+<source src="rtp://128.46.100.114:50001/test1.ogg" type="video/ogg" />
+	
+</video>
 <input type="hidden" id="robotid" value="MINOTAUR_1" />
 <input type="hidden" id="sessionid" value="127.0.0.1" />
 <input type="hidden" id="command" value="0" />
@@ -97,4 +101,4 @@ ws.onopen = function(){
 <br>Outdata:<textarea id="output" cols=80 rows=5></textarea>
 </body>
 </html>
-
+s

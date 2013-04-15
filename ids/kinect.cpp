@@ -5,6 +5,8 @@ Kinect* Kinect::Singleton = NULL;
 uint64_t Kinect::video_count = 0;
 uint64_t Kinect::depth_count = 0;
 
+#define KINECT_DEPTH_HORIZ_PIXEL_THETA 0.0017159468
+#define KINECT_DEPTH_VERT_PIXEL_THETA 0.001798352
 Kinect::Kinect()
 {
 	if(Singleton) throw std::runtime_error("Tried to create second instatiation of singleton class: Kinect");
@@ -25,6 +27,20 @@ Kinect::Kinect()
 
 	yuv_front = (uint8_t*)malloc(sizeof(yuv_buffer));
 	alt_video_source = NULL;
+
+	int x,y,ix,iy;
+	float htheta, vtheta;
+	for(y = 0; y < 480 / 8; y++)
+		for(x = 0; x < 640 / 8; x++)
+			for(iy = 0; iy < 8; iy++)
+				for(ix = 0; ix < 8; ix++)
+				{
+					htheta = (319.5 - x*8 - ix) * KINECT_DEPTH_HORIZ_PIXEL_THETA;
+					vtheta = (239.5 - y*8 - iy) * KINECT_DEPTH_VERT_PIXEL_THETA;
+					x3dTrig[y][x][iy][ix] = sin(htheta);
+					y3dTrig[y][x][iy][ix] = cos(vtheta);
+					z3dTrig[y][x][iy][ix] = sin(vtheta);
+				}
 }
 
 Kinect::~Kinect()
@@ -60,7 +76,7 @@ void Kinect::initFreenect()
 		throw std::runtime_error("Function freenect_init() failed");
 	}
 
-	freenect_set_log_level(f_ctx, FREENECT_LOG_DEBUG);
+	//freenect_set_log_level(f_ctx, FREENECT_LOG_DEBUG);
 	freenect_select_subdevices(f_ctx, (freenect_device_flags)(FREENECT_DEVICE_MOTOR | FREENECT_DEVICE_CAMERA));
 
 	nr_devices = freenect_num_devices(f_ctx);

@@ -71,7 +71,7 @@ Kinect::depth_buffer* IDS::getDepth()
 
 int IDS::cnc_checkmsg()
 {
-	int cnt = recv(cnc_desc, cnc_buffer, sizeof(cnc_buffer), 0);
+	int cnt = recv(cnc_desc, cnc_buffer, 3, 0);
 	cnc_buffer[cnt] = '\0';
 	return cnt;
 }
@@ -112,6 +112,8 @@ void IDS::cnc_connect(std::string cnc_host, size_t port)
 	this->cnc_desc = cnc_desc;
 	int flags = fcntl(cnc_desc, F_GETFL, 0);
 	fcntl(cnc_desc, F_SETFL, flags & ~O_NONBLOCK);
+
+	cnc_rawmsg("Bull:1",6);
 }
 
 int IDS::cnc_rawmsg(const void* msg, size_t msg_size)
@@ -123,29 +125,36 @@ int IDS::cnc_rawmsg(const void* msg, size_t msg_size)
 
 	if(count != msg_size)
 		throw std::runtime_error("Lost Connection to C&C server\n");
+
+	return count;
 }
 
 int IDS::minos_sendpacket(uint8_t command, uint16_t data)
 {
 	MinosPacket packet;
 
+	uint8_t* cmd_data = (uint8_t*) &packet;
+
 	if(minos_desc == 0)
 		throw std::runtime_error("Not connected to Minos Microcontroller.  Cannot Send packet.\n");
-
-	packet.sync = 0xAA;
-	packet.command = command;
-	packet.udata16 = data;
 
 	while(!minos_checkpacket(++minos_seq))
 		;
 
+
+	packet.sync = 0xAA;
+	packet.command = command;
+	packet.udata16 = data;
 	packet.seq = minos_seq;
+
+	//fprintf(stderr,"%02X %02X %02X %02X %02X\n%04X\n", cmd_data[0], cmd_data[1], cmd_data[2], cmd_data[3], cmd_data[4], data);
 
 	pthread_mutex_lock(&minos_outgoing_mutex);
 	int count = write(minos_desc, &packet, 5);
+	//fprintf(stderr,"%02X %02X %02X %02X %02X\n%04X\n", cmd_data[0], cmd_data[1], cmd_data[2], cmd_data[3], cmd_data[4], data);
 	pthread_mutex_unlock(&minos_outgoing_mutex);
 
-	if(count != sizeof(packet))
+	if(count != 5)
 		throw std::runtime_error("Lost Connection to Minos Microcontroller\n");
 
 	return minos_seq;
