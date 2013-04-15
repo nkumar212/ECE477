@@ -31,16 +31,16 @@ void initUART() {
 }
 
 
-void printInt(int num) {
+void printInt(unsigned int num) {
     char temp_string[64];
     int i;
 
     temp_string[63] = '\0';
 
+    i = 63;
     if (num == 0) {
         temp_string[--i] = '0';
     }
-    i = 63;
     while (num != 0) {
         temp_string[--i] = '0' + (num%10);
         num /= 10;

@@ -85,7 +85,7 @@ void initInputCapture();
 
 //uart functions
 void initUART();
-void printInt(int);
+void printInt(unsigned int);
 void printString(char *);
 
 //I2C functions

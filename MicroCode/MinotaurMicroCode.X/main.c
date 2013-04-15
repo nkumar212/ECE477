@@ -26,11 +26,12 @@ void __attribute__((__interrupt__,__auto_psv__)) _ADC1Interrupt();
 void __attribute__((__interrupt__,__auto_psv__)) _U1RXInterrupt();
 void __attribute__((__interrupt__,__auto_psv__)) _U1TXInterrupt();
 void __attribute__((__interrupt__,__auto_psv__)) _T4Interrupt();
-void __attribute__((__interrupt__,__auto_psv__)) _IC1Interrupt();
-void __attribute__((__interrupt__,__auto_psv__)) _IC2Interrupt();
-void __attribute__((__interrupt__,__auto_psv__)) _IC3Interrupt();
-void __attribute__((__interrupt__,__auto_psv__)) _IC4Interrupt();
+//void __attribute__((__interrupt__,__auto_psv__)) _IC1Interrupt();
+//void __attribute__((__interrupt__,__auto_psv__)) _IC2Interrupt();
+//void __attribute__((__interrupt__,__auto_psv__)) _IC3Interrupt();
+//void __attribute__((__interrupt__,__auto_psv__)) _IC4Interrupt();
 void __attribute__((__interrupt__,__auto_psv__)) _MI2C1Interrupt();
+void __attribute__((__interrupt__,__auto_psv__)) _T3Interrupt();
 
 void wait();
 
@@ -89,7 +90,9 @@ int main(int argc, char** argv) {
     //int left_distance = 0; //the distance that the left motor has traveled in cm
 
     unsigned char tempC = 0 ; //temporary char
+    unsigned char tempC1, tempC2;
     unsigned char tempBuffC = 0;
+    char directionTest[3];
     //char tempC_S;        //signed temporoary char
 
     //setup port B as digital output
@@ -117,6 +120,7 @@ int main(int argc, char** argv) {
 
     //enable interrupts for the required molules
     IEC1bits.T4IE = 1;   //enable timer 3 interrupts
+    IEC0bits.T3IE = 1;
     IEC0bits.U1RXIE = 1; //enable UART Rx interrupts
     IFS0bits.U1RXIF = 0;
     IEC0bits.U1TXIE = 1; //enable UART Tx interrupts
@@ -162,6 +166,8 @@ int main(int argc, char** argv) {
             //printString("Right ticks:");
             //printInt(RIGHT_TICKS);
             //printString("\n\r");
+            printInt(RIGHT_TICKS);
+            printString("\n\r\0");
             PRINT = 0;
             //LATB ^= 0x8000;
         }
@@ -250,8 +256,8 @@ int main(int argc, char** argv) {
         }
         */
 
-
-        if( 0/*READY TO READ FUEL VAL*/)
+/*
+        if( 0/*READY TO READ FUEL VAL* /)
 		{
 			I2C_START = i2c_start();
 		}
@@ -302,7 +308,7 @@ int main(int argc, char** argv) {
 			else if(I2C_RECV_BYTE == 1)					//send stop condition
 			{
 				I2C_RECV_BYTE = 0;
-				I2C_STOP += i2c_stop();
+				//I2C_STOP += i2c_stop();
 			}
 
 			else if(I2C_STOP == 1)
@@ -310,7 +316,7 @@ int main(int argc, char** argv) {
 				I2C_STOP = 0;								//stop condition has completed clear stop i2c_stop flag
 			}
 
-	}
+	}*/
 			
 
 
@@ -418,6 +424,7 @@ int main(int argc, char** argv) {
         }
 
 
+
         //--------------------- MOTORS --------------------------
         /*
         //TEMP take the character received from UART and use it to determine
@@ -456,21 +463,25 @@ int main(int argc, char** argv) {
             controlpacket.bytesRecieved = 0; //consume packet
             //TMR4 = 0; //reset the timeout timer b/c command has been received
 
-            tempC = controlpacket.data1;
-            if (tempC & 0x80) {
+            tempC1 = controlpacket.data1;
+            if ((tempC1 & 0x80) == 0x80) {
                 left_direction = 'B';
-            } else {
+            } else if(tempC1 != 0){
                 left_direction = 'F';
-            }
-            left_speed = (tempC & 0x7F) << 1;
-            
-            tempC = controlpacket.data2;
-            if (tempC & 0x80) {
-                right_direction = 'B';
             } else {
-                right_direction = 'F';
+                left_direction = 'S';
             }
-            right_speed = (tempC & 0x7F) << 1;
+            left_speed = (tempC1 & 0x7F) << 1;
+            
+            tempC2 = controlpacket.data2;
+            if ((tempC2 & 0x80) == 0x80) {
+                right_direction = 'B';
+            } else if(tempC2 != 0){
+                right_direction = 'F';
+            } else {
+                right_direction = 'S';
+            }
+            right_speed = (tempC2 & 0x7F) << 1;
 
 
             //send an ackknowledgement that we received the packet
@@ -484,35 +495,7 @@ int main(int argc, char** argv) {
         }
 
 
-        //Set the speed of the motors
-        OC3RS = (right_speed << 1) & 0x1FF; //set dutycycle of PWM for motor speed
-        OC2RS = (left_speed << 1) & 0x1FF;
-
-
-
-        //set direction of motors
-        switch(right_direction) {
-            case 'F':
-                LATE = 0x02;
-                break;
-            case 'B':
-                LATE = 0x04;
-                break;
-            default:
-                LATE = 0;
-                break;
-        }
-        switch(left_direction) {
-            case 'F':
-                LATE |= 0x08;
-                break;
-            case 'B':
-                LATE |= 0x10;
-                break;
-            default:
-                LATE |= 0;
-                break;
-        }
+        
         
 
 
@@ -548,59 +531,88 @@ int main(int argc, char** argv) {
         */
 
 
-        //TEMP -- light up LED if any sensor gets too close
-        if((SENSOR1 > SEN_MAX) | (SENSOR4 > SEN_MAX) | (SENSOR3 > SEN_MAX) | (SENSOR2 > SEN_MAX) | (SENSOR5 > SEN_MAX)) {
-            //LATB |= 0x8000;
-            //LATE = 0x00; //stop the robot
-        }
-        else {
-            //LATB &= 0x7FFF;
-        }
 
         //Obstacle avoidance
         /*
         //if fron senter sensor senses farther than the floor, there is a drop
         //off and back up for a bit and to the right
         if ((SENSOR2 < SEN_MIN) | (SENSOR2 > SEN_MAX)) {
-            LATE = 0xA; // backwards
-            OC3RS = 127 << 1; //full speed left half right
-            OC2RS = 255 << 1;
-            wait(); 
+            right_speed = 0x7F;
+            left_speed = 0xFF;
+            right_direction = 'B';
+            left_direction = 'B';
         }
         //same for back sensors
         if ((SENSOR4 < SEN_MIN) | (SENSOR4 > SEN_MAX)) {
-            LATE = 0x14; //forwards
-            OC3RS = 0x1FF; //full speed
-            OC2RS = 0x1FF;
-            wait();  
+            right_speed = 0xFF;
+            left_speed = 0xFF;
+            right_direction = 'F';
+            left_direction = 'F';
+            
         }
         if ((SENSOR5 < SEN_MIN) | (SENSOR5 > SEN_MAX)) {
-            LATE = 0x14; //forwards
-            OC3RS = 0x1FF; //full speed
-            OC2RS = 0x1FF;
-            wait();  
+            right_speed = 0xFF;
+            left_speed = 0xFF;
+            right_direction = 'F';
+            left_direction = 'F';
+            //wait();
         }
-        */
+
+        //front side sensors
         if (SENSOR1 > SEN_MAX && SENSOR3 > SEN_MAX) {
-            LATE = 0x14; //go back
-            OC3RS = 0x1FF; //full speed
-            OC2RS = 0x1FF;
-            wait();  //wait for robot to turn a bit
+            right_speed = 0xFF;
+            left_speed = 0xFF;
+            right_direction = 'B';
+            left_direction = 'B';
+            //wait();  //wait for robot to turn a bit
         }
         //if the side sensors get too close, turn the opposite way for a bit
         else if (SENSOR1 > SEN_MAX) { //left sensor
-            LATE = 0x12; //turn right
-            OC3RS = 0x1FF; //full speed
-            OC2RS = 0x1FF;
-            wait();  //wait for robot to turn a bit
+            right_speed = 0xFF;
+            left_speed = 0xFF;
+            right_direction = 'F';
+            left_direction = 'B';
+            //wait();  //wait for robot to turn a bit
         }
-        else if (SENSOR3 > SEN_MAX) {
-            LATE = 0x0C; //turn right
-            OC3RS = 0x1FF; //full speed
-            OC2RS = 0x1FF;
-            wait();  //wait for robot to turn a bit
+        else if (SENSOR3 > SEN_MAX) { //right sensor
+            right_speed = 0xFF;
+            left_speed = 0xFF;
+            right_direction = 'B';
+            left_direction = 'F';
+            //wait();  //wait for robot to turn a bit
         }
-         //TEMP
+        */
+
+        //Set the speed of the motors
+        OC3RS = (right_speed << 1) & 0x1FF; //set dutycycle of PWM for motor speed
+        OC2RS = (left_speed << 1) & 0x1FF;
+
+        LATE = 0;
+
+
+        //set direction of motors
+        switch(left_direction) {
+            case 'F':
+                LATE |= 0x02;
+                break;
+            case 'B':
+                LATE |= 0x04;
+                break;
+            default:
+                LATE &= ~0x06;
+                break;
+        }
+        switch(right_direction) {
+            case 'F':
+                LATE |= 0x08;
+                break;
+            case 'B':
+                LATE |= 0x10;
+                break;
+            default:
+                LATE &= ~0x18;
+                break;
+        }
 
 
 
@@ -608,6 +620,7 @@ int main(int argc, char** argv) {
             controlpacket.bytesRecieved = 0;
         }
 
+       
 
     } //end while
     
@@ -682,116 +695,15 @@ void __attribute__((__interrupt__,__auto_psv__)) _T4Interrupt() {
 }
 
 
-//ISR for Input capture 1. Occurrs every 4 events (4 ticks of the encoder). So
-//read all 4 timer values from the buffers and return
+//Motor encoder code. Keeps trac of the number of ticks (can be a negative number)
 //SEE ->>  http://en.wikipedia.org/wiki/Rotary_encoder  - Incremental rotary encoder section
-void __attribute__((__interrupt__,__auto_psv__)) _IC1Interrupt() {
-    unsigned char ch1 = LATDbits.LATD8 << 4; //current value of ch1 pin
-    unsigned char ch2 = LATDbits.LATD9; //current value of ch2 pin
-    unsigned char currentstate = ch1 | ch2;
-
-    IFS0bits.IC1IF = 0;
-
-    ENCODER1[0] = IC1BUF;
-    //ENCODER1[1] = IC1BUF;
-    //ENCODER1[2] = IC1BUF;
-    //ENCODER1[3] = IC1BUF;
-
-    if (ch1 == 0x10 || ch2 == 0x01) {
-        LATB |= 0x8000;
-    }
-
-    switch(PREV_ENCODER_RIGHT) {
-        case 0x00:
-            if(currentstate == 0x01) {
-                RIGHT_TICKS += 1;
-                PREV_ENCODER_RIGHT = 0x01; //at this point one full phase has gone by
-            } else if (currentstate == 0x10) {
-                RIGHT_TICKS -= 1;
-                PREV_ENCODER_RIGHT = 0x10; //at this point one full phase has gone by
-            }
-            break;
-        case 0x01:
-            LATB |= 0x8000;
-            if(currentstate == 0x00) {
-                PREV_ENCODER_RIGHT = 0x00;
-            } else if (currentstate == 0x11) {
-                PREV_ENCODER_RIGHT = 0x11;
-            }
-            break;
-        case 0x11:
-            if (currentstate == 0x10) {
-                PREV_ENCODER_RIGHT = 0x10;
-            } else if (currentstate == 0x01) {
-                PREV_ENCODER_RIGHT = 0x01;
-            }
-            break;
-        case 0x10:
-            if (currentstate == 0x00) {
-                PREV_ENCODER_RIGHT = 0x00;
-            } else if (currentstate == 0x11) {
-                PREV_ENCODER_RIGHT = 0x11;
-            }
-        default:
-            break;
-
-    }
-}
-//IC2
-void __attribute__((__interrupt__,__auto_psv__)) _IC2Interrupt() {
-    unsigned char ch1 = LATDbits.LATD8 << 4; //current value of ch1 pin
-    unsigned char ch2 = LATDbits.LATD9; //current value of ch2 pin
+void __attribute__((__interrupt__,__auto_psv__)) _T3Interrupt() {
+    unsigned char ch1 = PORTDbits.RD10 << 4; //current value of ch1 pin
+    unsigned char ch2 = PORTDbits.RD11; //current value of ch2 pin
     unsigned char currentstate = ch1 | ch2;
 
 
-    IFS0bits.IC2IF = 0;
-
-    ENCODER2[0] = IC2BUF;
-
-    switch(PREV_ENCODER_RIGHT) {
-        case 0x00:
-            if(currentstate == 0x01) {
-                PREV_ENCODER_RIGHT = 0x01;
-            } else if (currentstate == 0x10) {
-                PREV_ENCODER_RIGHT = 0x10;
-            }
-            break;
-        case 0x01:
-            if(currentstate == 0x00) {
-                PREV_ENCODER_RIGHT = 0x00;
-            } else if (currentstate == 0x11) {
-                PREV_ENCODER_RIGHT = 0x11;
-            }
-            break;
-        case 0x11:
-            if (currentstate == 0x10) {
-                PREV_ENCODER_RIGHT = 0x10;
-            } else if (currentstate == 0x01) {
-                PREV_ENCODER_RIGHT = 0x01;
-            }
-            break;
-        case 0x10:
-            if (currentstate == 0x00) {
-                PREV_ENCODER_RIGHT = 0x00;
-            } else if (currentstate == 0x11) {
-                PREV_ENCODER_RIGHT = 0x11;
-            }
-            break;
-        default:
-            break;
-    }
-    
-}
-
-//IC3 -- channel 1 of LEFT motor
-void __attribute__((__interrupt__,__auto_psv__)) _IC3Interrupt() {
-    unsigned char ch1 = LATDbits.LATD10 << 4; //current value of ch1 pin
-    unsigned char ch2 = LATDbits.LATD11; //current value of ch2 pin
-    unsigned char currentstate = ch1 | ch2;
-
-    IFS2bits.IC3IF = 0;
-
-    ENCODER3[0] = IC3BUF;
+    //ENCODER3[0] = IC3BUF;
 
     switch(PREV_ENCODER_LEFT) {
         case 0x00:
@@ -829,14 +741,207 @@ void __attribute__((__interrupt__,__auto_psv__)) _IC3Interrupt() {
     }
 
 
+    ch1 = PORTDbits.RD8 << 4; //current value of ch1 pin
+    ch2 = PORTDbits.RD9; //current value of ch2 pin.
+    currentstate = ch1 | ch2;
+    //ENCODER1[1] = IC1BUF;
+    //ENCODER1[2] = IC1BUF;
+    //ENCODER1[3] = IC1BUF;
+
+
+    switch(PREV_ENCODER_RIGHT) {
+        case 0x00:
+            if(currentstate == 0x01) {
+                RIGHT_TICKS += 1;
+                PREV_ENCODER_RIGHT = 0x01; //at this point one full phase has gone by
+            } else if (currentstate == 0x10) {
+                RIGHT_TICKS -= 1;
+                PREV_ENCODER_RIGHT = 0x10; //at this point one full phase has gone by
+            }
+            break;
+        case 0x01:
+            LATB |= 0x8000;
+            if(currentstate == 0x00) {
+                PREV_ENCODER_RIGHT = 0x00;
+            } else if (currentstate == 0x11) {
+                PREV_ENCODER_RIGHT = 0x11;
+            }
+            break;
+        case 0x11:
+            if (currentstate == 0x10) {
+                PREV_ENCODER_RIGHT = 0x10;
+            } else if (currentstate == 0x01) {
+                PREV_ENCODER_RIGHT = 0x01;
+            }
+            break;
+        case 0x10:
+            if (currentstate == 0x00) {
+                PREV_ENCODER_RIGHT = 0x00;
+            } else if (currentstate == 0x11) {
+                PREV_ENCODER_RIGHT = 0x11;
+            }
+        default:
+            break;
+
+    }
+    IFS0bits.T3IF = 0;
+
+}
+
+//Motor encoder code. Keeps trac of the number of ticks (can be a negative number)
+//SEE ->>  http://en.wikipedia.org/wiki/Rotary_encoder  - Incremental rotary encoder section
+/*
+void __attribute__((__interrupt__,__auto_psv__)) _IC1Interrupt() {
+    unsigned char ch1 = PORTDbits.RD8 << 4; //current value of ch1 pin
+    unsigned char ch2 = PORTDbits.RD9; //current value of ch2 pin
+    unsigned char currentstate = ch1 | ch2;
+
+    
+
+    ENCODER1[0] = IC1BUF;
+    //ENCODER1[1] = IC1BUF;
+    //ENCODER1[2] = IC1BUF;
+    //ENCODER1[3] = IC1BUF;
+
+
+    switch(PREV_ENCODER_RIGHT) {
+        case 0x00:
+            if(currentstate == 0x01) {
+                RIGHT_TICKS += 1;
+                PREV_ENCODER_RIGHT = 0x01; //at this point one full phase has gone by
+            } else if (currentstate == 0x10) {
+                RIGHT_TICKS -= 1;
+                PREV_ENCODER_RIGHT = 0x10; //at this point one full phase has gone by
+            }
+            break;
+        case 0x01:
+            LATB |= 0x8000;
+            if(currentstate == 0x00) {
+                PREV_ENCODER_RIGHT = 0x00;
+            } else if (currentstate == 0x11) {
+                PREV_ENCODER_RIGHT = 0x11;
+            }
+            break;
+        case 0x11:
+            if (currentstate == 0x10) {
+                PREV_ENCODER_RIGHT = 0x10;
+            } else if (currentstate == 0x01) {
+                PREV_ENCODER_RIGHT = 0x01;
+            }
+            break;
+        case 0x10:
+            if (currentstate == 0x00) {
+                PREV_ENCODER_RIGHT = 0x00;
+            } else if (currentstate == 0x11) {
+                PREV_ENCODER_RIGHT = 0x11;
+            }
+        default:
+            break;
+
+    }
+
+    IFS0bits.IC1IF = 0;
+}
+//IC2
+void __attribute__((__interrupt__,__auto_psv__)) _IC2Interrupt() {
+    unsigned char ch1 = PORTDbits.RD8 << 4; //current value of ch1 pin
+    unsigned char ch2 = PORTDbits.RD9; //current value of ch2 pin
+    unsigned char currentstate = ch1 | ch2;    
+
+    ENCODER2[0] = IC2BUF;
+
+    switch(PREV_ENCODER_RIGHT) {
+        case 0x00:
+            if(currentstate == 0x01) {
+                PREV_ENCODER_RIGHT = 0x01;
+            } else if (currentstate == 0x10) {
+                PREV_ENCODER_RIGHT = 0x10;
+            }
+            break;
+        case 0x01:
+            if(currentstate == 0x00) {
+                PREV_ENCODER_RIGHT = 0x00;
+            } else if (currentstate == 0x11) {
+                PREV_ENCODER_RIGHT = 0x11;
+            }
+            break;
+        case 0x11:
+            if (currentstate == 0x10) {
+                PREV_ENCODER_RIGHT = 0x10;
+            } else if (currentstate == 0x01) {
+                PREV_ENCODER_RIGHT = 0x01;
+            }
+            break;
+        case 0x10:
+            if (currentstate == 0x00) {
+                PREV_ENCODER_RIGHT = 0x00;
+            } else if (currentstate == 0x11) {
+                PREV_ENCODER_RIGHT = 0x11;
+            }
+            break;
+        default:
+            break;
+    }
+
+    IFS0bits.IC2IF = 0;
+    
+}
+
+//IC3 -- channel 1 of LEFT motor
+void __attribute__((__interrupt__,__auto_psv__)) _IC3Interrupt() {
+    unsigned char ch1 = PORTDbits.RD10 << 4; //current value of ch1 pin
+    unsigned char ch2 = PORTDbits.RD11; //current value of ch2 pin
+    unsigned char currentstate = ch1 | ch2;
+
+    
+
+    //ENCODER3[0] = IC3BUF;
+
+    switch(PREV_ENCODER_LEFT) {
+        case 0x00:
+            if(currentstate == 0x01) {
+                PREV_ENCODER_LEFT = 0x01;
+                LEFT_TICKS += 1;
+            } else if (currentstate == 0x10) {
+                PREV_ENCODER_LEFT = 0x10;
+                LEFT_TICKS -= 1;
+            }
+            break;
+        case 0x01:
+            if(currentstate == 0x00) {
+                PREV_ENCODER_LEFT = 0x00;
+            } else if (currentstate == 0x11) {
+                PREV_ENCODER_LEFT = 0x11;
+            }
+            break;
+        case 0x11:
+            if (currentstate == 0x10) {
+                PREV_ENCODER_LEFT = 0x10;
+            } else if (currentstate == 0x01) {
+                PREV_ENCODER_LEFT = 0x01;
+            }
+            break;
+        case 0x10:
+            if (currentstate == 0x00) {
+                PREV_ENCODER_LEFT = 0x00;
+            } else if (currentstate == 0x11) {
+                PREV_ENCODER_LEFT = 0x11;
+            }
+            break;
+        default:
+            break;
+    }
+
+    IFS2bits.IC3IF = 0;
+
 }
 //IC4 -- channel 2 of LEFT motor
 void __attribute__((__interrupt__,__auto_psv__)) _IC4Interrupt() {
-    unsigned char ch1 = LATDbits.LATD10 << 4; //current value of ch1 pin
-    unsigned char ch2 = LATDbits.LATD11; //current value of ch2 pin
+    unsigned char ch1 = PORTDbits.RD10 << 4; //current value of ch1 pin
+    unsigned char ch2 = PORTDbits.RD11; //current value of ch2 pin
     unsigned char currentstate = ch1 | ch2;
 
-    IFS2bits.IC4IF = 0;
+    
 
     ENCODER4[0] = IC4BUF;
 
@@ -873,8 +978,10 @@ void __attribute__((__interrupt__,__auto_psv__)) _IC4Interrupt() {
             break;
     }
 
-}
+    IFS2bits.IC4IF = 0;
 
+}
+*/
 
 //wait used to redirect the robot when it senses an object
 void wait() {
