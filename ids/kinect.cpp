@@ -5,8 +5,6 @@ Kinect* Kinect::Singleton = NULL;
 uint64_t Kinect::video_count = 0;
 uint64_t Kinect::depth_count = 0;
 
-#define KINECT_DEPTH_HORIZ_PIXEL_THETA 0.0017159468
-#define KINECT_DEPTH_VERT_PIXEL_THETA 0.001798352
 Kinect::Kinect()
 {
 	if(Singleton) throw std::runtime_error("Tried to create second instatiation of singleton class: Kinect");

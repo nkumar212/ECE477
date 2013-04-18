@@ -10,6 +10,8 @@
 
 #include "libfreenect.h"
 
+#define KINECT_DEPTH_HORIZ_PIXEL_THETA 0.0017159468
+#define KINECT_DEPTH_VERT_PIXEL_THETA 0.001798352
 
 void Bitmap2Yuv420p( uint8_t *destination, uint8_t *rgb,
                      const int width, const int height );
@@ -61,19 +63,19 @@ class Kinect
 		float z3dTrig[480/8][640/8][8][8];
 
 	public:
-		inline float x3d(int x, int y, int x0, int y0, float d)
+		inline float x3d(int x, int y, int ix, int iy, float d)
 		{
-			return d * x3dTrig[y][x][y0][x0];
+			return d*x3dTrig[y][x][iy][ix];
 		}
 
-		inline float y3d(int x, int y, int x0, int y0, float d)
+		inline float y3d(int x, int y, int ix, int iy, float d)
 		{
-			return d * y3dTrig[y][x][y0][x0];
+			return d*y3dTrig[y][x][iy][ix];
 		}
 
-		inline float z3d(int x, int y, int x0, int y0, float d)
+		inline float z3d(int x, int y, int ix, int iy, float d)
 		{
-			return d * z3dTrig[y][x][y0][x0];
+			return d*z3dTrig[y][x][iy][ix];
 		}
 
 	protected: //Internal Members

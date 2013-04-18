@@ -59,9 +59,9 @@ void* mainCncWait(void* vids)
 		{
 			if(datalen != 3)
 			{
-				while(datalen > 0)
+				/*while(datalen > 0)
 					fprintf(stderr,"%02X ", ids->cnc_getbuffer()[--datalen]);
-				fprintf(stderr,"\n");
+				fprintf(stderr,"\n");*/
 
 				throw std::runtime_error("Invalid Command packet length from CNC Server.\n");
 			}
@@ -70,7 +70,7 @@ void* mainCncWait(void* vids)
 			cncCmd.udata8[0] = ids->cnc_getbuffer()[1];
 			cncCmd.udata8[1] = ids->cnc_getbuffer()[2];
 
-			fprintf(stderr,"0x%02X 0x%04X\n",cncCmd.command,cncCmd.udata16);
+			//fprintf(stderr,"0x%02X 0x%04X\n",cncCmd.command,cncCmd.udata16);
 
 			switch(cncCmd.command)
 			{

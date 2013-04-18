@@ -17,5 +17,6 @@ if [[ "$HOST" == "localhost" ]] ; then
 	sleep 3
 fi;
 
-#./ids 2>logs/ids_stderr.log | avconv -f rawvideo -s 320x240 -pix_fmt yuv420p -i - -r 24 -vcodec flv -f mjpeg http://$HOST:8090/feed1.ffm
-./ids 2>logs/ids_stderr.log | avconv -f rawvideo -s 320x240 -pix_fmt yuv420p -i - -r 24 -f mjpeg test.mjpeg
+#valgrind --tool=callgrind ./ids > /dev/null
+./ids $HOST | avconv -f rawvideo -s 320x240 -pix_fmt yuv420p -i - -r 24 http://$HOST:8090/feed1.ffm
+#./ids 2>logs/ids_stderr.log | avconv -f rawvideo -s 320x240 -pix_fmt yuv420p -i - -r 24 -f mjpeg test.mjpeg

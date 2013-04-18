@@ -141,16 +141,6 @@ int ComWallFrame::action(IDS* main)
 					}
 				}
 			}
-
-			for(yo = 0; yo < 8; yo++)
-			{
-				for(xo = 0; xo < 8; xo++)
-				{
-					frame[y*8+yo][x*8+xo][0] = r;
-					frame[y*8+yo][x*8+xo][1] = g;
-					frame[y*8+yo][x*8+xo][2] = b;
-				}
-			}
 		}
 	}
 

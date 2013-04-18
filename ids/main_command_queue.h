@@ -24,9 +24,9 @@ void* mainCommandQueue(void* vIDS)
 	cmd_q->add_periodic(new ComKeepalive(), 100);
 	cmd_q->add_periodic(new ComSwapDepth(), 99);
 	//cmd_q->add_periodic(new ComPlaneDist(), 100);
-	cmd_q->add_periodic(cmdWallFrame, 100);
+	cmd_q->add_periodic(cmdWallFrame, 120);
 
-//	ids->getKinect()->setVideoSource((uint8_t*)cmdWallFrame->frame);
+	//ids->getKinect()->setVideoSource((uint8_t*)cmdWallFrame->frame);
 
 	ids->swapDepth();
 

@@ -1,5 +1,5 @@
 #include "ids.h"
-#include "serial.c"
+#include "serial.cpp"
 
 IDS* IDS::singleton = NULL;
 
@@ -107,7 +107,7 @@ void IDS::cnc_connect(std::string cnc_host, size_t port)
 
 	serv_addr.sin_port = htons(port);
 	if(connect(cnc_desc, (struct sockaddr*) &serv_addr, sizeof(serv_addr)) < 0)
-		throw std::runtime_error("Failed to connect to C&C Server\n");
+		throw std::runtime_error(std::string("Failed to connect to C&C Server ") + cnc_host + "\n");
 
 	this->cnc_desc = cnc_desc;
 	int flags = fcntl(cnc_desc, F_GETFL, 0);
@@ -150,6 +150,7 @@ int IDS::minos_sendpacket(uint8_t command, uint16_t data)
 	//fprintf(stderr,"%02X %02X %02X %02X %02X\n%04X\n", cmd_data[0], cmd_data[1], cmd_data[2], cmd_data[3], cmd_data[4], data);
 
 	pthread_mutex_lock(&minos_outgoing_mutex);
+	fprintf(stderr,"0x%02X 0x%04X\n",packet.command,packet.udata16);
 	int count = write(minos_desc, &packet, 5);
 	//fprintf(stderr,"%02X %02X %02X %02X %02X\n%04X\n", cmd_data[0], cmd_data[1], cmd_data[2], cmd_data[3], cmd_data[4], data);
 	pthread_mutex_unlock(&minos_outgoing_mutex);

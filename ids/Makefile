@@ -4,7 +4,7 @@ MV=$(shell which mv)
 RM=$(shell which rm)
 
 LIBS = -lpthread -lrt
-CPPFLAGS = --debug -I $(ROOT)/libfreenect/include -L $(ROOT)/libfreenect/build/lib -L $(ROOT)/libfreenect/build-alaric/lib
+CPPFLAGS = -O3 -I $(ROOT)/libfreenect/include -L $(ROOT)/libfreenect/build/lib -L $(ROOT)/libfreenect/build-alaric/lib
 CLEAN_TARGETS=*.o *.d *.a
 
 A = commands.a
@@ -22,8 +22,11 @@ endef
 
 target : ids
 
-ids : main.cpp $(A) $(OBJ) main_command_queue.h main_cnc_wait.h main_minos_wait.h
-	g++ main.cpp $(OBJ) $(A) $(LIBS)  $(CPPFLAGS) -lfreenect -o ids
+ids : main.o
+	mv main.o ids
+
+main.o : main.cpp $(A) $(OBJ) main_command_queue.h main_cnc_wait.h main_minos_wait.h
+	g++ main.cpp $(OBJ) $(A) $(LIBS)  $(CPPFLAGS) -lfreenect -o main.o
 
 commands.a : commands
 	$(MAKE) -C commands
