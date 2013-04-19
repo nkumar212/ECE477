@@ -2,20 +2,28 @@
 #include <pthread.h>
 #include <cassert>
 #include <cstdio>
+#include <set>
 
 #include "CommandQueue.h"
 #include "main_command_queue.h"
 #include "main_synchronous.h"
 #include "main_cnc_wait.h"
 #include "main_minos_wait.h"
+#include "wall.h"
+#include "map.h"
 
 int main(int argc, char* argv[])
 {
-//	setvbuf(stdout, NULL, _IONBF, 0);
+	setvbuf(stdout, NULL, _IONBF, 0);
 	pthread_t t_timer_loop;
 	pthread_t t_command_queue;
 	pthread_t t_minos_loop;
 	pthread_t t_cnc_loop;
+
+	Wall test(0,0);
+	std::set<Wall> wallset;
+	wallset.insert(test);
+
 	int rc;
 
 	IDS* ids = IDS::getSingleton();

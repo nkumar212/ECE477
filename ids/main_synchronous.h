@@ -32,14 +32,13 @@ void* mainSynchronous(void* vids)
 	clock_gettime(CLOCK_MONOTONIC, &t1);
 	loop_ms = (t1.tv_sec * 1000000 + t1.tv_nsec/1000);
 
-	ComDumpDist cmdDumpDist;
 	CommandQueue* cmdq = CommandQueue::getSingleton();
 
 	while(!ids->quit())
 	{
 		loop_ms += LOOP_TIME;
 
-		vbuff = kinect->getVideoFrameYUV();
+		vbuff = kinect->nextVideoFrameYUV();
 		fwrite(vbuff,320*6/4,240,stdout);
 
 		clock_gettime(CLOCK_MONOTONIC, &t1);

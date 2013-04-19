@@ -32,7 +32,6 @@ void* mainMinosWait(void* vids)
 	clock_gettime(CLOCK_MONOTONIC, &t1);
 	loop_ms = (t1.tv_sec * 1000 + t1.tv_nsec/1000000);
 
-	ComDumpDist cmdDumpDist;
 	CommandQueue* cmdq = CommandQueue::getSingleton();
 
 	ids->minos_sendpacket(0x01,0x0000);

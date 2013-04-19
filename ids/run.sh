@@ -5,6 +5,8 @@ HOST="$1"
 
 sudo chmod a+rw /dev/ttyUSB0
 
+mkdir -p logs
+
 if [[ "$USER" != "root" ]] ; then
 	echo "You must be root to run this script"
 	exit 1
@@ -14,9 +16,8 @@ if [[ "$HOST" == "localhost" ]] ; then
 	pkill avserver
 	rm -rf /tmp/feed1.ffm
 	avserver -f ./ffserver.conf > logs/avserver_stdout.log 2> logs/avserver_stderr.log &
-	sleep 3
 fi;
 
 #valgrind --tool=callgrind ./ids > /dev/null
-./ids $HOST | avconv -f rawvideo -s 320x240 -pix_fmt yuv420p -i - -r 24 http://$HOST:8090/feed1.ffm
+./ids $HOST | avconv -f rawvideo -s 320x240 -pix_fmt yuv420p -i - -r 24 http://$HOST:8090/feed1.ffm > /dev/null 2>/dev/null
 #./ids 2>logs/ids_stderr.log | avconv -f rawvideo -s 320x240 -pix_fmt yuv420p -i - -r 24 -f mjpeg test.mjpeg

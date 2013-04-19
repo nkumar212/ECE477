@@ -1,8 +1,8 @@
 #include "point.h"
 
-Point::Point(int x, int y)
+Point::Point()
 {
-	this->x = x;
-	this->y = y;
+	opencount = 0;
+	closedcount = 0;
 }
 

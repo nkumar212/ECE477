@@ -4,6 +4,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <algorithm>
+#include <set>
 
 #include <cstdlib>
 #include <cstring>
@@ -13,9 +14,12 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <utility>
 
 #include "CommandQueue.h"
 #include "kinect.h"
+#include "minotaur.h"
+#include "wall.h"
 
 class IDS
 {
@@ -41,6 +45,7 @@ class IDS
 		static class IDS* singleton;
 		IDS();
 		~IDS();
+
 	protected: //Hidden Member attributes
 		Kinect::depth_buffer* dbuffer;
 
@@ -51,6 +56,7 @@ class IDS
 		int minos_desc;
 		uint8_t minos_buffer_start, minos_buffer_end;
 		uint8_t minos_seq;
+		
 
 		pthread_mutex_t minos_command_locks[256];
 		MinosPacket minos_incoming[256];
@@ -59,8 +65,13 @@ class IDS
 		pthread_mutex_t minos_outgoing_mutex;
 		pthread_mutex_t cnc_outgoing_mutex;
 
-	public: //Singleton constructor
+		Minotaur minotaur;
+
+	public:
+		
+		//Singleton constructor
 		static IDS* getSingleton();
+
 	public:
 		void cnc_connect(std::string host, size_t port);
 		int cnc_rawmsg(const void* msg, size_t msg_size);
@@ -84,6 +95,8 @@ class IDS
 		uint64_t getDepthCount();
 		uint64_t getVideoCount();
 		Kinect::depth_buffer* getDepth();
+
+		Minotaur getMinotaur();
 
 };
 

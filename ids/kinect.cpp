@@ -27,18 +27,36 @@ Kinect::Kinect()
 	alt_video_source = NULL;
 
 	int x,y,ix,iy;
-	float htheta, vtheta;
+	double azimuth, inclination;
 	for(y = 0; y < 480 / 8; y++)
 		for(x = 0; x < 640 / 8; x++)
 			for(iy = 0; iy < 8; iy++)
 				for(ix = 0; ix < 8; ix++)
 				{
-					htheta = (319.5 - x*8 - ix) * KINECT_DEPTH_HORIZ_PIXEL_THETA;
-					vtheta = (239.5 - y*8 - iy) * KINECT_DEPTH_VERT_PIXEL_THETA;
-					x3dTrig[y][x][iy][ix] = sin(htheta);
-					y3dTrig[y][x][iy][ix] = cos(vtheta);
-					z3dTrig[y][x][iy][ix] = sin(vtheta);
+					azimuth = (319.5 - x*8 - ix) * KINECT_DEPTH_HORIZ_PIXEL_THETA;
+					inclination = (239.5 - y*8 - iy) * KINECT_DEPTH_VERT_PIXEL_THETA;
+					sphericals[y][x][iy][ix].sin_azi = sin(azimuth);
+					sphericals[y][x][iy][ix].cos_azi = cos(azimuth);
+					sphericals[y][x][iy][ix].sin_inc = sin(inclination);
+					sphericals[y][x][iy][ix].cos_inc = cos(inclination);
 				}
+
+	Spherical debug;
+
+	debug = sphericals[240/8][320/8][4][4];
+	std::cerr << "Center: " << debug.sin_azi << " " << debug.cos_azi << " " << debug.sin_inc << " " << debug.cos_inc << std::endl;
+
+	debug = sphericals[0][0][0][0];
+	std::cerr << "Top Left: " << debug.sin_azi << " " << debug.cos_azi << " " << debug.sin_inc << " " << debug.cos_inc << std::endl;
+
+	debug = sphericals[0][640/8-1][0][7];
+	std::cerr << "Top Right: " << debug.sin_azi << " " << debug.cos_azi << " " << debug.sin_inc << " " << debug.cos_inc << std::endl;
+
+	debug = sphericals[480/8-1][0][7][0];
+	std::cerr << "Bottom Left: " << debug.sin_azi << " " << debug.cos_azi << " " << debug.sin_inc << " " << debug.cos_inc << std::endl;
+
+	debug = sphericals[480/8-1][640/8-1][7][7];
+	std::cerr << "Bottom Right: " << debug.sin_azi << " " << debug.cos_azi << " " << debug.sin_inc << " " << debug.cos_inc << std::endl;
 }
 
 Kinect::~Kinect()
@@ -161,24 +179,31 @@ void Kinect::depth_cb(freenect_device *dev, void *rgb, uint32_t timestamp)
 	++depth_count;
 }
 
-Kinect::video_buffer* Kinect::getVideoFrame()
+Kinect::video_buffer* Kinect::nextVideoFrame()
 {
 	swapVideoFrontBuffer();
-	return video_front;
+	if(alt_video_source == NULL)
+		return video_front;
+	else
+		return (Kinect::video_buffer*)alt_video_source;
 }
 
-uint8_t* Kinect::getVideoFrameYUV()
+Kinect::video_buffer* Kinect::getVideoFrame()
+{
+	if(alt_video_source == NULL)
+		return video_front;
+	else
+		return (Kinect::video_buffer*)alt_video_source;
+}
+
+uint8_t* Kinect::nextVideoFrameYUV()
 {
 	swapVideoFrontBuffer();
 
 	if(alt_video_source == NULL)
-	{
 		Bitmap2Yuv420p(yuv_front, (uint8_t*)video_front, 640, 480);
-	}
 	else
-	{
 		Bitmap2Yuv420p(yuv_front, alt_video_source, 640, 480);
-	}
 
 	return yuv_front;
 }

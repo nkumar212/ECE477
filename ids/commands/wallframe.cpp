@@ -15,6 +15,7 @@ int ComWallFrame::action(IDS* main)
 	int x,y,xo,yo;
 	Kinect::depth_buffer* dframe = main->getDepth();
 	Kinect* kinect = main->getKinect();
+	Minotaur minotaur = main->getMinotaur();
 
 	Point p3d[8][8];
 	Point avg3d;
@@ -54,10 +55,10 @@ int ComWallFrame::action(IDS* main)
 
 					if(d != 0x07FF)
 					{
-						fd = 3480*254/(1091.5-(float)d);
-						p3d[yo][xo].x = kinect->x3d(x,y,xo,yo,fd);
+						fd = 3480*254/(1220.5-(float)d);
+						p3d[yo][xo].x = kinect->x3d(x,y,xo,yo,fd,minotaur);
 						p3d[yo][xo].y = kinect->y3d(x,y,xo,yo,fd);
-						p3d[yo][xo].z = kinect->z3d(x,y,xo,yo,fd);
+						p3d[yo][xo].z = kinect->z3d(x,y,xo,yo,fd,minotaur);
 						valid_points[yo][xo] = true;
 						avg3d.x += p3d[yo][xo].x;
 						avg3d.y += p3d[yo][xo].y;
@@ -98,10 +99,10 @@ int ComWallFrame::action(IDS* main)
 				slopeyx = (xybar - avg3d.x * avg3d.y) / (xSS/valid - avg3d.x*avg3d.x);
 				yint = avg3d.y - slopeyx * avg3d.x;
 
-				if(zvariance <= valid*1.8)
+				if(zvariance <= 2.0 * valid)
 				{
 					//Floor or ceiling at a constant height from Kinect
-					if(avg3d.z < -500 && avg3d.z > -1200)
+					if(avg3d.z < -400 && avg3d.z > -1200)
 					{
 						r = 0xFF;
 						g = 0xFF;
@@ -129,11 +130,11 @@ int ComWallFrame::action(IDS* main)
 							}
 					//r = std::min<int>(std::max<int>(residual_bar*20,0),255);
 					
-					if(residual_bar <= valid * 150 && sqrt(residual_xbar + residual_ybar)  <= valid * 200)
+					if(residual_bar <= valid * 225 && sqrt(residual_xbar + residual_ybar)  <= valid * 175)
 					{
 						r = 0;
-						g = std::min<int>(std::max<int>(yint*20+128,0),255);
-						b = std::min<int>(std::max<int>(atan(slopeyx)*128+128,0),255);
+						g = 255-std::min<int>(std::max<int>(128+atan(slopeyx)*64,0),255);//std::min<int>(std::max<int>(yint*20+128,0),255);
+						b = std::min<int>(std::max<int>(128+atan(slopeyx)*64,0),255);
 					}else{
 						r = 0x00;
 						g = 0x00;
