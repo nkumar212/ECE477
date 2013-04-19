@@ -8,6 +8,7 @@ from copy import deepcopy
 class WebsocketProtocol(protocol.Protocol):
 	def __init__(self):
 		self.last_data = None
+		self.last_keys = None
 
 	def dataReceived(self, jdata):
 		diagScale = 0
@@ -19,6 +20,8 @@ class WebsocketProtocol(protocol.Protocol):
 			data = json.loads(jdata.strip())
 		except:
 			return
+
+		robot = Minotaur.instances[data['robotid']]
 
 		if data['gKeys'] == 1: #W
 			motors = [1,1]
@@ -40,6 +43,11 @@ class WebsocketProtocol(protocol.Protocol):
 		if data['gKeys'] & 16:
 			motors = [0,0]
 
+		if data['gKeys'] == 32 and (self.last_keys & 32 == 0):
+			robot.write(bytes("".join([chr(0x10),chr(0x00),chr(0x00)])))
+			self.last_keys = data['gKeys']
+			return
+
 		speed = 'speed' in data.keys() and data['speed'] and int(data['speed']) or 50;
 		motors = [int(m * max(min(speed * 127.0/100,127),0)) for m in motors]
 		dirs = [(0,128)[m<0] for m in motors]
@@ -49,12 +57,12 @@ class WebsocketProtocol(protocol.Protocol):
 		codes[2] = abs(motors[1]) | dirs[1]
 
 		if self.last_data != codes and data['robotid'] in Minotaur.instances.keys():
-			robot = Minotaur.instances[data['robotid']]
 			char_array = [chr(c) for c in codes]
 			data_str = "".join(char_array)
 			robot.write(bytes(data_str))
 
 		self.last_data = deepcopy(codes)
+		self.last_keys = data['gKeys']
 
 class Minotaur:
 	instances = {}

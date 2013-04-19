@@ -45,8 +45,8 @@ void* mainCncWait(void* vids)
 	clock_gettime(CLOCK_MONOTONIC, &t1);
 	loop_ms = (t1.tv_sec * 1000 + t1.tv_nsec/1000000);
 
-	ComDumpDist cmdDumpDist;
-	CommandQueue* cmdq = CommandQueue::getSingleton();
+	ComDumpVideo cmdDumpVideo;
+	CommandQueue* cmd_q = CommandQueue::getSingleton();
 	CNCCommand cncCmd;
 
 
@@ -76,6 +76,10 @@ void* mainCncWait(void* vids)
 			{
 				case 0x01: //Motors Move
 					ids->minos_sendpacket(cncCmd.command,cncCmd.udata16);
+					break;
+				case 0x10: //Take picture
+					cmd_q->push(&cmdDumpVideo);
+					std::cerr << "Caught dump command" << std::endl;
 					break;
 				default:
 					throw std::runtime_error("Invalid Command pakcet cmdNumber from CNC Server.\n");

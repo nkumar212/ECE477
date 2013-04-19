@@ -179,24 +179,31 @@ void Kinect::depth_cb(freenect_device *dev, void *rgb, uint32_t timestamp)
 	++depth_count;
 }
 
-Kinect::video_buffer* Kinect::getVideoFrame()
+Kinect::video_buffer* Kinect::nextVideoFrame()
 {
 	swapVideoFrontBuffer();
-	return video_front;
+	if(alt_video_source == NULL)
+		return video_front;
+	else
+		return (Kinect::video_buffer*)alt_video_source;
 }
 
-uint8_t* Kinect::getVideoFrameYUV()
+Kinect::video_buffer* Kinect::getVideoFrame()
+{
+	if(alt_video_source == NULL)
+		return video_front;
+	else
+		return (Kinect::video_buffer*)alt_video_source;
+}
+
+uint8_t* Kinect::nextVideoFrameYUV()
 {
 	swapVideoFrontBuffer();
 
 	if(alt_video_source == NULL)
-	{
 		Bitmap2Yuv420p(yuv_front, (uint8_t*)video_front, 640, 480);
-	}
 	else
-	{
 		Bitmap2Yuv420p(yuv_front, alt_video_source, 640, 480);
-	}
 
 	return yuv_front;
 }

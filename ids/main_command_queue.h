@@ -24,13 +24,13 @@ void* mainCommandQueue(void* vIDS)
 	//cmd_q->add_periodic(new ComPlaneDist(), 100);
 
 
-/*	ComWallFrame* cmdWallFrame = new ComWallFrame();
+	ComWallFrame* cmdWallFrame = new ComWallFrame();
 	cmd_q->add_periodic(cmdWallFrame, 50);
-	ids->getKinect()->setVideoSource((uint8_t*)cmdWallFrame->frame);*/
+	ids->getKinect()->setVideoSource((uint8_t*)cmdWallFrame->frame);
 
-	ComPosFrame* cmdPosFrame = new ComPosFrame();
+/*	ComPosFrame* cmdPosFrame = new ComPosFrame();
 	cmd_q->add_periodic(cmdPosFrame, 50);
-	ids->getKinect()->setVideoSource((uint8_t*)cmdPosFrame->frame);
+	ids->getKinect()->setVideoSource((uint8_t*)cmdPosFrame->frame);*/
 
 	ids->swapDepth();
 

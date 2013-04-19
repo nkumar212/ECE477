@@ -105,7 +105,8 @@ class Kinect
 
 		/*Grab front buffers*/
 		video_buffer* getVideoFrame();
-		uint8_t* getVideoFrameYUV();
+		video_buffer* nextVideoFrame();
+		uint8_t* nextVideoFrameYUV();
 		depth_buffer* getDepthFrame();
 		void process_events();
 		void setVideoSource(uint8_t* newvideobuffer);

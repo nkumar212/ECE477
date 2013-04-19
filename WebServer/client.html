@@ -9,7 +9,7 @@ var KEY_S = 4;
 var KEY_D = 8;
 var KEY_SPACE = 16;
 
-var ws = new WebSocket("ws://128.46.100.114:9999/");
+var ws = new WebSocket("ws://localhost:9999/");
 
 //Global variable holding which gKeys are down
 var gKeys = 0;
@@ -48,6 +48,8 @@ ws.onopen = function(){
 			gKeys &= 0xFFFF ^ KEY_W
 		else if(key == 32) //Space
 			gKeys &= 0xFFFF ^ KEY_SPACE
+		else if(key == 13)
+			gKeys &= 0xFFFF ^ KEY_ENTER
 	}
 
 	canvas.onkeydown = function(e){
@@ -64,6 +66,8 @@ ws.onopen = function(){
 			gKeys |= KEY_W
 		else if(key == 32) //Space
 			gKeys |= KEY_SPACE
+		else if(key == 13)
+			gKeys |= KEY_ENTER
 	}
 
 	function getKeys(){
@@ -90,7 +94,7 @@ ws.onopen = function(){
 <body>
 <canvas tabindex=1 style="background-color:white;border: thin red solid;" width=320 height=240 id="canvas"></canvas>
 <video style="background-color:white;border: thin red solid;" width=320 height=240>
-<source src="rtp://128.46.100.114:50001/test1.ogg" type="video/ogg" />
+<source src="rtp://localhost:50001/test1.ogg" type="video/ogg" />
 	
 </video>
 <input type="hidden" id="robotid" value="MINOTAUR_1" />

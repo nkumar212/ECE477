@@ -6,7 +6,7 @@
 #include "swapdepth.h"
 #include "planedist.h"
 #include "distframe.h"
-#include "dumpdist.h"
+#include "dumpvideo.h"
 #include "slopeframe.h"
 #include "wallframe.h"
 #include "posframe.h"
