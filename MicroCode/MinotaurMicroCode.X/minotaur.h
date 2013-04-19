@@ -32,7 +32,7 @@ extern "C" {
 
 
 #define SEN_MIN 400    //the minimum distance that the downward IR sensors have to sense
-#define SEN_MAX 1000    //the distance at which the robot tries to avoid an object
+#define SEN_MAX 1020    //the distance at which the robot tries to avoid an object
 
 //Buffer used for transmitting and recieving data
 typedef struct _BUFFER {

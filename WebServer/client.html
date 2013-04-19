@@ -1,5 +1,8 @@
 <html>
 <head>
+
+<link rel="stylesheet" type="text/css" href="index.css"/>
+
 <script>
 
 //Constants
@@ -15,26 +18,26 @@ var ws = new WebSocket("ws://128.46.100.114:9999/");
 var gKeys = 0;
 var msgInfo = new Object();
 
-ws.onopen = function(){
+ws.onopen = function() {
 
 	ws.send('Hello from the client!');
 	
-	canvas = document.getElementById("canvas");
+	document = document.getElementById("canvas");
 	output = document.getElementById("output");
 
-	canvas.onload = function(){
+	document.onload = function(){
 		gKeys = 0;
 	}
 
-	canvas.onfocus = function(){
+	document.onfocus = function(){
 		gKeys = 0;
 	}
 
-	canvas.onblur = function(){
+	document.onblur = function(){
 		gKeys = 0;
 	}
 
-	canvas.onkeyup = function(e){
+	document.onkeyup = function(e){
 		if(e == null) e = window.event;
 		key = e.keyCode;
 
@@ -50,7 +53,7 @@ ws.onopen = function(){
 			gKeys &= 0xFFFF ^ KEY_SPACE
 	}
 
-	canvas.onkeydown = function(e){
+	document.onkeydown = function(e){
 		if(e == null) e = window.event;
 		key = e.keyCode;
 
@@ -88,17 +91,131 @@ ws.onopen = function(){
 </script>
 </head>
 <body>
-<canvas tabindex=1 style="background-color:white;border: thin red solid;" width=320 height=240 id="canvas"></canvas>
-<video style="background-color:white;border: thin red solid;" width=320 height=240>
-<source src="rtp://128.46.100.114:50001/test1.ogg" type="video/ogg" />
+	<!--HEADER -->
+	<div class="header">
+	<h1 id="header_text">Project Minotaur Command and Control Page</h1>
 	
-</video>
-<input type="hidden" id="robotid" value="MINOTAUR_1" />
-<input type="hidden" id="sessionid" value="127.0.0.1" />
-<input type="hidden" id="command" value="0" />
-<br>Username:<input type="text" id="username"/>
-<br>Speed:<input type="range" id="speedslider" min="0" max="100"/>
-<br>Outdata:<textarea id="output" cols=80 rows=5></textarea>
+	</div>
+
+	<table id="main_section" cellpadding="15">
+		<tr>
+		<td id="settings_box">
+			<table class="settings_table">
+			<caption class="header">Robot Status and Settings</caption>
+			<tr>
+					<td class="label">Status</td>
+					<td class="value"><span id="status" style="color:red">Offline</span></td>
+			</tr>
+			<tr>
+					<td class="label">Battery Percentage</td>
+					<td class="value"><span id="status" style="color:green">100%</span></td>
+			</tr>
+					<tr>
+					<td class="label">Speed</td>
+					<td class="value"><span id="status" style="color:#008080">1 m/s</span></td>
+			</tr>	
+			
+			<tr><td colspan="2">----------------------------------------------------------------</td></tr>
+
+			<tr>
+
+
+					<td class="label">Email To Alert</td>
+					<td class="value"><input type="text" name="email"></td>
+			</tr>		<tr>
+					<td class="label">Camera Mode</td>
+					<td class="value"><form action="">
+							<input type="radio" name="camera_mode" value="color">Color</input>
+							<input type="radio" name="camera_mode" value="IR">IR</input></form>
+					</td>
+			</tr>
+			<tr>
+					<td class="label">Drive Mode</td>
+					<td class="value"><form action="">
+							<input type="radio" name="drive_mode" value="patrol">Patrol</input>
+							<input type="radio" name="drive_mode" value="manual">Manual</input></form>
+					</td>
+			</tr>
+			<tr>
+					<td></td>
+					<td class="value"><input type="button" value="Save Settings"/></td>
+			</tr>	
+
+			</table>
+			
+		</td>
+
+		<td id=video_stream">
+			<!--
+			<embed type="application/x-vlc-plugin" pluginspage="http://www.videolan.org" width="320" height="240" id="vlc" loop="yes" autoplay="yes" target="test.ogg"></embed>
+			<object classid="clsid:9BE31822-FDAD-461B-AD51-BE1D1C159921" codebase="http://download.videolan.org/pub/videolan/vlc/last/win32/axvlc.cab"></object>	
+			-->
+			<video id="video_stream" style="background-color:white;border: thin red solid;" width=320 height=240>
+				<source src="rtp://128.46.100.114:50001/test1.ogg" type="video/ogg" />	
+			</video>	
+		</td>
+		</tr>
+
+		<tr>
+			<td colspan="2" id="directions"><p>Welcome to the command and control page for Project Minotaur! Press the patrol button to have the robot automatically patrol the room and search for intruders. If it finds one the email specified will be alerted with a picture of the intruder. To drive the robot, press the 'Manual' radio button and use the following keys:
+				   			<ul>
+								<li>W          --- forward</li>
+								<li>A          --- left</li>
+								<li>S          --- backwards</li>
+								<li>D          --- right</li>
+								<li>Space      --- stop</li>
+								<li>Up Arrow   --- speed up</li>
+								<li>Down arrow --- slow down</li>
+						</ul>
+			</td>	
+		</tr>
+
+		<tr><!--
+		<td colspan="2" id="button_box">
+			<input class="command_button" type="button" width=70px height=40px value="Drive Robot"/>
+			<input class="command_button" type="button" width=70px height=40px value="Patrol Room"/>
+	</td>
+	-->
+		</tr>
+	</table>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+
+
+
+
+		<canvas tabindex=1 style="background-color:white;border: thin red solid;" width=320 height=240 id="canvas"></canvas>
+		<video id="video_stream" style="background-color:white;border: thin red solid;" width=320 height=240>
+			<source src="rtp://128.46.100.114:50001/test1.ogg" type="video/ogg" />	
+		</video>
+		
+		<input type="hidden" id="robotid" value="MINOTAUR_1" />
+		<input type="hidden" id="sessionid" value="127.0.0.1" />
+		<input type="hidden" id="command" value="0" />
+		
+		<br>Username:<input type="text" id="username"/>
+		<br>Speed:<input type="range" id="speedslider" min="0" max="100"/>
+		<br>Outdata:<textarea id="output" cols=80 rows=5></textarea>
+
+	</div>
 </body>
 </html>
-s
+

@@ -21,7 +21,7 @@ _CONFIG1( JTAGEN_OFF & GCP_OFF & GWRP_OFF & COE_OFF & FWDTEN_OFF & ICS_PGx1 & BK
 _CONFIG2( FCKSM_CSECME & OSCIOFNC_ON & POSCMOD_NONE & FNOSC_FRC)
 
 //ISR function prototypes
-void __attribute__((__interrupt__,__auto_psv__)) _I2C1Interrupt();
+//void __attribute__((__interrupt__,__auto_psv__)) _I2C1Interrupt();
 void __attribute__((__interrupt__,__auto_psv__)) _ADC1Interrupt();
 void __attribute__((__interrupt__,__auto_psv__)) _U1RXInterrupt();
 void __attribute__((__interrupt__,__auto_psv__)) _U1TXInterrupt();
@@ -37,9 +37,13 @@ void wait();
 
 //flags
 char SENSORS_READY = 0;    	//1 when SENSOR adc scan is complete
+char SENSOR_ENABLE = 0;         //enable or disable the proximity sensors
+char SENSOR_TRIPPED = 0;
 char READY_TO_SEND = 1;   	//One when there is space in the TX buffer
 char READY_TO_REC = 0;
 char PRINT = 0; 			//TEMP
+char GET_BATT = 0;
+char BATT_READY = 0;
 char I2C_READY_TO_SEND = 0;
 char I2C_READY_TO_REC = 0;
 char TIMEOUT = 0; 			// if 1 then stop all motor movement b/c communication has been lost
@@ -50,6 +54,7 @@ char I2C_SEND_BYTE = 0;		// incremented for each byte sent (1 after byte 1 sendi
 							// incremented to 2 when byte one has finished sending and been ACK'd
 char I2C_RECV_BYTE = 0;		// same principle as above except for recieving
 char I2C_ISR = 0;			// set when i2c interrupts
+char I2C_ERROR = 0;                     // set when i2c interrupts but nothing is being sent/recieved
 
 //SENSOR range values
 int SENSOR1, SENSOR2, SENSOR3, SENSOR4, SENSOR5;
@@ -81,9 +86,14 @@ int RIGHT_TICKS = 0;//distance right motor has traveled since start in ticks
 int main(int argc, char** argv) {
     unsigned char right_direction = 'S';  //S- stop, F - Forwards, B - Backwards
     unsigned char left_direction = 'S';
+    unsigned char user_right_direction = 'S';  //S- stop, F - Forwards, B - Backwards
+    unsigned char user_left_direction = 'S';
+
     //char motor_direction = ' '; //TEMP
     unsigned int left_speed = 0;       //the speed of the left motor
     unsigned int right_speed = 0;      //the speed of the right motor
+    unsigned int user_left_speed = 0;       //the speed of the left motor
+    unsigned int user_right_speed = 0;      //the speed of the right motor
     unsigned char battery_percentage = 100;
 
     //int right_distance = 0;//the distance that the right motor has traveled in cm
@@ -92,8 +102,6 @@ int main(int argc, char** argv) {
     unsigned char tempC = 0 ; //temporary char
     unsigned char tempC1, tempC2;
     unsigned char tempBuffC = 0;
-    char directionTest[3];
-    //char tempC_S;        //signed temporoary char
 
     //setup port B as digital output
     TRISE = 0;
@@ -106,6 +114,7 @@ int main(int argc, char** argv) {
     initTimer();
     initUART();
     initInputCapture();
+    i2c_init();
 
     //set up transmit data buffer
     TX_DATA_BUFFER.head = 0;
@@ -119,6 +128,7 @@ int main(int argc, char** argv) {
     controlpacket.bytesRecieved = 0;
 
     //enable interrupts for the required molules
+    IEC1bits.MI2C1IE = 1;
     IEC1bits.T4IE = 1;   //enable timer 3 interrupts
     IEC0bits.T3IE = 1;
     IEC0bits.U1RXIE = 1; //enable UART Rx interrupts
@@ -160,16 +170,32 @@ int main(int argc, char** argv) {
 
         //TEMP -- TEST THE UART BY SENDING A MESSAGE WHEN TIMER INTERRUPTS
         if (PRINT == 1) {
-            //printInt(ENCODER1[0]);   //print the value of the first motor encoder
-            //printString("right encoder: ");
-            //printInt(RIGHT_TICKS);
             //printString("Right ticks:");
             //printInt(RIGHT_TICKS);
             //printString("\n\r");
-            printInt(RIGHT_TICKS);
-            printString("\n\r\0");
+            //printString("Left ticks:");
+            //printInt(LEFT_TICKS);
+            //printString("\n\r");
+            //printString("1: ");
+            //printInt(SENSOR1);
+            //printString("\n\r");
+            //printString("2: ");
+            //printInt(SENSOR2);
+            //printString("\n\r");
+            //printString("3: ");
+            //printInt(SENSOR3);
+            //printString("\n\r");
+            //printString("4: ");
+            //printInt(SENSOR4);
+            //printString("\n\r");
+            //printString("5: ");
+            //printInt(SENSOR5);
+            //printString("\n\r");
+
+
             PRINT = 0;
             //LATB ^= 0x8000;
+
         }
         
         
@@ -256,69 +282,74 @@ int main(int argc, char** argv) {
         }
         */
 
-/*
-        if( 0/*READY TO READ FUEL VAL* /)
-		{
-			I2C_START = i2c_start();
-		}
 
-		if( I2C_ISR == 1)
-		{
+        if(GET_BATT == 1)
+        {
+            I2C_START = i2c_start();
+        }
+
+        if( I2C_ISR == 1)
+        {
+            LATB ^= 0x8000;
+            if( I2C_START == 1)
+            {
+                I2C_START = 0;
+                I2C_SEND_BYTE += send_byte_i2c( 0xAA );		//send first byte: fuel gauge address in write mode
+            }
+
+            else if(I2C_SEND_BYTE == 1)
+            {
+                I2C_SEND_BYTE += send_byte_i2c( 0x02 ); 	//send first command byte StateOfCharge() command -- returns an unsigned int value 0-100%
+            }
+
+            else if(I2C_SEND_BYTE == 2)
+            {
+                I2C_SEND_BYTE += send_byte_i2c( 0x03 );		//send second command byte
+            }
+
+            else if(I2C_SEND_BYTE == 3)
+            {
+                I2C_SEND_BYTE = 0;
+                I2C_RESTART += i2c_restart();				//after they ack second command byte send restart
+            }
+
+            else if(I2C_RESTART == 1)						//send 0xAB to designate read mode
+            {
+                I2C_RESTART = 0;
+                I2C_SEND_BYTE += send_byte_i2c( 0xAB );
+                if(I2C_SEND_BYTE == 1)
+                {
+                        I2C_SEND_BYTE = 4;
+                }
+
+            }
+
+            else if(I2C_SEND_BYTE == 4)						//recieve 1 byte - unsigned int from 0 to 100 %
+            {
+                I2C_SEND_BYTE = 0;
+                battery_percentage = read_i2c_byte_nack();
+                I2C_RECV_BYTE = 1;
+                BATT_READY = 1;
+                GET_BATT = 0;
+            }
+
+            else if(I2C_RECV_BYTE == 1)					//send stop condition
+            {
+                I2C_RECV_BYTE = 0;
+                //I2C_STOP += i2c_stop(); error
+            }
+
+            else if(I2C_STOP == 1)
+            {
+                I2C_STOP = 0;								//stop condition has completed clear stop i2c_stop flag
+            }
+            else
+            {
+                I2C_ERROR = 1;
+            }
+        }
+
 			
-			if( I2C_START == 1)
-			{
-				I2C_START = 0;
-				I2C_SEND_BYTE += send_byte_i2c( 0xAA );		//send first byte: fuel gauge address in write mode
-			}
-
-			else if(I2C_SEND_BYTE == 1)
-			{
-				I2C_SEND_BYTE += send_byte_i2c( 0x02 ); 	//send first command byte StateOfCharge() command -- returns an unsigned int value 0-100%
-			}
-
-			else if(I2C_SEND_BYTE == 2)
-			{
-				I2C_SEND_BYTE += send_byte_i2c( 0x03 );		//send second command byte
-			}
-
-			else if(I2C_SEND_BYTE == 3)
-			{
-				I2C_SEND_BYTE = 0;
-				I2C_RESTART += i2c_restart();				//after they ack second command byte send restart
-			}
-
-			else if(I2C_RESTART == 1)						//send 0xAB to designate read mode
-			{
-				I2C_RESTART = 0;
-				I2C_SEND_BYTE += send_byte_i2c( 0xAB );
-				if(I2C_SEND_BYTE == 1)
-				{
-					I2C_SEND_BYTE = 4;
-				}
-				
-			}
-	
-			else if(I2C_SEND_BYTE == 4)						//recieve 1 byte - unsigned int from 0 to 100 %
-			{
-				I2C_SEND_BYTE = 0;
-				battery_percentage = read_i2c_byte_nack();
-				I2C_RECV_BYTE = 1;
-			}
-
-			else if(I2C_RECV_BYTE == 1)					//send stop condition
-			{
-				I2C_RECV_BYTE = 0;
-				//I2C_STOP += i2c_stop();
-			}
-
-			else if(I2C_STOP == 1)
-			{
-				I2C_STOP = 0;								//stop condition has completed clear stop i2c_stop flag
-			}
-
-	}*/
-			
-
 
 
 
@@ -390,21 +421,19 @@ int main(int argc, char** argv) {
                     BUFF_push(&TX_DATA_BUFFER, (char)SENSOR5);
                 }
                 */
-                // LEFT ENCODER -- NOT CORRECT YET!!
+                // LEFT ENCODER
                 if (BUFF_status(&TX_DATA_BUFFER) != BUFF_FULL) {
                     BUFF_push(&TX_DATA_BUFFER, 0xAA);
                     BUFF_push(&TX_DATA_BUFFER, controlpacket.sequence);
                     BUFF_push(&TX_DATA_BUFFER, CMD_LEFT_ENCODER);
-                    //left_distance = LEFT_TICKS * ___ //convert to cm
                     BUFF_push(&TX_DATA_BUFFER, (char)(LEFT_TICKS >> 8));
                     BUFF_push(&TX_DATA_BUFFER, (char)LEFT_TICKS);
                 }
-                // RIGHT_ENCODER -- NOT CORRECT YET!!
+                // RIGHT_ENCODER
                 if (BUFF_status(&TX_DATA_BUFFER) != BUFF_FULL) {
                     BUFF_push(&TX_DATA_BUFFER, 0xAA);
                     BUFF_push(&TX_DATA_BUFFER, controlpacket.sequence);
                     BUFF_push(&TX_DATA_BUFFER, CMD_RIGHT_ENCODER);
-                    //right_distance = RIGHT_TICKS * ___ //convert to cm
                     BUFF_push(&TX_DATA_BUFFER, (char)(RIGHT_TICKS >> 8));
                     BUFF_push(&TX_DATA_BUFFER, (char)RIGHT_TICKS);
                 }
@@ -465,23 +494,23 @@ int main(int argc, char** argv) {
 
             tempC1 = controlpacket.data1;
             if ((tempC1 & 0x80) == 0x80) {
-                left_direction = 'B';
+                user_left_direction = 'B';
             } else if(tempC1 != 0){
-                left_direction = 'F';
+                user_left_direction = 'F';
             } else {
-                left_direction = 'S';
+                user_left_direction = 'S';
             }
-            left_speed = (tempC1 & 0x7F) << 1;
+            user_left_speed = (tempC1 & 0x7F) << 1;
             
             tempC2 = controlpacket.data2;
             if ((tempC2 & 0x80) == 0x80) {
-                right_direction = 'B';
+                user_right_direction = 'B';
             } else if(tempC2 != 0){
-                right_direction = 'F';
+                user_right_direction = 'F';
             } else {
-                right_direction = 'S';
+                user_right_direction = 'S';
             }
-            right_speed = (tempC2 & 0x7F) << 1;
+            user_right_speed = (tempC2 & 0x7F) << 1;
 
 
             //send an ackknowledgement that we received the packet
@@ -522,6 +551,8 @@ int main(int argc, char** argv) {
                 break;
         }
         */
+
+
         /* ENABLE FOR FINAL THING
         //if there is a timeout then stop all operation
         if (TIMEOUT == 1) {
@@ -533,63 +564,81 @@ int main(int argc, char** argv) {
 
 
         //Obstacle avoidance
-        /*
+        SENSOR_TRIPPED = 0;
         //if fron senter sensor senses farther than the floor, there is a drop
         //off and back up for a bit and to the right
-        if ((SENSOR2 < SEN_MIN) | (SENSOR2 > SEN_MAX)) {
-            right_speed = 0x7F;
+        
+        if (SENSOR_ENABLE && (SENSOR2 < SEN_MIN)) {
+            right_speed = 0xFF;
             left_speed = 0xFF;
             right_direction = 'B';
             left_direction = 'B';
+            SENSOR_TRIPPED = 1;
         }
+
         //same for back sensors
-        if ((SENSOR4 < SEN_MIN) | (SENSOR4 > SEN_MAX)) {
+        //if (SENSOR_ENABLE && ((SENSOR4 < SEN_MIN) ||(SENSOR4 > 1020))) {
+        if (SENSOR_ENABLE && (SENSOR4 > SEN_MAX)) {
             right_speed = 0xFF;
             left_speed = 0xFF;
             right_direction = 'F';
             left_direction = 'F';
-            
+            SENSOR_TRIPPED = 1;
         }
-        if ((SENSOR5 < SEN_MIN) | (SENSOR5 > SEN_MAX)) {
+        //if (SENSOR_ENABLE && ((SENSOR5 < SEN_MIN) || (SENSOR5 > 1020))) {
+        if (SENSOR_ENABLE && (SENSOR5 > SEN_MAX)) {
             right_speed = 0xFF;
             left_speed = 0xFF;
             right_direction = 'F';
             left_direction = 'F';
+            SENSOR_TRIPPED = 1;
             //wait();
         }
 
+        
         //front side sensors
-        if (SENSOR1 > SEN_MAX && SENSOR3 > SEN_MAX) {
+        if (SENSOR_ENABLE && (SENSOR1 > SEN_MAX && SENSOR3 > SEN_MAX)) {
             right_speed = 0xFF;
             left_speed = 0xFF;
             right_direction = 'B';
             left_direction = 'B';
+            SENSOR_TRIPPED = 1;
             //wait();  //wait for robot to turn a bit
         }
         //if the side sensors get too close, turn the opposite way for a bit
-        else if (SENSOR1 > SEN_MAX) { //left sensor
+        else if (SENSOR_ENABLE && (SENSOR1 > SEN_MAX)) { //left sensor
             right_speed = 0xFF;
             left_speed = 0xFF;
             right_direction = 'F';
             left_direction = 'B';
+            SENSOR_TRIPPED = 1;
             //wait();  //wait for robot to turn a bit
         }
-        else if (SENSOR3 > SEN_MAX) { //right sensor
+        else if (SENSOR_ENABLE && (SENSOR3 > SEN_MAX)) { //right sensor
             right_speed = 0xFF;
             left_speed = 0xFF;
             right_direction = 'B';
             left_direction = 'F';
+            SENSOR_TRIPPED = 1;
             //wait();  //wait for robot to turn a bit
         }
-        */
+
+        
+        //if a sensor has not been tripped use the users speed/direction
+        if (SENSOR_TRIPPED != 1) {
+            right_speed = user_right_speed;
+            right_direction = user_right_direction;
+            left_speed = user_left_speed;
+            left_direction = user_left_direction;
+
+        }
+        
 
         //Set the speed of the motors
         OC3RS = (right_speed << 1) & 0x1FF; //set dutycycle of PWM for motor speed
         OC2RS = (left_speed << 1) & 0x1FF;
 
         LATE = 0;
-
-
         //set direction of motors
         switch(left_direction) {
             case 'F':
@@ -644,9 +693,9 @@ int main(int argc, char** argv) {
 		-Bus Collision Event
 */
 void __attribute__((__interrupt__,__auto_psv__)) _MI2C1Interrupt() {
-		IFS1bits.MI2C1IF = 0;
-		I2C_ISR = 1;
-		return;
+    IFS1bits.MI2C1IF = 0;
+    I2C_ISR = 1;
+    return;
 }	
 
 
@@ -691,6 +740,7 @@ void __attribute__((__interrupt__,__auto_psv__)) _T4Interrupt() {
     IFS1bits.T4IF = 0;        //clear interrupt flag
     PRINT = 1;
     TIMEOUT = 1;
+    GET_BATT = 1;
     return;
 }
 
@@ -744,9 +794,6 @@ void __attribute__((__interrupt__,__auto_psv__)) _T3Interrupt() {
     ch1 = PORTDbits.RD8 << 4; //current value of ch1 pin
     ch2 = PORTDbits.RD9; //current value of ch2 pin.
     currentstate = ch1 | ch2;
-    //ENCODER1[1] = IC1BUF;
-    //ENCODER1[2] = IC1BUF;
-    //ENCODER1[3] = IC1BUF;
 
 
     switch(PREV_ENCODER_RIGHT) {
@@ -760,7 +807,6 @@ void __attribute__((__interrupt__,__auto_psv__)) _T3Interrupt() {
             }
             break;
         case 0x01:
-            LATB |= 0x8000;
             if(currentstate == 0x00) {
                 PREV_ENCODER_RIGHT = 0x00;
             } else if (currentstate == 0x11) {
@@ -788,200 +834,6 @@ void __attribute__((__interrupt__,__auto_psv__)) _T3Interrupt() {
 
 }
 
-//Motor encoder code. Keeps trac of the number of ticks (can be a negative number)
-//SEE ->>  http://en.wikipedia.org/wiki/Rotary_encoder  - Incremental rotary encoder section
-/*
-void __attribute__((__interrupt__,__auto_psv__)) _IC1Interrupt() {
-    unsigned char ch1 = PORTDbits.RD8 << 4; //current value of ch1 pin
-    unsigned char ch2 = PORTDbits.RD9; //current value of ch2 pin
-    unsigned char currentstate = ch1 | ch2;
-
-    
-
-    ENCODER1[0] = IC1BUF;
-    //ENCODER1[1] = IC1BUF;
-    //ENCODER1[2] = IC1BUF;
-    //ENCODER1[3] = IC1BUF;
-
-
-    switch(PREV_ENCODER_RIGHT) {
-        case 0x00:
-            if(currentstate == 0x01) {
-                RIGHT_TICKS += 1;
-                PREV_ENCODER_RIGHT = 0x01; //at this point one full phase has gone by
-            } else if (currentstate == 0x10) {
-                RIGHT_TICKS -= 1;
-                PREV_ENCODER_RIGHT = 0x10; //at this point one full phase has gone by
-            }
-            break;
-        case 0x01:
-            LATB |= 0x8000;
-            if(currentstate == 0x00) {
-                PREV_ENCODER_RIGHT = 0x00;
-            } else if (currentstate == 0x11) {
-                PREV_ENCODER_RIGHT = 0x11;
-            }
-            break;
-        case 0x11:
-            if (currentstate == 0x10) {
-                PREV_ENCODER_RIGHT = 0x10;
-            } else if (currentstate == 0x01) {
-                PREV_ENCODER_RIGHT = 0x01;
-            }
-            break;
-        case 0x10:
-            if (currentstate == 0x00) {
-                PREV_ENCODER_RIGHT = 0x00;
-            } else if (currentstate == 0x11) {
-                PREV_ENCODER_RIGHT = 0x11;
-            }
-        default:
-            break;
-
-    }
-
-    IFS0bits.IC1IF = 0;
-}
-//IC2
-void __attribute__((__interrupt__,__auto_psv__)) _IC2Interrupt() {
-    unsigned char ch1 = PORTDbits.RD8 << 4; //current value of ch1 pin
-    unsigned char ch2 = PORTDbits.RD9; //current value of ch2 pin
-    unsigned char currentstate = ch1 | ch2;    
-
-    ENCODER2[0] = IC2BUF;
-
-    switch(PREV_ENCODER_RIGHT) {
-        case 0x00:
-            if(currentstate == 0x01) {
-                PREV_ENCODER_RIGHT = 0x01;
-            } else if (currentstate == 0x10) {
-                PREV_ENCODER_RIGHT = 0x10;
-            }
-            break;
-        case 0x01:
-            if(currentstate == 0x00) {
-                PREV_ENCODER_RIGHT = 0x00;
-            } else if (currentstate == 0x11) {
-                PREV_ENCODER_RIGHT = 0x11;
-            }
-            break;
-        case 0x11:
-            if (currentstate == 0x10) {
-                PREV_ENCODER_RIGHT = 0x10;
-            } else if (currentstate == 0x01) {
-                PREV_ENCODER_RIGHT = 0x01;
-            }
-            break;
-        case 0x10:
-            if (currentstate == 0x00) {
-                PREV_ENCODER_RIGHT = 0x00;
-            } else if (currentstate == 0x11) {
-                PREV_ENCODER_RIGHT = 0x11;
-            }
-            break;
-        default:
-            break;
-    }
-
-    IFS0bits.IC2IF = 0;
-    
-}
-
-//IC3 -- channel 1 of LEFT motor
-void __attribute__((__interrupt__,__auto_psv__)) _IC3Interrupt() {
-    unsigned char ch1 = PORTDbits.RD10 << 4; //current value of ch1 pin
-    unsigned char ch2 = PORTDbits.RD11; //current value of ch2 pin
-    unsigned char currentstate = ch1 | ch2;
-
-    
-
-    //ENCODER3[0] = IC3BUF;
-
-    switch(PREV_ENCODER_LEFT) {
-        case 0x00:
-            if(currentstate == 0x01) {
-                PREV_ENCODER_LEFT = 0x01;
-                LEFT_TICKS += 1;
-            } else if (currentstate == 0x10) {
-                PREV_ENCODER_LEFT = 0x10;
-                LEFT_TICKS -= 1;
-            }
-            break;
-        case 0x01:
-            if(currentstate == 0x00) {
-                PREV_ENCODER_LEFT = 0x00;
-            } else if (currentstate == 0x11) {
-                PREV_ENCODER_LEFT = 0x11;
-            }
-            break;
-        case 0x11:
-            if (currentstate == 0x10) {
-                PREV_ENCODER_LEFT = 0x10;
-            } else if (currentstate == 0x01) {
-                PREV_ENCODER_LEFT = 0x01;
-            }
-            break;
-        case 0x10:
-            if (currentstate == 0x00) {
-                PREV_ENCODER_LEFT = 0x00;
-            } else if (currentstate == 0x11) {
-                PREV_ENCODER_LEFT = 0x11;
-            }
-            break;
-        default:
-            break;
-    }
-
-    IFS2bits.IC3IF = 0;
-
-}
-//IC4 -- channel 2 of LEFT motor
-void __attribute__((__interrupt__,__auto_psv__)) _IC4Interrupt() {
-    unsigned char ch1 = PORTDbits.RD10 << 4; //current value of ch1 pin
-    unsigned char ch2 = PORTDbits.RD11; //current value of ch2 pin
-    unsigned char currentstate = ch1 | ch2;
-
-    
-
-    ENCODER4[0] = IC4BUF;
-
-    switch(PREV_ENCODER_LEFT) {
-        case 0x00:
-            if(currentstate == 0x01) {
-                PREV_ENCODER_LEFT = 0x01;
-            } else if (currentstate == 0x10) {
-                PREV_ENCODER_LEFT = 0x10;
-            }
-            break;
-        case 0x01:
-            if(currentstate == 0x00) {
-                PREV_ENCODER_LEFT = 0x00;
-            } else if (currentstate == 0x11) {
-                PREV_ENCODER_LEFT = 0x11;
-            }
-            break;
-        case 0x11:
-            if (currentstate == 0x10) {
-                PREV_ENCODER_LEFT = 0x10;
-            } else if (currentstate == 0x01) {
-                PREV_ENCODER_LEFT = 0x01;
-            }
-            break;
-        case 0x10:
-            if (currentstate == 0x00) {
-                PREV_ENCODER_LEFT = 0x00;
-            } else if (currentstate == 0x11) {
-                PREV_ENCODER_LEFT = 0x11;
-            }
-            break;
-        default:
-            break;
-    }
-
-    IFS2bits.IC4IF = 0;
-
-}
-*/
 
 //wait used to redirect the robot when it senses an object
 void wait() {

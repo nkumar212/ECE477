@@ -14,6 +14,8 @@ void i2c_init()
 {
     int BRG = 100;
     int temp;
+    
+    ODCG |= 0x0C;
 
     //clock divider
     I2C1BRG = BRG;
@@ -23,6 +25,8 @@ void i2c_init()
     I2C1CONbits.I2CEN = 1;      //Enable i2c mode
 
     temp = I2C1RCV;              //read buffer to clear buffer full
+
+
 
   //  reset_i2c_bus();            //set bus to idle;
 
