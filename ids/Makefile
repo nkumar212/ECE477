@@ -8,7 +8,7 @@ CPPFLAGS = -O3 -I $(ROOT)/libfreenect/include -L $(ROOT)/libfreenect/build/lib -
 CLEAN_TARGETS=*.o *.d *.a
 
 A = commands.a
-OBJ = ids.o Command.o CommandQueue.o kinect.o yuv.o
+OBJ = ids.o Command.o CommandQueue.o kinect.o yuv.o wall.o point.o
 subdirs = commands
 
 export ROOT
