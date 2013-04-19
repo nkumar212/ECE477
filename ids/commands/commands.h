@@ -9,5 +9,6 @@
 #include "dumpdist.h"
 #include "slopeframe.h"
 #include "wallframe.h"
+#include "posframe.h"
 
 #endif

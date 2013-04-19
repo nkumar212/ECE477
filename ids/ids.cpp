@@ -237,3 +237,8 @@ uint64_t IDS::getDepthCount()
 {
 	return getKinect()->getDepthCount();
 }
+
+Minotaur IDS::getMinotaur()
+{
+	return minotaur;
+}

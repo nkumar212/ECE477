@@ -7,8 +7,10 @@
 #include <cassert>
 #include <cstdio>
 #include <cmath>
+#include <iostream>
 
 #include "libfreenect.h"
+#include "minotaur.h"
 
 #define KINECT_DEPTH_HORIZ_PIXEL_THETA 0.0017159468
 #define KINECT_DEPTH_VERT_PIXEL_THETA 0.001798352
@@ -29,6 +31,13 @@ class Kinect
 		Kinect();
 	public: //Public Singleton Entry point
 		static Kinect* getSingleton();
+
+		struct Spherical
+		{
+			double sin_azi, cos_azi; //Functions of azimuth
+			double sin_inc, cos_inc; //Functions of inclination
+		};
+
 
 	protected: //Instance Members
 
@@ -58,24 +67,25 @@ class Kinect
 		pthread_mutex_t depth_lock;
 		pthread_mutex_t video_lock;
 
-		float x3dTrig[480/8][640/8][8][8];
-		float y3dTrig[480/8][640/8][8][8];
-		float z3dTrig[480/8][640/8][8][8];
+		Spherical sphericals[480/8][640/8][8][8];
 
 	public:
-		inline float x3d(int x, int y, int ix, int iy, float d)
+		inline double x3d(int x, int y, int ix, int iy, float d, Minotaur& m)
 		{
-			return d*x3dTrig[y][x][iy][ix];
+			Spherical sc = sphericals[y][x][iy][ix];
+			return d * fabs(sc.sin_inc) * (sc.sin_azi*m.cos_ori+sc.cos_azi*m.sin_ori);
 		}
 
-		inline float y3d(int x, int y, int ix, int iy, float d)
+		inline double z3d(int x, int y, int ix, int iy, float d, Minotaur& m)
 		{
-			return d*y3dTrig[y][x][iy][ix];
+			Spherical sc = sphericals[y][x][iy][ix];
+			return d * sc.sin_inc * fabs(sc.cos_azi*m.cos_ori-sc.sin_azi*m.sin_ori);
 		}
 
-		inline float z3d(int x, int y, int ix, int iy, float d)
+		inline double y3d(int x, int y, int ix, int iy, float d)
 		{
-			return d*z3dTrig[y][x][iy][ix];
+			Spherical sc = sphericals[y][x][iy][ix];
+			return d*sc.cos_inc;
 		}
 
 	protected: //Internal Members

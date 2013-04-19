@@ -19,14 +19,18 @@ void* mainCommandQueue(void* vIDS)
 	CommandQueue* cmd_q = ids->getCmdQueue();
 	Command* cmd = NULL;
 
-	ComWallFrame* cmdWallFrame = new ComWallFrame();
-
 	cmd_q->add_periodic(new ComKeepalive(), 100);
 	cmd_q->add_periodic(new ComSwapDepth(), 99);
 	//cmd_q->add_periodic(new ComPlaneDist(), 100);
-	cmd_q->add_periodic(cmdWallFrame, 120);
 
-	//ids->getKinect()->setVideoSource((uint8_t*)cmdWallFrame->frame);
+
+/*	ComWallFrame* cmdWallFrame = new ComWallFrame();
+	cmd_q->add_periodic(cmdWallFrame, 50);
+	ids->getKinect()->setVideoSource((uint8_t*)cmdWallFrame->frame);*/
+
+	ComPosFrame* cmdPosFrame = new ComPosFrame();
+	cmd_q->add_periodic(cmdPosFrame, 50);
+	ids->getKinect()->setVideoSource((uint8_t*)cmdPosFrame->frame);
 
 	ids->swapDepth();
 
@@ -53,8 +57,8 @@ void* mainCommandQueue(void* vIDS)
 			clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &t1);
 			end_ms = (t1.tv_sec * 1000000 + t1.tv_nsec/1000);
 
-			if(end_ms - start_ms > 1000)
-				std::cerr << "Command '" << cmd->getName() << "' took " << (end_ms - start_ms) << "us" << std::endl;
+/*			if(end_ms - start_ms > 1000)
+				std::cerr << "Command '" << cmd->getName() << "' took " << (end_ms - start_ms) << "us" << std::endl;*/
 
 			ids->unlock_output();
 		}else{

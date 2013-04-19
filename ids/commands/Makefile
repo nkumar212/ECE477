@@ -9,7 +9,7 @@ define make-depend
 	@$(MV) $3.tmp $3
 endef
 
-OBJS = keepalive.o freenect_sync.o swapdepth.o planedist.o distframe.o dumpdist.o slopeframe.o wallframe.o
+OBJS = keepalive.o freenect_sync.o swapdepth.o planedist.o distframe.o dumpdist.o slopeframe.o wallframe.o posframe.o
 CLEAN_TARGETS=*.o *.d *.a
 subdirs = 
 

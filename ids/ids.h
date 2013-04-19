@@ -4,6 +4,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <algorithm>
+#include <set>
 
 #include <cstdlib>
 #include <cstring>
@@ -17,7 +18,7 @@
 
 #include "CommandQueue.h"
 #include "kinect.h"
-#include "point.h"
+#include "minotaur.h"
 #include "wall.h"
 
 class IDS
@@ -64,11 +65,11 @@ class IDS
 		pthread_mutex_t minos_outgoing_mutex;
 		pthread_mutex_t cnc_outgoing_mutex;
 
-	public: //Room Mapping variables
-		std::map<std::pair<int, int>, Point> room_points;
-		std::set<Wall> room_walls;
+		Minotaur minotaur;
 
-	public: //Singleton constructor
+	public:
+		
+		//Singleton constructor
 		static IDS* getSingleton();
 
 	public:
@@ -94,6 +95,8 @@ class IDS
 		uint64_t getDepthCount();
 		uint64_t getVideoCount();
 		Kinect::depth_buffer* getDepth();
+
+		Minotaur getMinotaur();
 
 };
 

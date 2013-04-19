@@ -10,7 +10,7 @@
 #include "main_cnc_wait.h"
 #include "main_minos_wait.h"
 #include "wall.h"
-#include "point.h"
+#include "map.h"
 
 int main(int argc, char* argv[])
 {
@@ -23,10 +23,6 @@ int main(int argc, char* argv[])
 	Wall test(0,0);
 	std::set<Wall> wallset;
 	wallset.insert(test);
-
-	Point testpoint(0,0);
-	std::set<Point> pointset;
-	pointset.insert(testpoint);
 
 	int rc;
 
