@@ -176,21 +176,21 @@ int main(int argc, char** argv) {
             //printString("Left ticks:");
             //printInt(LEFT_TICKS);
             //printString("\n\r");
-            //printString("1: ");
-            //printInt(SENSOR1);
-            //printString("\n\r");
-            //printString("2: ");
-            //printInt(SENSOR2);
-            //printString("\n\r");
-            //printString("3: ");
-            //printInt(SENSOR3);
-            //printString("\n\r");
-            //printString("4: ");
-            //printInt(SENSOR4);
-            //printString("\n\r");
-            //printString("5: ");
-            //printInt(SENSOR5);
-            //printString("\n\r");
+            printString("1: ");
+            printInt(SENSOR1);
+            printString("\n\r");
+            printString("2: ");
+            printInt(SENSOR2);
+            printString("\n\r");
+            printString("3: ");
+            printInt(SENSOR3);
+            printString("\n\r");
+            printString("4: ");
+            printInt(SENSOR4);
+            printString("\n\r");
+            printString("5: ");
+            printInt(SENSOR5);
+            printString("\n\r");
 
 
             PRINT = 0;
@@ -439,7 +439,24 @@ int main(int argc, char** argv) {
                 }
                 controlpacket.bytesRecieved = 0;
             }
-            
+
+            if (controlpacket.command == CMD_RIGHT_ENCODER) {
+                BUFF_push(&TX_DATA_BUFFER, 0xAA);
+                BUFF_push(&TX_DATA_BUFFER, controlpacket.sequence);
+                BUFF_push(&TX_DATA_BUFFER, CMD_RIGHT_ENCODER);
+                BUFF_push(&TX_DATA_BUFFER, (char)(RIGHT_TICKS >> 8));
+                BUFF_push(&TX_DATA_BUFFER, (char)RIGHT_TICKS);
+                controlpacket.bytesRecieved = 0;
+            }
+
+            if (controlpacket.command == CMD_LEFT_ENCODER) {
+                BUFF_push(&TX_DATA_BUFFER, 0xAA);
+                BUFF_push(&TX_DATA_BUFFER, controlpacket.sequence);
+                BUFF_push(&TX_DATA_BUFFER, CMD_LEFT_ENCODER);
+                BUFF_push(&TX_DATA_BUFFER, (char)(LEFT_TICKS >> 8));
+                BUFF_push(&TX_DATA_BUFFER, (char)LEFT_TICKS);
+                controlpacket.bytesRecieved = 0;
+            }
 
             //battery level request
             if (controlpacket.command == CMD_BATTERY) {
@@ -449,6 +466,27 @@ int main(int argc, char** argv) {
                 BUFF_push(&TX_DATA_BUFFER, battery_percentage);
                 BUFF_push(&TX_DATA_BUFFER, 0x00);
                 controlpacket.bytesRecieved = 0;
+            }
+
+
+            //ir sensor
+            if (controlpacket.command == CMD_SENSOR) {
+                BUFF_push(&TX_DATA_BUFFER, 0xAA);
+                    BUFF_push(&TX_DATA_BUFFER, controlpacket.sequence);
+                    BUFF_push(&TX_DATA_BUFFER, CMD_SENSOR);
+                    tempBuffC = 0;
+                    if (SENSOR1 > SEN_MAX)
+                        tempBuffC |= 1;
+                    if ((SENSOR2 > SEN_MAX) || (SENSOR4 < SEN_MIN))
+                        tempBuffC |= 0x2;
+                    if (SENSOR3 > SEN_MAX)
+                        tempBuffC |= 0x4;
+                    if ((SENSOR4 > SEN_MAX) || (SENSOR4 < SEN_MIN))
+                        tempBuffC |= 0x8;
+                    if ((SENSOR5 > SEN_MAX) || (SENSOR5 < SEN_MIN))
+                        tempBuffC |= 0x10;
+                    BUFF_push(&TX_DATA_BUFFER, tempBuffC);
+                    BUFF_push(&TX_DATA_BUFFER, 0x00);
             }
         }
 
@@ -524,10 +562,6 @@ int main(int argc, char** argv) {
         }
 
 
-        
-        
-
-
 
         //TEMP -- adjust the direction of the motors
         /*
@@ -561,6 +595,29 @@ int main(int argc, char** argv) {
         }
         */
 
+        //enable or disable the sensors
+        if(controlpacket.bytesRecieved == 5 && controlpacket.command == CMD_ENABLE_SENSORS) {
+            SENSOR_ENABLE = controlpacket.data1;
+        }
+
+        if(controlpacket.bytesRecieved == 5 && controlpacket.command == CMD_AUTONOMOUS_MODE) {
+            controlpacket.bytesRecieved = 0;
+            if (controlpacket.data1 == 1) {
+                user_right_speed = 0xFF;
+                user_left_speed = 0xFF;
+                user_left_direction = 'F';
+                user_right_direction = 'F';
+                SENSOR_ENABLE = 1;
+            } else {
+                user_right_speed = 0x00;
+                user_left_speed = 0x00;
+                user_left_direction = 'S';
+                user_right_direction = 'S';
+                SENSOR_ENABLE = 0;
+            }
+        }
+
+
 
 
         //Obstacle avoidance
@@ -568,11 +625,11 @@ int main(int argc, char** argv) {
         //if fron senter sensor senses farther than the floor, there is a drop
         //off and back up for a bit and to the right
         
-        if (SENSOR_ENABLE && (SENSOR2 < SEN_MIN)) {
+        if (SENSOR_ENABLE && (SENSOR2 > SEN_MAX)) {
             right_speed = 0xFF;
             left_speed = 0xFF;
             right_direction = 'B';
-            left_direction = 'B';
+            left_direction = 'F';
             SENSOR_TRIPPED = 1;
         }
 
@@ -598,7 +655,7 @@ int main(int argc, char** argv) {
         
         //front side sensors
         if (SENSOR_ENABLE && (SENSOR1 > SEN_MAX && SENSOR3 > SEN_MAX)) {
-            right_speed = 0xFF;
+            right_speed = 0x10;
             left_speed = 0xFF;
             right_direction = 'B';
             left_direction = 'B';
@@ -630,7 +687,6 @@ int main(int argc, char** argv) {
             right_direction = user_right_direction;
             left_speed = user_left_speed;
             left_direction = user_left_direction;
-
         }
         
 

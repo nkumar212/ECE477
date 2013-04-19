@@ -12,7 +12,7 @@
 extern "C" {
 #endif
 
-#define MAX_BUFFSIZE 100
+#define MAX_BUFFSIZE 500
 
 #define BUFF_FULL 1
 #define BUFF_EMPTY -1
@@ -29,6 +29,8 @@ extern "C" {
 #define CMD_RIGHT_ENCODER 0xB6
 #define CMD_LEFT_ENCODER 0xB7
 #define CMD_BATTERY 0x02
+#define CMD_ENABLE_SENSORS 0x03   //send a 1 in the 1st data byte to enable the sensors
+#define CMD_AUTONOMOUS_MODE 0x04
 
 
 #define SEN_MIN 400    //the minimum distance that the downward IR sensors have to sense
