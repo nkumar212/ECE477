@@ -16,7 +16,6 @@ class ComWallFrame : public ComFrame
 	public:
 		ComWallFrame();
 		virtual int action(IDS* main);
-		Kinect::video_buffer frame;
 };
 
 #endif

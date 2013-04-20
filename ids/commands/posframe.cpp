@@ -84,13 +84,13 @@ int ComPosFrame::action(IDS* main)
 				g = 0x00;
 				b = 0x00;
 			}else{
-				if(xyzflags & X) r = avg3d.x/10 + 128;
+				if(xyzflags & X) r = avg3d.x + 128;
 				else r = 0;
 
-				if(xyzflags & Y) g = avg3d.y/10 + 128;
+				if(xyzflags & Y) g = avg3d.y + 128;
 				else g = 0;
 
-				if(xyzflags & Z) b = avg3d.z/10 + 128;
+				if(xyzflags & Z) b = avg3d.z + 128;
 				else b = 0;
 			}
 

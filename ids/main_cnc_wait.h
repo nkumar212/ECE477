@@ -50,6 +50,25 @@ void* mainCncWait(void* vids)
 	CommandQueue* cmd_q = CommandQueue::getSingleton();
 	CNCCommand cncCmd;
 
+	ComFrameProxy comFrameProxy;
+	cmd_q->add_periodic(&comFrameProxy, 100);
+	comFrameProxy.registerFrameSource("PosFrameXYZ", new ComPosFrame(
+					ComPosFrame::X | ComPosFrame::Y | ComPosFrame::Z
+				));
+	comFrameProxy.registerFrameSource("PosFrameX", new ComPosFrame(
+					ComPosFrame::X
+				));
+	comFrameProxy.registerFrameSource("PosFrameY", new ComPosFrame(
+					ComPosFrame::Y
+				));
+	comFrameProxy.registerFrameSource("PosFrameZ", new ComPosFrame(
+					ComPosFrame::Z
+				));
+	comFrameProxy.registerFrameSource("WallFrame", new ComWallFrame());
+	comFrameProxy.registerFrameSource("Live", NULL);
+
+	comFrameProxy.chooseSource(ids, "Live");
+
 
 	while(!ids->quit())
 	{
@@ -83,7 +102,32 @@ void* mainCncWait(void* vids)
 					std::cerr << "Caught dump command" << std::endl;
 					break;
 				case 0x20:
-					
+					switch(cncCmd.udata16)
+					{
+						case 0x01:
+							comFrameProxy.chooseSource(ids,"PosFrameX");
+							break;
+						case 0x02:
+							comFrameProxy.chooseSource(ids,"PosFrameY");
+							break;
+						case 0x04:
+							comFrameProxy.chooseSource(ids,"PosFrameZ");
+							break;
+						case 0x07:
+							comFrameProxy.chooseSource(ids,"PosFrameXYZ");
+							break;
+					}
+
+					std::cerr << "Caught source change to PosFrame(" << cncCmd.udata16 << ")" << std::endl;
+					break;
+				case 0x21:
+					comFrameProxy.chooseSource(ids,"WallFrame");
+					std::cerr << "Caught source change to WallFrame" << std::endl;
+					break;
+				case 0x22:
+					comFrameProxy.chooseSource(ids,"Live");
+					std::cerr << "Caught source change to Live" << std::endl;
+					break;
 				default:
 					throw std::runtime_error("Invalid Command pakcet cmdNumber from CNC Server.\n");
 			}

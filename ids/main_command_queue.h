@@ -19,28 +19,10 @@ void* mainCommandQueue(void* vIDS)
 	CommandQueue* cmd_q = ids->getCmdQueue();
 	Command* cmd = NULL;
 
-	ComFrameProxy comFrameProxy;
-
 	cmd_q->add_periodic(new ComKeepalive(), 100);
 	cmd_q->add_periodic(new ComSwapDepth(), 99);
-	cmd_q->add_periodic(&comFrameProxy, 100);
-
-	comFrameProxy.registerFrameSource("PosFrameXYZ", new ComPosFrame(
-					ComPosFrame::X | ComPosFrame::Y | ComPosFrame::Z
-				));
-	comFrameProxy.registerFrameSource("PosFrameX", new ComPosFrame(
-					ComPosFrame::X
-				));
-	comFrameProxy.registerFrameSource("PosFrameY", new ComPosFrame(
-					ComPosFrame::Y
-				));
-	comFrameProxy.registerFrameSource("PosFrameZ", new ComPosFrame(
-					ComPosFrame::Z
-				));
-	comFrameProxy.registerFrameSource("WallFrame", new ComWallFrame());
 
 	ids->swapDepth();
-	comFrameProxy.chooseSource(ids, "PosFrameXYZ");
 
 	long start_ms, end_ms;
 	timespec t1;

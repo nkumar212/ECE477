@@ -7,7 +7,6 @@ inline float quick_square(float x)
 
 ComWallFrame::ComWallFrame() : ComFrame::ComFrame("WallFrame")
 {
-	memset(frame,0,sizeof(Kinect::video_buffer));
 }
 
 int ComWallFrame::action(IDS* main)
