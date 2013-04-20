@@ -1,0 +1,109 @@
+<html>
+<head>
+<script>
+
+//Constants
+var KEY_W = 1;
+var KEY_A = 2;
+var KEY_S = 4;
+var KEY_D = 8;
+var KEY_SPACE = 16
+var KEY_ENTER = 32;
+
+var ws = new WebSocket("ws://localhost:9999/");
+
+//Global variable holding which gKeys are down
+var gKeys = 0;
+var msgInfo = new Object();
+
+ws.onopen = function(){
+
+	ws.send('Hello from the client!');
+	
+	canvas = document.getElementById("canvas");
+	output = document.getElementById("output");
+
+	canvas.onload = function(){
+		gKeys = 0;
+	}
+
+	canvas.onfocus = function(){
+		gKeys = 0;
+	}
+
+	canvas.onblur = function(){
+		gKeys = 0;
+	}
+
+	canvas.onkeyup = function(e){
+		if(e == null) e = window.event;
+		key = e.keyCode;
+
+		if(key == 65) //A
+			gKeys &= 0xFFFF ^ KEY_A
+		else if(key == 83) //S
+			gKeys &= 0xFFFF ^ KEY_S
+		else if(key == 68) //D
+			gKeys &= 0xFFFF ^ KEY_D
+		else if(key == 87) //W
+			gKeys &= 0xFFFF ^ KEY_W
+		else if(key == 32) //Space
+			gKeys &= 0xFFFF ^ KEY_SPACE
+		else if(key == 13)
+			gKeys &= 0xFFFF ^ KEY_ENTER
+	}
+
+	canvas.onkeydown = function(e){
+		if(e == null) e = window.event;
+		key = e.keyCode;
+
+		if(key == 65) //A
+			gKeys |= KEY_A
+		else if(key == 83) //S
+			gKeys |= KEY_S
+		else if(key == 68) //D
+			gKeys |= KEY_D
+		else if(key == 87) //W
+			gKeys |= KEY_W
+		else if(key == 32) //Space
+			gKeys |= KEY_SPACE
+		else if(key == 13)
+			gKeys |= KEY_ENTER
+	}
+
+	function getKeys(){
+		setTimeout(function() {
+			msgInfo.command=document.getElementById("command").value;
+			msgInfo.gKeys=gKeys;
+			msgInfo.speed=document.getElementById("speedslider").value;
+			msgInfo.robotid=document.getElementById("username").value;
+			msgInfo.sessionid=document.getElementById("sessionid").value;
+
+			msg = JSON.stringify(msgInfo);
+			output.value = msg 
+			ws.send(msg);
+		
+			getKeys();
+		},10);
+	}
+
+	getKeys();
+}
+
+</script>
+</head>
+<body>
+<canvas tabindex=1 style="background-color:white;border: thin red solid;" width=320 height=240 id="canvas"></canvas>
+<video style="background-color:white;border: thin red solid;" width=320 height=240>
+<source src="rtp://localhost:50001/test1.ogg" type="video/ogg" />
+	
+</video>
+<input type="hidden" id="robotid" value="MINOTAUR_1" />
+<input type="hidden" id="sessionid" value="127.0.0.1" />
+<input type="hidden" id="command" value="0" />
+<br>Username:<input type="text" id="username"/>
+<br>Speed:<input type="range" id="speedslider" min="0" max="100"/>
+<br>Outdata:<textarea id="output" cols=80 rows=5></textarea>
+</body>
+</html>
+s
