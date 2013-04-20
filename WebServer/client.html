@@ -11,6 +11,12 @@ var KEY_A = 2;
 var KEY_S = 4;
 var KEY_D = 8;
 var KEY_SPACE = 16;
+var KEY_F12 = 32; //Declared this earlier than the reset
+var KEY_F1 = 64;
+var KEY_F2 = 128;
+var KEY_F3 = 256;
+var KEY_F4 = 512;
+var KEY_F5 = 1024;
 
 var ws = new WebSocket("ws://128.46.100.114:9999/");
 
@@ -67,6 +73,18 @@ ws.onopen = function() {
 			gKeys |= KEY_W
 		else if(key == 32) //Space
 			gKeys |= KEY_SPACE
+		else if(key == 112) //Set Camera to X depth
+			gKeys |= KEY_F1
+		else if(key == 113) //Set Camera to Y depth
+			gKeys |= KEY_F2
+		else if(key == 114) //Set Camera to Z depth
+			gKeys |= KEY_F3
+		else if(key == 115) //Set Camera to XYZ Rainbow
+			gKeys |= KEY_F4
+		else if(key == 116) //Set Camera to Walls Mode
+			gKeys |= KEY_F5
+		else if(key == 123) //Save Camera to file
+			gKeys |= KEY_F12
 	}
 
 	function getKeys(){
