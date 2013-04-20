@@ -1,23 +1,25 @@
 #ifndef POSFRAME_H
 #define POSFRAME_H
 
-#include "../Command.h"
-#include "../ids.h"
 #include <cmath>
 #include <algorithm>
 
-class ComPosFrame : public Command
+#include "frame.h"
+
+class ComPosFrame : public ComFrame
 {
+	public:
+		enum { X=1, Y=2, Z=4 };
 	protected:
 		struct Point
 		{
 			float x,y,z;
 		};
 		bool valid_points[8][8];
+		int xyzflags;
 	public:
-		ComPosFrame();
+		ComPosFrame(int xyzflags = 7);
 		virtual int action(IDS* main);
-		Kinect::video_buffer frame;
 };
 
 #endif

@@ -5,8 +5,9 @@ inline float quick_square(float x)
 	return x*x;
 }
 
-ComPosFrame::ComPosFrame() : Command::Command("PosFrame")
+ComPosFrame::ComPosFrame(int xyzflags) : ComFrame::ComFrame("PosFrame")
 {
+	this->xyzflags = xyzflags;
 	memset(frame,0,sizeof(Kinect::video_buffer));
 }
 
@@ -83,10 +84,14 @@ int ComPosFrame::action(IDS* main)
 				g = 0x00;
 				b = 0x00;
 			}else{
-				//r = avg3d.x/10 + 128;
-				//g = avg3d.y/10 + 128;
-				r = g = 0;
-				b = avg3d.z + 128;
+				if(xyzflags & X) r = avg3d.x/10 + 128;
+				else r = 0;
+
+				if(xyzflags & Y) g = avg3d.y/10 + 128;
+				else g = 0;
+
+				if(xyzflags & Z) b = avg3d.z/10 + 128;
+				else b = 0;
 			}
 
 			for(yo = 0; yo < 8; yo++)

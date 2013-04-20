@@ -46,6 +46,7 @@ void* mainCncWait(void* vids)
 	loop_ms = (t1.tv_sec * 1000 + t1.tv_nsec/1000000);
 
 	ComDumpVideo cmdDumpVideo;
+	ComWallFrame cmdFrameSourceWallFrame;
 	CommandQueue* cmd_q = CommandQueue::getSingleton();
 	CNCCommand cncCmd;
 
@@ -81,6 +82,8 @@ void* mainCncWait(void* vids)
 					cmd_q->push(&cmdDumpVideo);
 					std::cerr << "Caught dump command" << std::endl;
 					break;
+				case 0x20:
+					
 				default:
 					throw std::runtime_error("Invalid Command pakcet cmdNumber from CNC Server.\n");
 			}

@@ -10,6 +10,9 @@ class WebsocketProtocol(protocol.Protocol):
 		self.last_data = None
 		self.last_keys = None
 
+	def sendCmd(self, robot, command, data1, data2):
+		robot.write(bytes("".join([chr(command % 255),chr(data1 % 255),chr(data2 % 255)])))
+
 	def dataReceived(self, jdata):
 		diagScale = 0
 
@@ -43,25 +46,30 @@ class WebsocketProtocol(protocol.Protocol):
 		if data['gKeys'] & 16:
 			motors = [0,0]
 
-		if data['gKeys'] == 32 and (self.last_keys & 32 == 0):
-			robot.write(bytes("".join([chr(0x10),chr(0x00),chr(0x00)])))
-			self.last_keys = data['gKeys']
-			return
+		if data['gKeys'] & 0x63 !=self.last_keys & 0x63:
+			speed = 'speed' in data.keys() and data['speed'] and int(data['speed']) or 50;
+			motors = [int(m * max(min(speed * 127.0/100,127),0)) for m in motors]
+			dirs = [(0,128)[m<0] for m in motors]
 
-		speed = 'speed' in data.keys() and data['speed'] and int(data['speed']) or 50;
-		motors = [int(m * max(min(speed * 127.0/100,127),0)) for m in motors]
-		dirs = [(0,128)[m<0] for m in motors]
+			if self.last_data != codes and data['robotid'] in Minotaur.instances.keys():
+				left = abs(motors[0])|dirs[0]
+				right = abs(motors[1])|dirs[1]
+				self.sendCmd(robot, 0x01, left, right)
 
-		codes = [1,0,0]
-		codes[1] = abs(motors[0]) | dirs[0]
-		codes[2] = abs(motors[1]) | dirs[1]
+		if self.last_keys == 0:
+			if data['gKeys'] == 32:
+				self.sendCmd(robot, 0x10, 0x00, 0x00)
+			elif data['gKeys'] == 64:
+				self.sendCmd(robot, 0x20, 0x00, 0x01)
+			elif data['gKeys'] == 128:
+				self.sendCmd(robot, 0x20, 0x00, 0x02)
+			elif data['gKeys'] == 256:
+				self.sendCmd(robot, 0x20, 0x00, 0x04)
+			elif data['gKeys'] == 512:
+				self.sendCmd(robot, 0x20, 0x00, 0x07)
+			elif data['gKeys'] == 1024:
+				self.sendCmd(robot, 0x21, 0x00, 0x00)
 
-		if self.last_data != codes and data['robotid'] in Minotaur.instances.keys():
-			char_array = [chr(c) for c in codes]
-			data_str = "".join(char_array)
-			robot.write(bytes(data_str))
-
-		self.last_data = deepcopy(codes)
 		self.last_keys = data['gKeys']
 
 class Minotaur:
@@ -92,7 +100,7 @@ class MinotaurProtocol(protocol.Protocol):
 	def dataReceived(self, data):
 		if(not self.minotaur.loggedin):
 			self.minotaur.login(data)
-			print "Minotaur Connected with id:", self.minotaur.name,"at",self.transport.getHandle().getpeername()
+			print "Minotaur Connected with id:", self.minotaur.name
 
 minotaur_factory = protocol.ServerFactory()
 minotaur_factory.protocol = MinotaurProtocol

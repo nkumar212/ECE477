@@ -5,7 +5,7 @@ inline float quick_square(float x)
 	return x*x;
 }
 
-ComWallFrame::ComWallFrame() : Command::Command("WallFrame")
+ComWallFrame::ComWallFrame() : ComFrame::ComFrame("WallFrame")
 {
 	memset(frame,0,sizeof(Kinect::video_buffer));
 }

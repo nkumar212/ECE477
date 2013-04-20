@@ -1,12 +1,11 @@
 #ifndef WALLFRAME_H
 #define WALLFRAME_H
 
-#include "../Command.h"
-#include "../ids.h"
+#include "frame.h"
 #include <cmath>
 #include <algorithm>
 
-class ComWallFrame : public Command
+class ComWallFrame : public ComFrame
 {
 	protected:
 		struct Point
