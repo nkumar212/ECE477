@@ -92,7 +92,7 @@ class MinotaurProtocol(protocol.Protocol):
 	def dataReceived(self, data):
 		if(not self.minotaur.loggedin):
 			self.minotaur.login(data)
-			print "Minotaur Connected with id:", self.minotaur.name
+			print "Minotaur Connected with id:", self.minotaur.name,"at",self.transport.getHandle().getpeername()
 
 minotaur_factory = protocol.ServerFactory()
 minotaur_factory.protocol = MinotaurProtocol
