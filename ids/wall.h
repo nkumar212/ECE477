@@ -2,23 +2,27 @@
 #define WALL_H
 
 #include <cmath>
+#include <stdint.h>
 
-#define ORIENT_EQUAL_THRESH 0.01
-#define INTERCEPT_EQUAL_THRESH 12.0
+#define ORIENT_EQUAL_THRESH 0.2
+#define INTERCEPT_EQUAL_THRESH 1200
 
-inline bool diff_angle(float a, float b)
+#ifndef PI
+#define PI 3.1415926535
+#endif
+
+inline float diff_angle(float a, float b)
 {
 	float d = a - b;
-	d += (d>180) ? -360 : (d<-180) ? 360 : 0;
+	d += (d>PI) ? -2*PI : (d<-PI) ? 2*PI : 0;
 	return d;
 }
 
 struct Wall
 {
 	float orient, yint;
-	int point_count;
 
-	Wall(float orient, float yint);
+	Wall(float orient=0, float yint=0);
 
 	inline bool operator==(const Wall& rhs) const
 	{
@@ -32,13 +36,13 @@ struct Wall
 	inline bool operator!=(const Wall& rhs) const {return !(*this == rhs);}
 	inline bool operator< (const Wall& rhs) const
 	{
-		if(fabs(rhs.yint - this->yint) < INTERCEPT_EQUAL_THRESH)
-			if(fabs(diff_angle(rhs.orient, this->orient)) < ORIENT_EQUAL_THRESH)
+		if(fabs(diff_angle(rhs.orient, this->orient)) < ORIENT_EQUAL_THRESH)
+			if(fabs(rhs.yint - this->yint) < INTERCEPT_EQUAL_THRESH)
 				return false;
 			else
-				return this->orient < rhs.orient;
+				return this->yint < rhs.yint;
 		else
-			return this->yint < rhs.yint;
+			return this->orient < rhs.orient;
 	}
 	
 	inline bool operator> (const Wall& rhs) const {return rhs < *this;}

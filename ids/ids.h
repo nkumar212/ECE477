@@ -19,7 +19,7 @@
 #include "CommandQueue.h"
 #include "kinect.h"
 #include "minotaur.h"
-#include "wall.h"
+#include "map.h"
 
 class IDS
 {
@@ -66,6 +66,7 @@ class IDS
 		pthread_mutex_t cnc_outgoing_mutex;
 
 		Minotaur minotaur;
+		Map roommap;
 
 	public:
 		
@@ -97,6 +98,7 @@ class IDS
 		Kinect::depth_buffer* getDepth();
 
 		Minotaur getMinotaur();
+		Map* getMap();
 
 };
 

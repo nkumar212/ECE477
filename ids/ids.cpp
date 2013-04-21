@@ -22,6 +22,11 @@ IDS::IDS()
 		pthread_mutex_init(minos_command_locks + i, NULL);
 }
 
+Map* IDS::getMap()
+{
+	return &roommap;
+}
+
 void IDS::lock_output()
 {
 	pthread_mutex_lock(&mutex_output);

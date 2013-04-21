@@ -64,10 +64,11 @@ void* mainCncWait(void* vids)
 	comFrameProxy.registerFrameSource("PosFrameZ", new ComPosFrame(
 					ComPosFrame::Z
 				));
+	comFrameProxy.registerFrameSource("MapFrame", new ComMapFrame());
 	comFrameProxy.registerFrameSource("WallFrame", new ComWallFrame());
 	comFrameProxy.registerFrameSource("Live", NULL);
 
-	comFrameProxy.chooseSource(ids, "Live");
+	comFrameProxy.chooseSource(ids, "WallFrame");
 
 
 	while(!ids->quit())
@@ -125,6 +126,10 @@ void* mainCncWait(void* vids)
 					std::cerr << "Caught source change to WallFrame" << std::endl;
 					break;
 				case 0x22:
+					comFrameProxy.chooseSource(ids,"MapFrame");
+					std::cerr << "Caught source change to WallFrame" << std::endl;
+					break;
+				case 0x23:
 					comFrameProxy.chooseSource(ids,"Live");
 					std::cerr << "Caught source change to Live" << std::endl;
 					break;

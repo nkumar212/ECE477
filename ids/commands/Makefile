@@ -9,7 +9,7 @@ define make-depend
 	@$(MV) $3.tmp $3
 endef
 
-OBJS = keepalive.o swapdepth.o dumpvideo.o wallframe.o posframe.o frame.o frameproxy.o
+OBJS = keepalive.o swapdepth.o dumpvideo.o wallframe.o posframe.o frame.o frameproxy.o mapframe.o
 CLEAN_TARGETS=*.o *.d *.a
 subdirs = 
 

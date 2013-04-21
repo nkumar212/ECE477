@@ -90,6 +90,8 @@ class WebsocketProtocol(protocol.Protocol):
 				self.sendCmd(robot, 0x21, 0x00, 0x00)
 			elif data['gKeys'] == 2048:
 				self.sendCmd(robot, 0x22, 0x00, 0x00)
+			elif data['gKeys'] == 4096:
+				self.sendCmd(robot, 0x23, 0x00, 0x00)
 
 		self.last_keys = data['gKeys']
 

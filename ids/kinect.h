@@ -15,6 +15,9 @@
 #define KINECT_DEPTH_HORIZ_PIXEL_THETA 0.0017159468
 #define KINECT_DEPTH_VERT_PIXEL_THETA 0.001798352
 
+//#define KINECT_DEPTH_HORIZ_PIXEL_THETA 0.0004159468
+//#define KINECT_DEPTH_VERT_PIXEL_THETA 0.000498352
+
 void Bitmap2Yuv420p( uint8_t *destination, uint8_t *rgb,
                      const int width, const int height );
 
@@ -34,8 +37,9 @@ class Kinect
 
 		struct Spherical
 		{
-			double sin_azi, cos_azi; //Functions of azimuth
-			double sin_inc, cos_inc; //Functions of inclination
+/*			double sin_azi, cos_azi; //Functions of azimuth
+			double sin_inc, cos_inc; //Functions of inclination*/
+			float sin_azi, tan_inc;
 		};
 
 
@@ -70,22 +74,23 @@ class Kinect
 		Spherical sphericals[480/8][640/8][8][8];
 
 	public:
-		inline double x3d(int x, int y, int ix, int iy, float d, Minotaur& m)
+		inline double x3d(int x, int y, int ix, int iy, float d)
 		{
 			Spherical sc = sphericals[y][x][iy][ix];
-			return d * fabs(sc.sin_inc) * (sc.sin_azi*m.cos_ori+sc.cos_azi*m.sin_ori);
+//			return d * fabs(sc.sin_inc) * (sc.sin_azi*m.cos_ori+sc.cos_azi*m.sin_ori);
+			return d * sc.sin_azi;
 		}
 
-		inline double z3d(int x, int y, int ix, int iy, float d, Minotaur& m)
+		inline double z3d(int x, int y, int ix, int iy, float d)
 		{
 			Spherical sc = sphericals[y][x][iy][ix];
-			return d * sc.sin_inc * fabs(sc.cos_azi*m.cos_ori-sc.sin_azi*m.sin_ori);
+			return d * sc.tan_inc;
 		}
 
 		inline double y3d(int x, int y, int ix, int iy, float d)
 		{
 			Spherical sc = sphericals[y][x][iy][ix];
-			return d*sc.cos_inc;
+			return d;
 		}
 
 	protected: //Internal Members

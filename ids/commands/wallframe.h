@@ -2,8 +2,15 @@
 #define WALLFRAME_H
 
 #include "frame.h"
+#include "../wall.h"
 #include <cmath>
 #include <algorithm>
+#include <limits>
+#include <map>
+
+#include <fftw3.h>
+
+#define WALL_AVG_SIZE 4
 
 class ComWallFrame : public ComFrame
 {

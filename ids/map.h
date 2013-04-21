@@ -7,11 +7,13 @@
 
 #include "point.h"
 
+#define BLOCKSIZE 8
+
 class Map
 {
 	public:
 		struct Sector {
-			Point points[256][256];
+			Point points[BLOCKSIZE][BLOCKSIZE];
 		};
 
 	protected:
@@ -20,21 +22,26 @@ class Map
 		SectorMap sectors;
 
 	public:
-		Map();
-
 		inline SectorMap::const_iterator begin(){ return sectors.begin(); }
 		inline SectorMap::const_iterator end(){ return sectors.end(); }
 		inline size_t size(){ return sectors.size(); }
 
-		inline Point &getPoint(int32_t x, int32_t y)
+		inline Point* getPoint(int32_t x, int32_t y)
 		{
-			Coord value(x/256,y/256);
-			return sectors[value].points[y % 256][x % 256];
+			Coord value(x/BLOCKSIZE,y/BLOCKSIZE);
+			return &(sectors[value].points[y % BLOCKSIZE][x % BLOCKSIZE]);
+		}
+
+		inline Point* getPoint(int32_t x, int32_t y, int32_t ix, int32_t iy)
+		{
+			Coord value(x,y);
+			return &(sectors[value].points[iy][ix]);
 		}
 
 		inline Sector* getSector(int32_t x, int32_t y)
 		{
-			return &sectors[std::make_pair(x / 256,y / 256)];
+			Coord value(x,y);
+			return &(sectors[value]);
 		}
 
 };

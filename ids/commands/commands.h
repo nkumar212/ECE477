@@ -7,5 +7,6 @@
 #include "wallframe.h"
 #include "posframe.h"
 #include "frameproxy.h"
+#include "mapframe.h"
 
 #endif
