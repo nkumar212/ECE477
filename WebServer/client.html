@@ -94,16 +94,22 @@ ws.onopen = function() {
 			gKeys |= KEY_SPACE
 		else if(key == 112) //Set Camera to X depth
 			gKeys |= KEY_F1
+			document.getElementById("cam_mode").innerHTML="X Depth";
 		else if(key == 113) //Set Camera to Y depth
 			gKeys |= KEY_F2
+			document.getElementById("cam_mode").innerHTML="Y Depth";
 		else if(key == 114) //Set Camera to Z depth
 			gKeys |= KEY_F3
+			document.getElementById("cam_mode").innerHTML="Z Depth";
 		else if(key == 115) //Set Camera to XYZ Rainbow
 			gKeys |= KEY_F4
+			document.getElementById("cam_mode").innerHTML="XYZ Depth Rainbow";
 		else if(key == 116) //Set Camera to Walls Mode
 			gKeys |= KEY_F5
+			document.getElementById("cam_mode").innerHTML="Walls";
 		else if(key == 117) //Save Camera to file
 			gKeys |= KEY_F6
+			document.getElementById("cam_mode").innerHTML="RGB";
 		else if(key == 123) //Save Camera to file
 			gKeys |= KEY_F12
 		else
@@ -170,10 +176,8 @@ ws.onopen = function() {
 					<td class="value"><input type="text" name="email"></td>
 			</tr>		<tr>
 					<td class="label">Camera Mode</td>
-					<td class="value"><form action="">
-							<input type="radio" name="camera_mode" value="color">Color</input>
-							<input type="radio" name="camera_mode" value="IR">IR</input></form>
-					</td>
+					<td class="value"><p id="cam_mode" style="color:orange">RGB</p></td>
+				
 			</tr>
 			<tr>
 					<td class="label">Drive Mode</td>
