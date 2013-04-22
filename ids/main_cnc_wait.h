@@ -68,7 +68,7 @@ void* mainCncWait(void* vids)
 	comFrameProxy.registerFrameSource("WallFrame", new ComWallFrame());
 	comFrameProxy.registerFrameSource("Live", NULL);
 
-	comFrameProxy.chooseSource(ids, "PosFrameY");
+	comFrameProxy.chooseSource(ids, "Live");
 
 
 	while(!ids->quit())
@@ -92,7 +92,8 @@ void* mainCncWait(void* vids)
 			cncCmd.udata8[0] = ids->cnc_getbuffer()[1];
 			cncCmd.udata8[1] = ids->cnc_getbuffer()[2];
 
-			fprintf(stderr,"From Cnc: 0x%02X 0x%04X\n",cncCmd.command,cncCmd.udata16);
+			if(cncCmd.command != 0x30)
+				fprintf(stderr,"From Cnc: 0x%02X 0x%04X\n",cncCmd.command,cncCmd.udata16);
 
 			switch(cncCmd.command)
 			{

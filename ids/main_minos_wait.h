@@ -14,7 +14,7 @@
 #include "ids.h"
 #include "minotaur.h"
 
-#define MINOSWAIT_LOOP_TIME (1000.0/15.00)
+#define MINOSWAIT_LOOP_TIME (1000.0/5.00)
 
 void* mainMinosWait(void* vids)
 { 
@@ -40,10 +40,12 @@ void* mainMinosWait(void* vids)
 
 	while(!ids->quit())
 	{
-		loop_ms += LOOP_TIME;
+		loop_ms += MINOSWAIT_LOOP_TIME;
 
 		while(minotaur->recv())
 			;
+		
+		minotaur->sendpacket(0xB0,0x0000);
 
 		clock_gettime(CLOCK_MONOTONIC, &t1);
 		now_ms = (t1.tv_sec * 1000 + t1.tv_nsec/1000000);

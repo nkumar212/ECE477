@@ -41,7 +41,7 @@ void* mainCommandQueue(void* vIDS)
 			clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &t1);
 			start_ms = (t1.tv_sec * 1000000 + t1.tv_nsec/1000);
 
-			cmd->action(ids);
+//			cmd->action(ids);
 
 			clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &t1);
 			end_ms = (t1.tv_sec * 1000000 + t1.tv_nsec/1000);
