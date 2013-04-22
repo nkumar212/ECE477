@@ -76,13 +76,14 @@ void* mainCncWait(void* vids)
 		loop_ms += CNCWAIT_LOOP_TIME;
 
 		datalen = ids->cnc_checkmsg();
-		if(errno != EWOULDBLOCK)
+		if(errno != EWOULDBLOCK && datalen > 0)
 		{
 			if(datalen != 3)
 			{
-				/*while(datalen > 0)
+				fprintf(stderr,"From CNC: ");
+				while(datalen > 0)
 					fprintf(stderr,"%02X ", ids->cnc_getbuffer()[--datalen]);
-				fprintf(stderr,"\n");*/
+				fprintf(stderr,"\n");
 
 				throw std::runtime_error("Invalid Command packet length from CNC Server.\n");
 			}

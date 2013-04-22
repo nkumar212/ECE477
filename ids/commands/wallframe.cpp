@@ -47,7 +47,8 @@ int ComWallFrame::action(IDS* main)
 	int x,y,xo,yo;
 	Kinect::depth_buffer* dframe = main->getDepth();
 	Kinect* kinect = main->getKinect();
-	Minotaur minotaur = main->getMinotaur();
+	Minotaur* minotaur = main->getMinotaur();
+	Minotaur::MinotaurState minostate = minotaur->getState();
 
 	Point p3d[8][8];
 	Point avg3d;
@@ -63,8 +64,8 @@ int ComWallFrame::action(IDS* main)
 	float floor_height = 0;
 	int floor_count = 0;
 	float rx, ry, rz;
-	float sin_ori = sin(minotaur.orient);
-	float cos_ori = cos(minotaur.orient);
+	float sin_ori = sin(minostate.orient);
+	float cos_ori = cos(minostate.orient);
 	float origin_dist;
 
 	uint32_t count, max_count = 0;
@@ -128,8 +129,8 @@ int ComWallFrame::action(IDS* main)
 						ry = kinect->y3d(x,y,xo,yo,fd);
 						rz = kinect->z3d(x,y,xo,yo,fd);
 
-						p3d[yo][xo].x = rx * cos_ori - ry * sin_ori + minotaur.x;
-						p3d[yo][xo].y = rx * sin_ori + ry * cos_ori + minotaur.y;
+						p3d[yo][xo].x = rx * cos_ori - ry * sin_ori + minostate.x;
+						p3d[yo][xo].y = rx * sin_ori + ry * cos_ori + minostate.y;
 						p3d[yo][xo].z = rz;
 
 						avg3d.x += p3d[yo][xo].x;
@@ -226,7 +227,7 @@ int ComWallFrame::action(IDS* main)
 					if((residual_bar <= valid*220) && (((residual_zxbar > valid*100) && (residual_zybar > valid*100)) || isinff(slopezy) || isinff(slopezx)))
 					{
 						//Using minimum distance to robot point location for hashing, less likely to be out of range.
-						origin_dist = (slopeyx * minotaur.x - minotaur.y + yint) / sqrt(quick_square(slopeyx)+1);
+						origin_dist = (slopeyx * minostate.x - minostate.y + yint) / sqrt(quick_square(slopeyx)+1);
 
 						//Magic number hashes radians into 0-255 addresses
 						fft_data[(int)(atan(slopeyx)*81.487330864+128)]++;

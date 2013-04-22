@@ -113,7 +113,8 @@ int Minotaur::sendpacket(uint8_t command, uint16_t data, bool wait_response)
 	pthread_mutex_unlock(&minos_outgoing_mutex);
 
 	if(count != 5)
-		throw std::runtime_error("Lost Connection to Minos Microcontroller\n");
+		std::cerr << "Lost Connection to Minos Microcontroller" << std::endl;
+//		throw std::runtime_error("Lost Connection to Minos Microcontroller\n");
 
 	return minos_seq;
 }

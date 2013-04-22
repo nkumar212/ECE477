@@ -19,7 +19,6 @@ int ComPosFrame::action(IDS* main)
 	int x,y,xo,yo;
 	Kinect::depth_buffer* dframe = main->getDepth();
 	Kinect* kinect = main->getKinect();
-	Minotaur minotaur = main->getMinotaur();
 
 	Point p3d[8][8];
 	Point avg3d;
