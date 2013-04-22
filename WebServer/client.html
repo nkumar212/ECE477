@@ -3,6 +3,7 @@
 
 <link rel="stylesheet" type="text/css" href="index.css"/>
 
+<script type="text/javascript" src="jquery-2.0.0.min.js"></script>
 <script>
 
 //Constants
@@ -24,14 +25,14 @@ var ws = new WebSocket("ws://128.46.100.114:9999/");
 
 //Global variable holding which gKeys are down
 var gKeys = 0;
-var msgInfo = new Object();
 
 ws.onmessage = function(jmsg) {
-	msg = JSON.parse(msgInfo);
+	
+	msg = JSON.parse(jmsg.data);
 	switch(msg['command'])
 	{
 		case 0x30:
-			$("#metricsbox").text(jmsg);
+			$("#metricsbox").text(jmsg.data);
 			break;
 	}
 }
@@ -153,6 +154,7 @@ ws.onopen = function() {
 
 	function getKeys(){
 		setTimeout(function() {
+			msgInfo = new Object();
 			msgInfo.command=document.getElementById("command").value;
 			msgInfo.gKeys=gKeys;
 			msgInfo.speed=document.getElementById("speedslider").value;
@@ -167,7 +169,23 @@ ws.onopen = function() {
 		},10);
 	}
 
+	function getMetrics(){
+		setTimeout(function() {
+			msgInfo = new Object();
+			msgInfo.command=0x30;
+			msgInfo.robotid=document.getElementById("username").value;
+			msgInfo.sessionid=document.getElementById("sessionid").value;
+
+			msg = JSON.stringify(msgInfo);
+			output.value = msg 
+			ws.send(msg);
+		
+			getMetrics();
+		},100);
+	}
+
 	getKeys();
+	getMetrics();
 }
 
 </script>

@@ -4,6 +4,7 @@ from txws import WebSocketFactory
 
 import json
 from copy import deepcopy
+import struct
 
 class WebsocketProtocol(protocol.Protocol):
 	def __init__(self):
@@ -25,7 +26,7 @@ class WebsocketProtocol(protocol.Protocol):
 		except:
 			return
 
-		if data['robotid'] not in Minotaur.instances.keys():
+		if 'robotid' not in data.keys() or data['robotid'] not in Minotaur.instances.keys():
 			if len(Minotaur.instances):
 				print data['robotid'],"not a valid robot"
 				print "Valid robots are:", "".join(Minotaur.instances.keys())
@@ -33,7 +34,9 @@ class WebsocketProtocol(protocol.Protocol):
 		else:
 			robot = Minotaur.instances[data['robotid']]
 
-		robot.requestMetrics(self)
+		if 'command' in data.keys() and data['command'] == 0x30:
+			robot.requestMetrics(self)
+			return
 
 		if 'gKeys' not in data.keys() or data['gKeys'] == None:
 			data['gKeys'] = 0
@@ -116,8 +119,8 @@ class Minotaur:
 		self.write(bytes("".join([chr(command % 256),chr(data1 % 256),chr(data2 % 256)])))
 	
 	def requestMetrics(self, client):
-		if 0x30 not in self.requests.keys(): self.requests[0x30] = []
-		self.requests[0x30].append(client)
+		if 0x30 not in self.requests.keys(): self.requests[0x30] = set()
+		self.requests[0x30].add(client)
 		if len(self.requests[0x30]) == 1:
 			self.sendCmd(0x30, 0x00, 0x00)
 
@@ -134,10 +137,15 @@ class MinotaurProtocol(protocol.Protocol):
 			self.minotaur.login(data)
 			print "Minotaur Connected with id:", self.minotaur.name,'at',self.transport.getHandle().getpeername()
 		else:
-			command = struct.unpack("<B",data)[0]
+			command = struct.unpack("<B",data[0])[0]
 			if command == 0x30:
 				if command in self.minotaur.requests.keys():
-					metrics_tuple = struct.unpack("<BIfffHHBB",data)
+					try:
+						metrics_tuple = struct.unpack("<BIfffHHBB",data)
+					except struct.error:
+						print "Minotaur returned invalidly formatted metric data"
+						return
+
 					metrics = (
 							'command',
 							'timestamp',
@@ -151,7 +159,7 @@ class MinotaurProtocol(protocol.Protocol):
 					for client in self.minotaur.requests[command]:
 						client.transport.write(json.dumps(metrics))
 
-					self.minotaur.requests[command] = []
+					self.minotaur.requests[command] = set()
 				
 
 minotaur_factory = protocol.ServerFactory()
