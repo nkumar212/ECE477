@@ -180,11 +180,11 @@ ws.onopen = function() {
 			</tr>
 			<tr>
 					<td class="label">Battery Percentage</td>
-					<td class="value"><span id="status" style="color:green">100%</span></td>
+					<td class="value"><span id="battery" style="color:green">100%</span></td>
 			</tr>
 					<tr>
 					<td class="label">Speed</td>
-					<td class="value"><span id="status" style="color:#008080">1 m/s</span></td>
+					<td class="value"><span id="speed" style="color:#008080">100</span></td>
 			</tr>	
 			
 			<tr><td colspan="2">----------------------------------------------------------------</td></tr>
@@ -216,26 +216,26 @@ ws.onopen = function() {
 		</td>
 
 		<td id=video_stream">
-			<!--
+			
 			<embed type="application/x-vlc-plugin" pluginspage="http://www.videolan.org" width="320" height="240" id="vlc" loop="yes" autoplay="yes" target="test.ogg"></embed>
 			<object classid="clsid:9BE31822-FDAD-461B-AD51-BE1D1C159921" codebase="http://download.videolan.org/pub/videolan/vlc/last/win32/axvlc.cab"></object>	
-			-->
+			<!--
 			<video id="video_stream" style="background-color:white;border: thin red solid;" width=320 height=240>
 				<source src="rtp://128.46.100.114:50001/test1.ogg" type="video/ogg" />	
-			</video>	
+				</video>	-->
 		</td>
 		</tr>
 
 		<tr>
 			<td colspan="2" id="directions"><p>Welcome to the command and control page for Project Minotaur! Press the patrol button to have the robot automatically patrol the room and search for intruders. If it finds one the email specified will be alerted with a picture of the intruder. To drive the robot, press the 'Manual' radio button and use the following keys:
-				   			<ul>
-								<li>W          --- forward</li>
-								<li>A          --- left</li>
-								<li>S          --- backwards</li>
-								<li>D          --- right</li>
-								<li>Space      --- stop</li>
-								<li>Up Arrow   --- speed up</li>
-								<li>Down arrow --- slow down</li>
+				   			<table id="key_mappings" border="3" cellpadding="5px">
+								<tr><td>W</td> <td>Forward</td></tr>
+								<tr><td>A</td> <td>Left</td></tr>
+								<tr><td>S</td> <td>Backwards</td></tr>
+								<tr><td>D</td> <td>Right</td></tr>
+								<tr><td>Space</td> <td>Stop</td></tr>
+								<tr><td>Up Arrow</td> <td>Increase Speed</td></tr>
+								<tr><td>Down Arrow</td> <td>Decrease Speed</td></tr>
 						</ul>
 			</td>	
 		</tr>
