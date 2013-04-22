@@ -8,17 +8,9 @@ IDS::IDS()
 		throw std::runtime_error("Attempted to initialize two copies of singleton class: IDS");
 	singleton = this;
 	cnc_desc = 0;
-	mutex_output = PTHREAD_MUTEX_INITIALIZER;
-	pthread_mutex_init(&mutex_output,NULL);
-	pthread_mutex_init(&minos_outgoing_mutex,NULL);
-	pthread_mutex_init(&cnc_outgoing_mutex,NULL);
-	minos_seq = 0;
-	minos_desc = 0;
-	minos_buffer_start = 0;
-	minos_buffer_end = 0;
-	int i;
-	for(i = 0; i < 256; i++)
-		pthread_mutex_init(minos_command_locks + i, NULL);
+	pthread_mutex_init(&mutex_output, NULL);
+	pthread_mutex_init(&cnc_outgoing_mutex, NULL);
+	minotaur = Minotaur::getSingleton();
 }
 
 Map* IDS::getMap()
@@ -85,7 +77,7 @@ char* IDS::cnc_getbuffer()
 	return cnc_buffer;
 }
 
-void IDS::cnc_connect(std::string cnc_host, size_t port)
+bool IDS::cnc_connect(std::string cnc_host, size_t port)
 {
 	int cnc_desc;
 	struct sockaddr_in serv_addr;
@@ -111,13 +103,15 @@ void IDS::cnc_connect(std::string cnc_host, size_t port)
 
 	serv_addr.sin_port = htons(port);
 	if(connect(cnc_desc, (struct sockaddr*) &serv_addr, sizeof(serv_addr)) < 0)
-		throw std::runtime_error(std::string("Failed to connect to C&C Server ") + cnc_host + "\n");
+		return false;
+		//throw std::runtime_error(std::string("Failed to connect to C&C Server ") + cnc_host + "\n");
 
 	this->cnc_desc = cnc_desc;
 	int flags = fcntl(cnc_desc, F_GETFL, 0);
 	fcntl(cnc_desc, F_SETFL, flags & ~O_NONBLOCK);
 
 	cnc_rawmsg("Bull:1",6);
+	return true;
 }
 
 int IDS::cnc_rawmsg(const void* msg, size_t msg_size)
@@ -144,7 +138,7 @@ uint64_t IDS::getDepthCount()
 	return getKinect()->getDepthCount();
 }
 
-Minotaur IDS::getMinotaur()
+Minotaur* IDS::getMinotaur()
 {
 	return minotaur;
 }

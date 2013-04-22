@@ -61,8 +61,9 @@ int ComPosFrame::action(IDS* main)
 
 					if(d != 0x07FF)
 					{
-						fd = 3480*254/(1091.5-(float)d);
+//						fd = 3480*254/(1091.5-(float)d);
 //						fd = 4755.3*256/(1091.5-(float)d);
+						fd = (-45.7768687166*log(1028-d)+295.5003224073)*100;
 						p3d[yo][xo].x = kinect->x3d(x,y,xo,yo,fd);
 						p3d[yo][xo].y = kinect->y3d(x,y,xo,yo,fd);
 						p3d[yo][xo].z = kinect->z3d(x,y,xo,yo,fd);
@@ -91,7 +92,7 @@ int ComPosFrame::action(IDS* main)
 
 				if((x == 640/8/2 || x==640/8/2+1) && (y==480/8/2||y==480/8/2+1))
 				{
-					avg_center_y += avg3d.z/4;
+					avg_center_y += avg3d.y/4;
 					r = 0xFF;
 					g = b = 0;
 				}else{

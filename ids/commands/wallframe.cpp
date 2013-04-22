@@ -37,7 +37,9 @@ inline float quick_square(float x)
 
 ComWallFrame::ComWallFrame() : ComFrame::ComFrame("WallFrame")
 {
-
+	int d;
+	for(d = 1; d < 1029; d++)
+		decode_kinect_dist[d] = (-45.7768687166*log(1028-d)+295.5003224073) * 100;
 }
 
 int ComWallFrame::action(IDS* main)
@@ -81,6 +83,10 @@ int ComWallFrame::action(IDS* main)
 
 	float avg_slope, avg_yint;
 
+	int fail_yx_res = 0;
+	int fail_zx_res = 0;
+	int fail_zy_res = 0;
+
 	if(main->getDepthCount() <= 0)
 	{
 		std::cerr << "MapFrame awaiting depth data" << std::endl;
@@ -116,7 +122,7 @@ int ComWallFrame::action(IDS* main)
 
 					if(d != 0x07FF)
 					{
-						fd = 3480*254/(1220.5-(float)d);
+						fd = decode_kinect_dist[d];
 
 						rx = kinect->x3d(x,y,xo,yo,fd);
 						ry = kinect->y3d(x,y,xo,yo,fd);
@@ -186,7 +192,7 @@ int ComWallFrame::action(IDS* main)
 				zxint = avg3d.z - slopezx * avg3d.x;
 				zyint = avg3d.z - slopezy * avg3d.y;
 
-				if((sqrt(zvariance) < sqrt(xvariance + yvariance) * 0.45) || (zvariance < valid*1.3))
+				if(zvariance < valid*300)
 				{
 					//Floor or ceiling at a constant height from Kinect
 					if(avg3d.z < -800 && avg3d.z > -1600)
@@ -217,7 +223,7 @@ int ComWallFrame::action(IDS* main)
 							}
 					//r = std::min<int>(std::max<int>(residual_bar*20,0),255);
 
-					if((residual_bar <= valid*60) && (((residual_zxbar > valid*100) && (residual_zybar > valid*100)) || isinff(slopezy) || isinff(slopezy)))
+					if((residual_bar <= valid*220) && (((residual_zxbar > valid*100) && (residual_zybar > valid*100)) || isinff(slopezy) || isinff(slopezx)))
 					{
 						//Using minimum distance to robot point location for hashing, less likely to be out of range.
 						origin_dist = (slopeyx * minotaur.x - minotaur.y + yint) / sqrt(quick_square(slopeyx)+1);
@@ -235,17 +241,23 @@ int ComWallFrame::action(IDS* main)
 						wallmap[Wall(atan(avg_slope),avg_yint)] += count;
 					}else{
 						r = g = b = 0;
+						if(residual_bar <= valid * 220)
+							fail_yx_res++;
+						if(residual_zxbar > valid*100 && !isinff(slopezx))
+							fail_zx_res++;
+						if(residual_zybar > valid*100 && !isinff(slopezy))
+							fail_zy_res++;
 					}
 				}
 			}
 
-/*			for(yo = 0; yo < 8; yo++)
+			for(yo = 0; yo < 8; yo++)
 				for(xo = 0; xo < 8; xo++)
 				{
 					frame[y*8+yo][x*8+xo][0] = r;
 					frame[y*8+yo][x*8+xo][1] = g;
 					frame[y*8+yo][x*8+xo][2] = b;
-				}*/
+				}
 		}
 	}
 
@@ -253,7 +265,7 @@ int ComWallFrame::action(IDS* main)
 	fftw_execute(fft);
 	fftw_destroy_plan(fft);
 
-	double mag;
+/*	double mag;
 	for(x = 0; x < 128; x++)
 	{
 		mag = sqrt(quick_square(fft_out[x][0]) + quick_square(fft_out[x][1]));
@@ -263,7 +275,7 @@ int ComWallFrame::action(IDS* main)
 			frame[y][x][1] = log(mag)/log(10)*10;
 			frame[y][x][2] = log(mag)/log(10)*10;
 		}
-	}
+	}*/
 
 	for(x = 0; x < 129; x++)
 	{
@@ -275,7 +287,7 @@ int ComWallFrame::action(IDS* main)
 	fftw_execute(fft);
 	fftw_destroy_plan(fft);
 
-	for(x = 0; x < 256; x++)
+/*	for(x = 0; x < 256; x++)
 	{
 		for(y = 0; y < 256; y++)
 		{
@@ -283,7 +295,7 @@ int ComWallFrame::action(IDS* main)
 			frame[y][x][1] = log(fft_data[x])/log(10)*10;
 			frame[y][x][2] = log(fft_data[x])/log(10)*10;
 		}
-	}
+	}*/
 
 
 	fftw_free(fft_out);

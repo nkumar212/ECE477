@@ -93,7 +93,7 @@ void Kinect::initFreenect()
 		throw std::runtime_error("Could not open Kinect");
 	}
 
-	freenect_set_tilt_degs(f_dev, -5);
+	freenect_set_tilt_degs(f_dev, 0);
 	freenect_set_led(f_dev, LED_GREEN);
 
 	freenect_set_depth_buffer(f_dev, depth_back);

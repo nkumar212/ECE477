@@ -14,6 +14,7 @@ class ComMapFrame : public ComFrame
 			float x,y,z;
 		};
 		bool valid_points[8][8];
+		float decode_kinect_dist[1029];
 	public:
 		ComMapFrame();
 		virtual int action(IDS* main);

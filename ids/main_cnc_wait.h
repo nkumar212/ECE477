@@ -15,8 +15,6 @@
 
 #define CNCWAIT_LOOP_TIME (1000.0/15.00)
 
-
-
 struct CNCCommand
 {
 	uint8_t command;
@@ -39,15 +37,17 @@ void* mainCncWait(void* vids)
 	timespec t1;
 	IDS* ids = static_cast<IDS*>(vids);
 	Kinect* kinect = ids->getKinect();
+	Minotaur* minotaur = ids->getMinotaur();
 	uint8_t* vbuff;
 	int datalen;
 
 	clock_gettime(CLOCK_MONOTONIC, &t1);
 	loop_ms = (t1.tv_sec * 1000 + t1.tv_nsec/1000000);
 
-	ComDumpVideo cmdDumpVideo;
+	ComDumpVideo* cmdDumpVideo = new ComDumpVideo();
 	ComWallFrame cmdFrameSourceWallFrame;
 	CommandQueue* cmd_q = CommandQueue::getSingleton();
+	Minotaur::MinotaurStatePacked packedMinoState;
 	CNCCommand cncCmd;
 
 	ComFrameProxy comFrameProxy;
@@ -68,7 +68,7 @@ void* mainCncWait(void* vids)
 	comFrameProxy.registerFrameSource("WallFrame", new ComWallFrame());
 	comFrameProxy.registerFrameSource("Live", NULL);
 
-	comFrameProxy.chooseSource(ids, "WallFrame");
+	comFrameProxy.chooseSource(ids, "PosFrameY");
 
 
 	while(!ids->quit())
@@ -91,16 +91,15 @@ void* mainCncWait(void* vids)
 			cncCmd.udata8[0] = ids->cnc_getbuffer()[1];
 			cncCmd.udata8[1] = ids->cnc_getbuffer()[2];
 
-			//fprintf(stderr,"0x%02X 0x%04X\n",cncCmd.command,cncCmd.udata16);
+			fprintf(stderr,"From Cnc: 0x%02X 0x%04X\n",cncCmd.command,cncCmd.udata16);
 
 			switch(cncCmd.command)
 			{
 				case 0x01: //Motors Move
-					ids->minos_sendpacket(cncCmd.command,cncCmd.udata16);
+					ids->getMinotaur()->sendpacket(cncCmd.command,cncCmd.udata16);
 					break;
 				case 0x10: //Take picture
-					cmd_q->push(&cmdDumpVideo);
-					std::cerr << "Caught dump command" << std::endl;
+					cmd_q->push(cmdDumpVideo);
 					break;
 				case 0x20:
 					switch(cncCmd.udata16)
@@ -127,11 +126,15 @@ void* mainCncWait(void* vids)
 					break;
 				case 0x22:
 					comFrameProxy.chooseSource(ids,"MapFrame");
-					std::cerr << "Caught source change to WallFrame" << std::endl;
+					std::cerr << "Caught source change to MapFrame" << std::endl;
 					break;
 				case 0x23:
 					comFrameProxy.chooseSource(ids,"Live");
 					std::cerr << "Caught source change to Live" << std::endl;
+					break;
+				case 0x30:
+					packedMinoState = Minotaur::MinotaurStatePacked(minotaur->getState());
+					ids->cnc_rawmsg(&packedMinoState, sizeof(packedMinoState));
 					break;
 				default:
 					throw std::runtime_error("Invalid Command pakcet cmdNumber from CNC Server.\n");
