@@ -40,7 +40,8 @@ void* mainMinosWait(void* vids)
 	{
 		loop_ms += LOOP_TIME;
 
-		ids->minos_recv();
+		while(ids->minos_recv())
+			;
 
 		clock_gettime(CLOCK_MONOTONIC, &t1);
 		now_ms = (t1.tv_sec * 1000 + t1.tv_nsec/1000000);

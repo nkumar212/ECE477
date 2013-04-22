@@ -1,5 +1,4 @@
 #include "ids.h"
-#include "serial.cpp"
 
 IDS* IDS::singleton = NULL;
 
@@ -134,104 +133,6 @@ int IDS::cnc_rawmsg(const void* msg, size_t msg_size)
 	return count;
 }
 
-int IDS::minos_sendpacket(uint8_t command, uint16_t data)
-{
-	MinosPacket packet;
-
-	uint8_t* cmd_data = (uint8_t*) &packet;
-
-	if(minos_desc == 0)
-		throw std::runtime_error("Not connected to Minos Microcontroller.  Cannot Send packet.\n");
-
-	while(!minos_checkpacket(++minos_seq))
-		;
-
-
-	packet.sync = 0xAA;
-	packet.command = command;
-	packet.udata16 = data;
-	packet.seq = minos_seq;
-
-	//fprintf(stderr,"%02X %02X %02X %02X %02X\n%04X\n", cmd_data[0], cmd_data[1], cmd_data[2], cmd_data[3], cmd_data[4], data);
-
-	pthread_mutex_lock(&minos_outgoing_mutex);
-	fprintf(stderr,"0x%02X 0x%04X\n",packet.command,packet.udata16);
-	int count = write(minos_desc, &packet, 5);
-	//fprintf(stderr,"%02X %02X %02X %02X %02X\n%04X\n", cmd_data[0], cmd_data[1], cmd_data[2], cmd_data[3], cmd_data[4], data);
-	pthread_mutex_unlock(&minos_outgoing_mutex);
-
-	if(count != 5)
-		throw std::runtime_error("Lost Connection to Minos Microcontroller\n");
-
-	return minos_seq;
-}
-
-bool IDS::minos_recv()
-{
-	int cnt = recv(minos_desc, minos_buffer + minos_buffer_start, std::min<int>(sizeof(MinosPacket),sizeof(minos_buffer)-minos_buffer_start), 0);
-
-	if(errno == EWOULDBLOCK || cnt == -1)
-		return false;
-
-	minos_buffer_end = (minos_buffer_end + cnt) % sizeof(minos_buffer);
-
-	while((minos_buffer[minos_buffer_start] != 0xAA) && (minos_buffer_start != minos_buffer_end))
-	{
-		minos_buffer_start = (minos_buffer_start + 1) % sizeof(minos_buffer);
-		std::cerr << "Dropping out of sync packet from Minos Microcontroller" << std::endl;
-	}
-
-	if((minos_buffer_end - minos_buffer_start + sizeof(minos_buffer)) > sizeof(MinosPacket))
-	{
-		minos_packetize();
-		return 1;
-	}
-
-	return 0;
-}
-
-bool IDS::minos_checkpacket(uint8_t seq)
-{
-	if(pthread_mutex_trylock(&minos_command_locks[seq]) == 0)
-	{
-		pthread_mutex_unlock(minos_command_locks+seq);
-		return true;
-	}
-	return false;
-}
-
-IDS::MinosPacket IDS::minos_getpacket(uint8_t seq)
-{
-	pthread_mutex_lock(minos_command_locks+seq);
-	pthread_mutex_unlock(minos_command_locks+seq);
-
-	return minos_incoming[seq];
-}
-
-IDS::MinosPacket IDS::minos_packetize()
-{
-	MinosPacket ret;
-	uint8_t* cpy = (uint8_t*)(&ret);
-	int i = 0;
-
-	while(((minos_buffer_start + i) % sizeof(minos_buffer) != minos_buffer_end) && i < sizeof(minos_buffer))
-		*cpy = minos_buffer[(minos_buffer_start + i) % sizeof(minos_buffer)];
-
-	minos_buffer_start = (minos_buffer_start + i) % sizeof(minos_buffer);
-
-	minos_incoming[ret.seq] = ret;
-
-	pthread_mutex_trylock(minos_command_locks + ret.seq);
-	pthread_mutex_unlock(minos_command_locks + ret.seq);
-
-	return ret;
-}
-
-void IDS::minos_connect()
-{
-	minos_desc = serial_init();
-	minos_seq = 0;
-}
 
 uint64_t IDS::getVideoCount()
 {

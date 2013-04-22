@@ -5,7 +5,7 @@ RM=$(shell which rm)
 
 LIBS = -lpthread -lrt -lfreenect -lfftw3 -lm
 CPPFLAGS = -O3 -I $(ROOT)/libfreenect/include -L $(ROOT)/libfreenect/build/lib -L $(ROOT)/libfreenect/build-alaric/lib
-CLEAN_TARGETS=*.o *.d *.a
+CLEAN_TARGETS=*.o *.d *.a ids
 
 A = commands.a
 OBJ = ids.o Command.o CommandQueue.o kinect.o yuv.o wall.o point.o minotaur.o
