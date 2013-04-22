@@ -20,6 +20,7 @@ class ComWallFrame : public ComFrame
 			float x,y,z;
 		};
 		bool valid_points[8][8];
+		float decode_kinect_dist[1028];
 	public:
 		ComWallFrame();
 		virtual int action(IDS* main);

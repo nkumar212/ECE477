@@ -3,7 +3,7 @@
 
 Minotaur* Minotaur::Singleton = NULL;
 
-Minotaur::getSingleton()
+Minotaur* Minotaur::getSingleton()
 {
 	if(Singleton)
 		return Singleton;
@@ -15,11 +15,29 @@ Minotaur::Minotaur()
 {
 	if(Singleton) throw std::runtime_error("Tried to create second instatiation of singleton class: Minotaur");
 	Singleton = this;
+	minos_seq = 0;
+	minos_desc = 0;
+	minos_buffer_start = 0;
+	minos_buffer_end = 0;
+	pthread_mutex_init(&minos_outgoing_mutex,NULL);
+
+	int i;
+	for(i = 0; i < 256; i++)
+		pthread_mutex_init(minos_command_locks + i, NULL);
+
+	minos_connect();
 }
 
 Minotaur::~Minotaur()
 {
 	Singleton = NULL;
+}
+
+uint32_t Minotaur::getMicroseconds()
+{
+	timespec t1;
+	clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &t1);
+	return (t1.tv_sec * 1000000 + t1.tv_nsec/1000);
 }
 
 Minotaur::MinotaurState::MinotaurState()
@@ -38,7 +56,33 @@ Minotaur::MinotaurState::MinotaurState()
 	valid_ir_bank = valid_battery = false;
 }
 
-Minotaur::MinotaurState::sensorsValid()
+Minotaur::MinotaurStatePacked::MinotaurStatePacked()
+{
+	command = 0x30;
+	timestamp = 0;
+	x = 0;
+	y = 0;
+	orient = 0;
+	left_encoder = 0;
+	right_encoder = 0;
+	ir_bank = 0;
+	battery = 0;
+}
+
+Minotaur::MinotaurStatePacked::MinotaurStatePacked(const MinotaurState state)
+{
+	command = 0x30;
+	timestamp = state.timestamp;
+	x = state.x;
+	y = state.y;
+	orient = state.orient;
+	left_encoder = state.left_encoder;
+	right_encoder = state.right_encoder;
+	ir_bank = state.ir_bank;
+	battery = state.battery;
+}
+
+bool Minotaur::MinotaurState::sensorsComplete()
 {
 	return valid_left_enc && valid_right_enc && valid_ir_bank && valid_battery;
 }
@@ -52,7 +96,7 @@ int Minotaur::sendpacket(uint8_t command, uint16_t data, bool wait_response)
 	if(minos_desc == 0)
 		throw std::runtime_error("Not connected to Minos Microcontroller.  Cannot Send packet.\n");
 
-	while(!minos_checkpacket(++minos_seq))
+	while(!checkpacket(++minos_seq))
 		;
 
 	if(wait_response)
@@ -79,7 +123,7 @@ bool Minotaur::recv()
 	MinosPacket packet;
 	int packets_served = 0;
 
-	int cnt = recv(minos_desc, minos_buffer + minos_buffer_start, std::min<int>(sizeof(MinosPacket),sizeof(minos_buffer)-minos_buffer_start), 0);
+	int cnt = ::recv(minos_desc, minos_buffer + minos_buffer_start, std::min<int>(sizeof(MinosPacket),sizeof(minos_buffer)-minos_buffer_start), 0);
 
 	if(errno == EWOULDBLOCK || cnt == -1)
 		return false;
@@ -102,7 +146,7 @@ bool Minotaur::recv()
 
 		if((minos_buffer_end - minos_buffer_start) % sizeof(minos_buffer) > sizeof(MinosPacket))
 		{
-			packet = minos_packetize();
+			packet = packetize();
 			packets_served++;
 
 			//Better than an if statement imo
@@ -116,7 +160,7 @@ bool Minotaur::recv()
 					if(!nextState.valid_ts)
 					{
 						nextState.timestamp = getMicroseconds();
-						nextState.timestamp_valid = true;
+						nextState.valid_ts = true;
 					}
 					break;
 			}
@@ -156,7 +200,7 @@ bool Minotaur::recv()
 		nextState.orient = currentState.orient;
 		nextState.orient += (nextState.left_encoder - currentState.left_encoder) * LEFT_ENCODER_TO_INCHES / TURN_RADIUS;
 		nextState.orient -= (nextState.right_encoder - currentState.right_encoder) * RIGHT_ENCODER_TO_INCHES / TURN_RADIUS;
-		nextState.orient %= (2 * PI);
+		nextState.orient = fmod(nextState.orient, 2 * PI);
 
 		nextState.x += (cos(nextState.orient) - cos(currentState.orient)) * TURN_RADIUS;
 		nextState.y += (sin(nextState.orient) - sin(currentState.orient)) * TURN_RADIUS;
@@ -180,9 +224,9 @@ bool Minotaur::checkpacket(uint8_t seq)
 	return false;
 }
 
-IDS::MinosPacket Minotaur::getpacket(uint8_t seq)
+Minotaur::MinosPacket Minotaur::getpacket(uint8_t seq)
 {
-	IDS::MinosPacket ret;
+	MinosPacket ret;
 
 	pthread_mutex_lock(minos_command_locks+seq);
 	ret = minos_incoming[seq];
@@ -191,7 +235,7 @@ IDS::MinosPacket Minotaur::getpacket(uint8_t seq)
 	return ret;
 }
 
-IDS::MinosPacket Minotaur::packetize()
+Minotaur::MinosPacket Minotaur::packetize()
 {
 	MinosPacket ret;
 	uint8_t* cpy = (uint8_t*)(&ret);
@@ -210,8 +254,25 @@ IDS::MinosPacket Minotaur::packetize()
 	return ret;
 }
 
-void Minotaur::connect()
+void Minotaur::minos_connect()
 {
 	minos_desc = serial_init();
 	minos_seq = 0;
 }
+
+Minotaur::MinotaurState Minotaur::getState()
+{
+	return currentState;
+}
+
+void Minotaur::suggestState(Minotaur::MinotaurState sugg)
+{
+	if(sugg.timestamp > currentState.timestamp && sugg.valid_pos)
+	{
+		currentState.x = sugg.x;
+		currentState.y = sugg.y;
+		currentState.orient = sugg.orient;
+	}
+}
+
+

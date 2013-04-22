@@ -1,6 +1,6 @@
 #include "mapframe.h"
 
-#define SECTOR_INCHES 1
+#define SECTOR_INCHES 3
 
 inline float quick_square(float x)
 {
@@ -9,6 +9,9 @@ inline float quick_square(float x)
 
 ComMapFrame::ComMapFrame() : ComFrame::ComFrame("MapFrame")
 {
+	int d;
+	for(d = 1; d < 1029; d++)
+		decode_kinect_dist[d] = (-45.7768687166*log(1028-d)+295.5003224073) * 100;
 }
 
 int ComMapFrame::action(IDS* main)
@@ -63,7 +66,7 @@ int ComMapFrame::action(IDS* main)
 
 					if(d != 0x07FF)
 					{
-						fd = 3480*254/(1091.5-(float)d);
+						fd = decode_kinect_dist[d];
 
 						rx = kinect->x3d(x,y,xo,yo,fd);
 						ry = kinect->y3d(x,y,xo,yo,fd);
@@ -118,12 +121,8 @@ int ComMapFrame::action(IDS* main)
 					}
 
 				xybar /= valid;
-				xSS /= valid;
 
-				slopeyx = (xybar - avg3d.x * avg3d.y) / (xSS - quick_square(avg3d.x));
-				yint = avg3d.y - slopeyx * avg3d.x;
-
-				if((sqrt(zvariance) < sqrt(xvariance + yvariance) * 0.8) || (zvariance < 150*150*valid))
+				if(zvariance < valid*300)
 				{
 					//Floor or ceiling at a constant height from Kinect
 					if(avg3d.z < -800 && avg3d.z > -1600)
@@ -142,35 +141,7 @@ int ComMapFrame::action(IDS* main)
 					}
 				}else{
 					//Wall or non-plane
-					
 					idsMap->getPoint(avg3d.x/(SECTOR_INCHES * 100),avg3d.y/(SECTOR_INCHES*100))->incClosed();
-					continue;
-					
-					residual_bar = 0;
-					residual_xbar = 0;
-					residual_ybar = 0;
-					for(yo = 0; yo < 8; yo++)
-						for(xo = 0; xo < 8; xo++)
-							if(valid_points[yo][xo])
-							{
-								residual_bar += quick_square((p3d[yo][xo].y - slopeyx * p3d[yo][xo].x - yint));
-								residual_xbar += quick_square(p3d[yo][xo].y - avg3d.y);
-								residual_ybar += quick_square(p3d[yo][xo].x - avg3d.x);
-							}
-
-
-					
-					if(residual_bar <= valid * 225 && sqrt(residual_xbar + residual_ybar)  <= valid * 175)
-					{
-						r = 0;
-						g = 255-std::min<int>(std::max<int>(128+atan(slopeyx)*64,0),255);//std::min<int>(std::max<int>(yint*20+128,0),255);
-						b = std::min<int>(std::max<int>(128+atan(slopeyx)*64,0),255);
-					}else{
-						//Antiplanar obstacle
-						r = 0x00;
-						g = 0x00;
-						b = 0x00;
-					}
 				}
 			}
 		}

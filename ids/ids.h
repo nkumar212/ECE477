@@ -34,6 +34,7 @@ class IDS
 		char cnc_buffer[1024];
 		int cnc_desc;
 		pthread_mutex_t cnc_outgoing_mutex;
+		pthread_mutex_t mutex_output;
 
 		Minotaur* minotaur;
 		Map roommap;
@@ -44,7 +45,7 @@ class IDS
 		static IDS* getSingleton();
 
 	public:
-		void cnc_connect(std::string host, size_t port);
+		bool cnc_connect(std::string host, size_t port);
 		int cnc_rawmsg(const void* msg, size_t msg_size);
 		int cnc_checkmsg();
 		char* cnc_getbuffer();
@@ -59,7 +60,7 @@ class IDS
 		uint64_t getVideoCount();
 		Kinect::depth_buffer* getDepth();
 
-		Minotaur getMinotaur();
+		Minotaur* getMinotaur();
 		Map* getMap();
 
 };

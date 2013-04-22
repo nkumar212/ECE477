@@ -2,6 +2,17 @@
 #define MINOTAUR_H
 
 #include <cmath>
+#include <stdint.h>
+#include <pthread.h>
+#include <stdexcept>
+#include <iostream>
+
+#include <netdb.h>
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <fcntl.h>
 
 #ifndef PI
 #define PI 3.1415926535
@@ -58,6 +69,23 @@ struct Minotaur
 			bool sensorsComplete();
 		};
 
+		//Returned to CNC server.  Must be accurately packed.
+#pragma pack(push,1)
+		struct MinotaurStatePacked
+		{
+			MinotaurStatePacked();
+			MinotaurStatePacked(const MinotaurState);
+
+			uint8_t command;
+			uint32_t timestamp;
+			float x,y;
+			float orient;
+			uint16_t left_encoder, right_encoder;
+			uint8_t ir_bank;
+			uint8_t battery;
+		};
+#pragma pack(pop)
+
 	public: //Singleton constructor
 		static Minotaur* getSingleton();
 
@@ -84,6 +112,7 @@ struct Minotaur
 	protected: //Hidden Members
 		void minos_connect();
 		MinosPacket packetize();
+		uint32_t getMicroseconds();
 
 	protected: //Hidden Properties
 		uint8_t minos_buffer[sizeof(MinosPacket)*16];
@@ -91,7 +120,6 @@ struct Minotaur
 		uint8_t minos_buffer_start, minos_buffer_end;
 		uint8_t minos_seq;
 
-		pthread_mutex_t mutex_output;
 		pthread_mutex_t minos_outgoing_mutex;
 
 		pthread_mutex_t minos_command_locks[256];

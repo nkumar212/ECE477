@@ -12,6 +12,7 @@
 #include "CommandQueue.h"
 #include "commands/commands.h"
 #include "ids.h"
+#include "minotaur.h"
 
 #define MINOSWAIT_LOOP_TIME (1000.0/15.00)
 
@@ -26,6 +27,7 @@ void* mainMinosWait(void* vids)
 	timespec t1;
 	IDS* ids = static_cast<IDS*>(vids);
 	Kinect* kinect = ids->getKinect();
+	Minotaur* minotaur = ids->getMinotaur();
 	uint8_t* vbuff;
 	int datalen;
 
@@ -34,13 +36,13 @@ void* mainMinosWait(void* vids)
 
 	CommandQueue* cmdq = CommandQueue::getSingleton();
 
-	ids->minos_sendpacket(0x01,0x0000);
+	minotaur->sendpacket(0x01,0x0000);
 
 	while(!ids->quit())
 	{
 		loop_ms += LOOP_TIME;
 
-		while(ids->minos_recv())
+		while(minotaur->recv())
 			;
 
 		clock_gettime(CLOCK_MONOTONIC, &t1);
