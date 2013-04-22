@@ -26,6 +26,16 @@ var ws = new WebSocket("ws://128.46.100.114:9999/");
 var gKeys = 0;
 var msgInfo = new Object();
 
+ws.onmessage = function(jmsg) {
+	msg = JSON.parse(msgInfo);
+	switch(msg['command'])
+	{
+		case 0x30:
+			$("#metricsbox").text(jmsg);
+			break;
+	}
+}
+
 ws.onopen = function() {
 
 	ws.send('Hello from the client!');
@@ -284,6 +294,7 @@ ws.onopen = function() {
 		<br>Username:<input type="text" id="username"/>
 		<br>Speed:<input type="range" id="speedslider" min="0" max="100"/>
 		<br>Outdata:<textarea id="output" cols=80 rows=5></textarea>
+		<br>Metrics:<textarea id="metricsbox" cols=80 rows=5></textarea>
 
 	</div>
 </body>
