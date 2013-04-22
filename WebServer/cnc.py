@@ -13,7 +13,7 @@ class WebsocketProtocol(protocol.Protocol):
 
 	def sendCmd(self, robot, command, data1, data2):
 		print "Writing command to robot",robot.name,hex(command), hex(data1), hex(data2)
-		robot.write(bytes("".join([chr(command % 255),chr(data1 % 255),chr(data2 % 255)])))
+		robot.write(bytes("".join([chr(command % 256),chr(data1 % 256),chr(data2 % 256)])))
 
 	def dataReceived(self, jdata):
 		if not self.connected:
