@@ -19,7 +19,8 @@ int ComMapFrame::action(IDS* main)
 	int x,y,xo,yo;
 	Kinect::depth_buffer* dframe = main->getDepth();
 	Kinect* kinect = main->getKinect();
-	Minotaur minotaur = main->getMinotaur();
+	Minotaur* minotaur = main->getMinotaur();
+	Minotaur::MinotaurState minostate = minotaur->getState();
 
 	Point p3d[8][8];
 	Point avg3d;
@@ -34,8 +35,8 @@ int ComMapFrame::action(IDS* main)
 	int floor_count = 0;
 
 	float rx, ry, rz;
-	float sin_ori = sin(minotaur.orient);
-	float cos_ori = cos(minotaur.orient);
+	float sin_ori = sin(minostate.orient);
+	float cos_ori = cos(minostate.orient);
 
 	Map* idsMap = main->getMap();
 	Map::Sector* sector;
@@ -72,8 +73,8 @@ int ComMapFrame::action(IDS* main)
 						ry = kinect->y3d(x,y,xo,yo,fd);
 						rz = kinect->z3d(x,y,xo,yo,fd);
 
-						p3d[yo][xo].x = rx * cos_ori - ry * sin_ori + minotaur.x;
-						p3d[yo][xo].y = rx * sin_ori + ry * cos_ori + minotaur.y;
+						p3d[yo][xo].x = rx * cos_ori - ry * sin_ori + minostate.x;
+						p3d[yo][xo].y = rx * sin_ori + ry * cos_ori + minostate.y;
 						p3d[yo][xo].z = rz;
 
 						avg3d.x += p3d[yo][xo].x;
