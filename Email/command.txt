@@ -1,0 +1,1 @@
+sendEmail -f 477Minotaur@gmail.com -t jhubberts@gmail.com -u "Minotaur Security" -m "Bad things are currently happening! See ASCII picture" -s smtp.gmail.com -o tls=yes -xu 477Minotaur@gmail.com -xp ZAQ\!XSW@
