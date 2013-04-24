@@ -18,6 +18,8 @@ body {
 
 
 #settings_box {
+        margin-top: 5px;
+	margin-bottom: auto;
 	/*margin-left:50px;*/
 	padding: 1px;
 	width: 320px;

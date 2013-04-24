@@ -21,7 +21,7 @@ var KEY_F5 = 1024;
 var KEY_F6 = 2048
 var KEY_F7 = 4096;
 
-var ws = new WebSocket("ws://128.46.100.114:9999/");
+var ws = new WebSocket("ws://zeus-cnc.no-ip.info:9999/");
 
 //Global variable holding which gKeys are down
 var gKeys = 0;
@@ -38,13 +38,14 @@ ws.onmessage = function(jmsg) {
 }
 
 ws.onopen = function() {
-
-	ws.send('Hello from the client!');
+	document.getElementById("status").innerHTML = "Online";
+        document.getElementById("status").style.color = "Green";
+    
+        ws.send('Hello from the client!');
 	
-	document = document.getElementById("canvas");
 	output = document.getElementById("output");
-
-	document.onload = function(){
+        
+        document.onload = function(){
 		gKeys = 0;
 	}
 
@@ -55,7 +56,6 @@ ws.onopen = function() {
 	document.onblur = function(){
 		gKeys = 0;
 	}
-
 	document.onkeyup = function(e){
 		if(e == null) e = window.event;
 		key = e.keyCode;
@@ -206,13 +206,15 @@ ws.onopen = function() {
 					<td class="label">Status</td>
 					<td class="value"><span id="status" style="color:red">Offline</span></td>
 			</tr>
+			<!--
 			<tr>
 					<td class="label">Battery Percentage</td>
 					<td class="value"><span id="battery" style="color:green">100%</span></td>
 			</tr>
+			-->
 					<tr>
 					<td class="label">Speed</td>
-					<td class="value"><span id="speed" style="color:#008080">100</span></td>
+					<td class="value"><input type="range" id="speedslider" min="0" max="100"/></td>
 			</tr>	
 			
 			<tr><td colspan="2">----------------------------------------------------------------</td></tr>
@@ -276,41 +278,13 @@ ws.onopen = function() {
 	-->
 		</tr>
 	</table>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
 
-
-
-
-		<canvas tabindex=1 style="background-color:white;border: thin red solid;" width=320 height=240 id="canvas"></canvas>
-		<video id="video_stream" style="background-color:white;border: thin red solid;" width=320 height=240>
-			<source src="rtp://128.46.100.114:50001/test1.ogg" type="video/ogg" />	
-		</video>
 		
 		<input type="hidden" id="robotid" value="MINOTAUR_1" />
 		<input type="hidden" id="sessionid" value="127.0.0.1" />
 		<input type="hidden" id="command" value="0" />
 		
-		<br>Username:<input type="text" id="username"/>
-		<br>Speed:<input type="range" id="speedslider" min="0" max="100"/>
+		<input type="hidden" id="username" value="Bull:1"/>
 		<br>Outdata:<textarea id="output" cols=80 rows=5></textarea>
 		<br>Metrics:<textarea id="metricsbox" cols=80 rows=5></textarea>
 
