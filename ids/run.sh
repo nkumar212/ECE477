@@ -7,7 +7,7 @@ if [[ -z "$HOST" ]] ; then
 	HOST="zeus-cnc.no-ip.info"
 fi
 
-sudo chmod a+rw /dev/ttyUSB0
+sudo chmod a+rw /dev/ttyS0
 
 cd `dirname "$0"`
 

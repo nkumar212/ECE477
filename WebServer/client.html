@@ -245,14 +245,9 @@ ws.onopen = function() {
 			
 		</td>
 
-		<td id=video_stream">
+		<td id="video_stream">
 			
-			<embed type="application/x-vlc-plugin" pluginspage="http://www.videolan.org" width="320" height="240" id="vlc" loop="yes" autoplay="yes" target="test.ogg"></embed>
-			<object classid="clsid:9BE31822-FDAD-461B-AD51-BE1D1C159921" codebase="http://download.videolan.org/pub/videolan/vlc/last/win32/axvlc.cab"></object>	
-			<!--
-			<video id="video_stream" style="background-color:white;border: thin red solid;" width=320 height=240>
-				<source src="rtp://128.46.100.114:50001/test1.ogg" type="video/ogg" />	
-				</video>	-->
+			<embed id="vlc" type="application/x-vlc-plugin" pluginspage="http://www.videolan.org" width="320" height="240" id="vlc" loop="yes" autoplay="yes" target="rtsp://zeus-cnc.no-ip.info:50001/test1.rtsp"></embed>
 		</td>
 		</tr>
 
@@ -264,8 +259,9 @@ ws.onopen = function() {
 								<tr><td>S</td> <td>Backwards</td></tr>
 								<tr><td>D</td> <td>Right</td></tr>
 								<tr><td>Space</td> <td>Stop</td></tr>
-								<tr><td>Up Arrow</td> <td>Increase Speed</td></tr>
-								<tr><td>Down Arrow</td> <td>Decrease Speed</td></tr>
+								<tr><td>F7</td> <td>Change camera to Color mode</td></tr>
+								<tr><td>F6</td> <td>Change camera to Map view</td></tr>
+								<tr><td>F4</td> <td>Change camera to depth view</td></tr>
 						</ul>
 			</td>	
 		</tr>
@@ -289,5 +285,10 @@ ws.onopen = function() {
 		<br>Metrics:<textarea id="metricsbox" cols=80 rows=5></textarea>
 
 	</div>
+
+	<script type="text/javascript">
+	var vlc = document.getElementById("vlc").video.networkCaching = 200;
+	</script>
+
 </body>
 </html>
