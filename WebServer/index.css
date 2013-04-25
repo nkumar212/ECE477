@@ -63,9 +63,6 @@ td.value {
 
 
 #video_stream {
-	border-width:5px;
-	border-style:solid;
-	border-color:red;
 	margin: auto;
    	/*float: right;*/
 	margin-left: 10px;
