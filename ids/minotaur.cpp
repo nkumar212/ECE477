@@ -139,7 +139,7 @@ bool Minotaur::recv()
 
 	if(cnt <= 0)
 	{
-		std::cerr << "No data from minos (2)" << std::endl;
+//		std::cerr << "No data from minos (2)" << std::endl;
 		return false;
 	}
 

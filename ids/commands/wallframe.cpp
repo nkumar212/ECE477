@@ -44,7 +44,7 @@ ComWallFrame::ComWallFrame() : ComFrame::ComFrame("WallFrame")
 
 int ComWallFrame::action(IDS* main)
 {
-	int x,y,xo,yo;
+	int x,y,xo,yo, Y;
 	Kinect::depth_buffer* dframe = main->getDepth();
 	Kinect* kinect = main->getKinect();
 	Minotaur* minotaur = main->getMinotaur();
@@ -73,10 +73,11 @@ int ComWallFrame::action(IDS* main)
 	Wall avg_walls[480/8/WALL_AVG_SIZE][640/8/WALL_AVG_SIZE][WALL_AVG_SIZE][WALL_AVG_SIZE];
 	bool valid_walls[480/8/WALL_AVG_SIZE][640/8/WALL_AVG_SIZE][WALL_AVG_SIZE][WALL_AVG_SIZE];
 
-	int ny = 256;
-	int nx = 256;
-	double fft_data[256];
-	fftw_complex* fft_out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*nx);
+	int nslope = 256;
+	int nodist = 256;
+	int nodist_half = nodist / 2 + 1;
+	double fft_data[nslope][nodist];
+	fftw_complex* fft_out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*nslope*nodist_half);
 
 
 	std::map<Wall,int> wallmap;
@@ -100,8 +101,9 @@ int ComWallFrame::action(IDS* main)
 				for(xo = 0; xo < WALL_AVG_SIZE; xo++)
 					valid_walls[y][x][yo][xo] = false;
 
-	for(y = 0; y < 256; y++)
-		fft_data[y] = fft_data[y] = 0;
+	for(x = 0; x < nodist; x++)
+		for(y = 0; y < nslope; y++)
+			fft_data[y][x] = fft_data[y][x] = 0;
 
 	for(y = 0; y < 480/8; y++)
 	{
@@ -230,7 +232,7 @@ int ComWallFrame::action(IDS* main)
 						origin_dist = (slopeyx * minostate.x - minostate.y + yint) / sqrt(quick_square(slopeyx)+1);
 
 						//Magic number hashes radians into 0-255 addresses
-						fft_data[(int)(atan(slopeyx)*81.487330864+128)]++;
+						fft_data[(int)(atan(slopeyx) / PI * nslope + nslope/2)][(int)(origin_dist/100) + nodist/2]++;
 
 						avg_walls[y/WALL_AVG_SIZE][x/WALL_AVG_SIZE][y % WALL_AVG_SIZE][x % WALL_AVG_SIZE] = Wall(slopeyx, yint);
 						valid_walls[y/WALL_AVG_SIZE][x/WALL_AVG_SIZE][y % WALL_AVG_SIZE][x % WALL_AVG_SIZE] = true;
@@ -252,56 +254,92 @@ int ComWallFrame::action(IDS* main)
 				}
 			}
 
-			for(yo = 0; yo < 8; yo++)
+		/*	for(yo = 0; yo < 8; yo++)
 				for(xo = 0; xo < 8; xo++)
 				{
 					frame[y*8+yo][x*8+xo][0] = r;
 					frame[y*8+yo][x*8+xo][1] = g;
 					frame[y*8+yo][x*8+xo][2] = b;
-				}
+				}*/
 		}
 	}
 
-	fftw_plan fft = fftw_plan_dft_r2c_1d(nx, &(fft_data[0]), fft_out, FFTW_ESTIMATE);
+	fftw_plan fft = fftw_plan_dft_r2c_2d(nslope, nodist, &(fft_data[0][0]), fft_out, FFTW_ESTIMATE);
 	fftw_execute(fft);
 	fftw_destroy_plan(fft);
 
-/*	double mag;
-	for(x = 0; x < 128; x++)
-	{
-		mag = sqrt(quick_square(fft_out[x][0]) + quick_square(fft_out[x][1]));
-		for(y = 0; y < 256; y++)
-		{
-			frame[y][x][0] = log(mag)/log(10)*10;
-			frame[y][x][1] = log(mag)/log(10)*10;
-			frame[y][x][2] = log(mag)/log(10)*10;
-		}
-	}*/
+	double mag;
+	double stddev_x, stddev_y;
+	double var_x, var_y;
+	double mean_x, mean_y;
+	double filter_x, filter_y;
+	double coeff_x, coeff_y;
 
-	for(x = 0; x < 129; x++)
+	stddev_x = 2;
+	stddev_y = 2;
+	mean_x = 0;
+	mean_y = nslope / 2;
+	var_x = quick_square(x);
+	var_y = quick_square(y);
+	coeff_x = 1 / (stddev_x * sqrt(2*PI)) / 0.4;
+	coeff_y = 1 / (stddev_y * sqrt(2*PI)) / 0.4;
+
+
+	for(y = 0; y < nslope; y++)
 	{
-		if(x > 7)
-			fft_out[x][0] = fft_out[x][1] = 0;
+		Y = (nslope / 2 + y) % nslope;
+//		filter_y = coeff_y * exp(-1 * quick_square(mean_y - y) / (2*var_y)); 
+		for(x = 0; x < nodist_half; x++)
+		{
+			/*filter_x = fabs(coeff_x * exp(-1 * quick_square(mean_x - x) / (2*var_x))); 
+			fft_out[Y*nodist_half+x][0] *= filter_x * filter_y;
+			fft_out[Y*nodist_half+x][1] *= filter_x * filter_y;
+			continue;*/
+
+			if(abs(y - nslope / 2) >= 10 || x >= 10)
+			{
+				fft_out[Y*nodist_half+x][0] = 0;
+				fft_out[Y*nodist_half+x][1] = 0;
+			}else{
+				mag = sqrt(quick_square(fft_out[Y*nodist_half+x][0]) + quick_square(fft_out[Y*nodist_half+x][1]));
+
+	/*			frame[y][x][0] = mag / fft_out[0][0]*256;
+				frame[y][x][1] = mag / fft_out[0][0]*256;
+				frame[y][x][2] = mag / fft_out[0][0]*256;*/
+			}
+		}
 	}
 
-	fft = fftw_plan_dft_c2r_1d(256, fft_out, &(fft_data[0]), FFTW_ESTIMATE);
+	fft = fftw_plan_dft_c2r_2d(nslope, nodist, fft_out, &(fft_data[0][0]), FFTW_ESTIMATE);
 	fftw_execute(fft);
 	fftw_destroy_plan(fft);
 
-/*	for(x = 0; x < 256; x++)
-	{
-		for(y = 0; y < 256; y++)
-		{
-			frame[y][x][0] = log(fft_data[x])/log(10)*10;
-			frame[y][x][1] = log(fft_data[x])/log(10)*10;
-			frame[y][x][2] = log(fft_data[x])/log(10)*10;
-		}
-	}*/
+	double max_mag = 0;
 
+	for(y = 0; y < nslope; y++)
+	{
+		for(x = 0; x < nodist; x++)
+		{
+			mag = fft_data[y][x];
+			if(mag > max_mag)
+				max_mag = mag;
+		}	
+	}
+
+	for(y = 0; y < nslope; y++)
+	{
+		for(x = 0; x < nodist; x++)
+		{
+			mag = std::max<double>(fft_data[y][x],0);
+			frame[y][x][0] = mag / max_mag * 255;
+			frame[y][x][1] = mag / max_mag * 255;
+			frame[y][x][2] = mag / max_mag * 255;
+		}
+	}
 
 	fftw_free(fft_out);
 
-	double prev_count = fft_data[255] > 3000 ? fft_data[255] : -1;
+/*	double prev_count = fft_data[255] > 3000 ? fft_data[255] : -1;
 	double prev_count_2 = fft_data[254] > 3000 ? fft_data[254] : -1;
 
 	for(y = 0; y < 256; y++)
@@ -317,57 +355,7 @@ int ComWallFrame::action(IDS* main)
 		}
 	}
 
-	std::cerr << std::endl;
-
-	return 0;
-
-	for(y = 0; y < 480/8/WALL_AVG_SIZE; y++)
-		for(x = 0; x < 640/8/WALL_AVG_SIZE; x++)
-		{
-			avg_slope = 0;
-			avg_yint = 0;
-			count = 0;
-			for(yo = 0; yo < WALL_AVG_SIZE; yo++)
-				for(xo = 0; xo < WALL_AVG_SIZE; xo++)
-				{
-					if(valid_walls[y][x][yo][xo])
-					{
-						avg_slope += avg_walls[y][x][yo][xo].orient;
-						avg_yint += avg_walls[y][x][yo][xo].yint;
-						++count;
-					}
-				}
-
-			if(count >= WALL_AVG_SIZE * 0.75)
-			{
-				avg_slope /= count;
-				avg_yint /= count;
-
-				r = 0;
-				g = 255-std::min<int>(std::max<int>(128+atan(avg_slope)*64,0),255);//std::min<int>(std::max<int>(yint*20+128,0),255);
-				b = std::min<int>(std::max<int>(128+atan(avg_slope)*64,0),255);
-
-				wallmap[Wall(atan(avg_slope),avg_yint)] += count;
-			}else{
-				r = g = b = 0;
-			}
-
-			for(yo = 0; yo < WALL_AVG_SIZE*8; yo++)
-				for(xo = 0; xo < WALL_AVG_SIZE*8; xo++)
-				{
-					frame[y*8*WALL_AVG_SIZE+yo][x*8*WALL_AVG_SIZE+xo][0] = r;
-					frame[y*8*WALL_AVG_SIZE+yo][x*8*WALL_AVG_SIZE+xo][1] = g;
-					frame[y*8*WALL_AVG_SIZE+yo][x*8*WALL_AVG_SIZE+xo][2] = b;
-				}
-		}
-
-	for(it_walls = wallmap.begin(); it_walls != wallmap.end(); it_walls++)
-	{
-		if(it_walls->second > 100)
-			std::cerr << it_walls->first.orient << "\t" << it_walls->first.yint << "\t" << it_walls->second << std::endl;
-	}
-
-	std::cerr << std::endl;
+	std::cerr << std::endl;*/
 
 	return 0;
 }

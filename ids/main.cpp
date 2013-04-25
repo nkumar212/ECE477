@@ -30,6 +30,7 @@ int main(int argc, char* argv[])
 	CommandQueue* cmdq = CommandQueue::getSingleton();
 	Kinect* kinect = ids->getKinect();
 
+	std::cerr << "Awaiting connection to CNC server" << std::endl;
 	while(!ids->cnc_connect(argv[1], 50000))
 	{
 		usleep(1000000);
