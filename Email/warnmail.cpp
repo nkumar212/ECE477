@@ -22,7 +22,7 @@ void warn(char* toAddr){
 
 	// Initialize and populate a buffer containing the sendEmail command and its flags
 	char cmdBuffer[400];
-	sprintf(cmdBuffer,"sendEmail -f 477Minotaur@gmail.com -t %s -u \"Minotaur Security\" -m \"%s\" -s smtp.gmail.com -o tls=yes -xu 477Minotaur@gmail.com -xp ZAQ\!XSW@ -q",toAddr,msgBuffer);
+	sprintf(cmdBuffer,"sendEmail -f 477Minotaur@gmail.com -t %s -u \"Minotaur Security\" -m \"%s\" -s smtp.gmail.com:587 -o tls=yes -xu 477Minotaur@gmail.com -xp ZAQ\!XSW@ -q",toAddr,msgBuffer);
 
 	// Execute the command
 	system(cmdBuffer);
@@ -42,7 +42,7 @@ void warn(char* toAddr, char* filename){
 
 	// Initialize and populate a buffer containing the sendEmail command and its flags
 	char cmdBuffer[500];
-	sprintf(cmdBuffer,"sendEmail -f 477Minotaur@gmail.com -t %s -u \"Minotaur Security\" -m \"%s\" -s smtp.gmail.com -o tls=yes -xu 477Minotaur@gmail.com -xp ZAQ\!XSW@ -q -a %s",toAddr,msgBuffer,filename);
+	sprintf(cmdBuffer,"sendEmail -f 477Minotaur@gmail.com -t %s -u \"Minotaur Security\" -m \"%s\" -s smtp.gmail.com:587 -o tls=yes -xu 477Minotaur@gmail.com -xp ZAQ\!XSW@ -q -a %s",toAddr,msgBuffer,filename);
 
 	// Execute the command
 	system(cmdBuffer);
