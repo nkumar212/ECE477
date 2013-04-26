@@ -38,8 +38,8 @@ inline float quick_square(float x)
 ComWallFrame::ComWallFrame() : ComFrame::ComFrame("WallFrame")
 {
 	int d;
-	for(d = 1; d < 1029; d++)
-		decode_kinect_dist[d] = (-45.7768687166*log(1028-d)+295.5003224073) * 100;
+	for(d = 1; d <= KINECT_CALIB_DOFF; d++)
+		decode_kinect_dist[d] = (KINECT_CALIB_LOGM*log(KINECT_CALIB_DOFF-d)+KINECT_CALIB_LOGB) * 100;
 }
 
 int ComWallFrame::action(IDS* main)
@@ -57,7 +57,7 @@ int ComWallFrame::action(IDS* main)
 	float zvariance, xvariance, yvariance, xSS, ySS, xybar, xzbar, yzbar;
 	float slopeyx, slopezx, slopezy;
 	float yint, zxint, zyint;
-	float residual_bar, residual_zxbar, residual_zybar;
+	float resid_yx, resid_zx, resid_zy;
 	uint8_t r,g,b;
 	uint16_t d, d0, d1;
 	float fd;
@@ -67,27 +67,33 @@ int ComWallFrame::action(IDS* main)
 	float sin_ori = sin(minostate.orient);
 	float cos_ori = cos(minostate.orient);
 	float origin_dist;
+	float avg_dist;
+	float orient_yx;
 
 	uint32_t count, max_count = 0;
 
 	Wall avg_walls[480/8/WALL_AVG_SIZE][640/8/WALL_AVG_SIZE][WALL_AVG_SIZE][WALL_AVG_SIZE];
 	bool valid_walls[480/8/WALL_AVG_SIZE][640/8/WALL_AVG_SIZE][WALL_AVG_SIZE][WALL_AVG_SIZE];
 
-	int nslope = 256;
+	int nslope = 480;
 	int nodist = 256;
 	int nodist_half = nodist / 2 + 1;
 	double fft_data[nslope][nodist];
 	fftw_complex* fft_out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*nslope*nodist_half);
-
-
-	std::map<Wall,int> wallmap;
-	std::map<Wall,int>::iterator it_walls;
 
 	float avg_slope, avg_yint;
 
 	int fail_yx_res = 0;
 	int fail_zx_res = 0;
 	int fail_zy_res = 0;
+
+	int fail_floor_check1 = 0;
+	int fail_floor_check2 = 0;
+	int fail_floor_check3 = 0;
+	int fail_floor_check4 = 0;
+
+	bool wall_check1, wall_check2, wall_check3;
+	bool floor_check1, floor_check2, floor_check3, floor_check4;
 
 	if(main->getDepthCount() <= 0)
 	{
@@ -110,12 +116,12 @@ int ComWallFrame::action(IDS* main)
 		for(x = 0; x < 640/8; x++)
 		{
 			avg3d = {0,0,0};
+			avg_dist = 0;
 			valid = 0;
 			xybar = 0;
 
 			for(yo = 0; yo < 8; yo++)
 			{
-				
 				for(xo = 0; xo < 8; xo++)
 				{
 					d0 = (*dframe)[y*8+yo][x*8+xo][0];
@@ -123,10 +129,11 @@ int ComWallFrame::action(IDS* main)
 					d = d1;
 					d = d << 8 | d0;
 
-					if(d != 0x07FF)
+					if(d != 0x07FF && d <= KINECT_CALIB_DOFF)
 					{
 						fd = decode_kinect_dist[d];
 
+						avg_dist += fd;
 						rx = kinect->x3d(x,y,xo,yo,fd);
 						ry = kinect->y3d(x,y,xo,yo,fd);
 						rz = kinect->z3d(x,y,xo,yo,fd);
@@ -194,8 +201,25 @@ int ComWallFrame::action(IDS* main)
 				yint = avg3d.y - slopeyx * avg3d.x;
 				zxint = avg3d.z - slopezx * avg3d.x;
 				zyint = avg3d.z - slopezy * avg3d.y;
+					
+				resid_yx = 0;
+				resid_zx = 0;
+				resid_zy = 0;
+				for(yo = 0; yo < 8; yo++)
+					for(xo = 0; xo < 8; xo++)
+						if(valid_points[yo][xo])
+						{
+							resid_yx += quick_square((p3d[yo][xo].y - slopeyx * p3d[yo][xo].x - yint));
+							resid_zx += quick_square((p3d[yo][xo].z - slopezx * p3d[yo][xo].x - zxint));
+							resid_zy += quick_square((p3d[yo][xo].z - slopezy * p3d[yo][xo].y - zyint));
+						}
 
-				if(zvariance < valid*300)
+				floor_check1 = fabs(atan(slopezx)) < 0.262;
+				floor_check2 = fabs(atan(slopezy)) < 0.262;
+				floor_check3 = resid_zx * 50000 < valid * quick_square(avg_dist/100);
+				floor_check4 = resid_zy * 50000 < valid * quick_square(avg_dist/100);
+
+				if(floor_check1 && floor_check2 && floor_check3 && floor_check4)
 				{
 					//Floor or ceiling at a constant height from Kinect
 					if(avg3d.z < -800 && avg3d.z > -1600)
@@ -212,57 +236,49 @@ int ComWallFrame::action(IDS* main)
 					}
 				}else{
 					//Wall or non-plane
-					
-					residual_bar = 0;
-					residual_zxbar = 0;
-					residual_zybar = 0;
-					for(yo = 0; yo < 8; yo++)
-						for(xo = 0; xo < 8; xo++)
-							if(valid_points[yo][xo])
-							{
-								residual_bar += quick_square((p3d[yo][xo].y - slopeyx * p3d[yo][xo].x - yint));
-								residual_zxbar += quick_square((p3d[yo][xo].z - slopezx * p3d[yo][xo].x - zxint));
-								residual_zybar += quick_square((p3d[yo][xo].z - slopezy * p3d[yo][xo].y - zyint));
-							}
-					//r = std::min<int>(std::max<int>(residual_bar*20,0),255);
+					//r = std::min<int>(std::max<int>(resid_yx*20,0),255);
 
-					if((residual_bar <= valid*220) && (((residual_zxbar > valid*100) && (residual_zybar > valid*100)) || isinff(slopezy) || isinff(slopezx)))
+					wall_check1 = resid_yx * 1000 < valid * quick_square(avg_dist/100);
+
+					if(wall_check1 && !floor_check3 && !floor_check4)
 					{
 						//Using minimum distance to robot point location for hashing, less likely to be out of range.
 						origin_dist = (slopeyx * minostate.x - minostate.y + yint) / sqrt(quick_square(slopeyx)+1);
+						orient_yx = fmod((atan(slopeyx) + PI / 2),PI);
 
-						//Magic number hashes radians into 0-255 addresses
-						fft_data[(int)(atan(slopeyx) / PI * nslope + nslope/2)][(int)(origin_dist/100) + nodist/2]++;
+						fft_data[(int)(orient_yx / PI * nslope / 2)][(int)(origin_dist/100) + nodist/4]++;
+						fft_data[(int)(orient_yx / PI * nslope / 2 + nslope / 2)][(int)(origin_dist/100) + nodist/4]++;
 
 						avg_walls[y/WALL_AVG_SIZE][x/WALL_AVG_SIZE][y % WALL_AVG_SIZE][x % WALL_AVG_SIZE] = Wall(slopeyx, yint);
 						valid_walls[y/WALL_AVG_SIZE][x/WALL_AVG_SIZE][y % WALL_AVG_SIZE][x % WALL_AVG_SIZE] = true;
-
 						r = 0;
-						g = 255-std::min<int>(std::max<int>(128+atan(slopeyx)*64,0),255);//std::min<int>(std::max<int>(yint*20+128,0),255);
-						b = std::min<int>(std::max<int>(128+atan(slopeyx)*64,0),255);
+						g = 255-std::min<int>(std::max<int>(orient_yx / PI * 256,0),255);//std::min<int>(std::max<int>(yint*20+128,0),255);
+						b = std::min<int>(std::max<int>(orient_yx / PI * 256,0),255);
 
-						wallmap[Wall(atan(avg_slope),avg_yint)] += count;
 					}else{
-						r = g = b = 0;
-						if(residual_bar <= valid * 220)
+						r = g = b = 0x80;
+						if(!wall_check1)
 							fail_yx_res++;
-						if(residual_zxbar > valid*100 && !isinff(slopezx))
-							fail_zx_res++;
-						if(residual_zybar > valid*100 && !isinff(slopezy))
-							fail_zy_res++;
+						
+						if(!floor_check1) fail_floor_check1++;
+						if(!floor_check2) fail_floor_check2++;
+						if(!floor_check3) fail_floor_check3++;
+						if(!floor_check4) fail_floor_check4++;
 					}
 				}
 			}
 
-		/*	for(yo = 0; yo < 8; yo++)
+			for(yo = 0; yo < 8; yo++)
 				for(xo = 0; xo < 8; xo++)
 				{
 					frame[y*8+yo][x*8+xo][0] = r;
 					frame[y*8+yo][x*8+xo][1] = g;
 					frame[y*8+yo][x*8+xo][2] = b;
-				}*/
+				}
 		}
 	}
+
+	//std::cerr << fail_yx_res << " " << fail_floor_check1 << " " << fail_floor_check2 << " " << fail_floor_check3 << " " << fail_floor_check4 << std::endl;
 
 	fftw_plan fft = fftw_plan_dft_r2c_2d(nslope, nodist, &(fft_data[0][0]), fft_out, FFTW_ESTIMATE);
 	fftw_execute(fft);
@@ -296,7 +312,7 @@ int ComWallFrame::action(IDS* main)
 			fft_out[Y*nodist_half+x][1] *= filter_x * filter_y;
 			continue;*/
 
-			if(abs(y - nslope / 2) >= 10 || x >= 10)
+			if(abs(y - nslope / 2) >= 8 || x >= 8)
 			{
 				fft_out[Y*nodist_half+x][0] = 0;
 				fft_out[Y*nodist_half+x][1] = 0;
@@ -314,7 +330,11 @@ int ComWallFrame::action(IDS* main)
 	fftw_execute(fft);
 	fftw_destroy_plan(fft);
 
-	double max_mag = 0;
+	double max_mag = 0, maxgrad;
+	int maxgradid;
+
+	std::set< Wall > walls;
+	std::set< Wall >::iterator it_walls;
 
 	for(y = 0; y < nslope; y++)
 	{
@@ -330,12 +350,44 @@ int ComWallFrame::action(IDS* main)
 	{
 		for(x = 0; x < nodist; x++)
 		{
+			maxgrad = 0;
+			maxgradid = 0;
+			for(yo = -1; yo <= 1; yo++)
+				for(xo = -1; xo <= 1; xo++)
+					if(fft_data[y + yo][x + xo] > maxgrad)
+					{
+						maxgrad = fft_data[y + yo][x + xo];
+						maxgradid = yo * 3 + xo;
+					}
+
 			mag = std::max<double>(fft_data[y][x],0);
-			frame[y][x][0] = mag / max_mag * 255;
-			frame[y][x][1] = mag / max_mag * 255;
-			frame[y][x][2] = mag / max_mag * 255;
+
+			if(maxgradid != 0)
+			{
+				frame[y][x][0] = mag / max_mag * 255;
+				frame[y][x][1] = mag / max_mag * 255;
+				frame[y][x][2] = mag / max_mag * 255;
+			}else if(abs(y - nslope/2) <= nslope/4){
+				frame[y][x][0] = mag / max_mag * 255;
+				frame[y][x][1] = 0;
+				frame[y][x][2] = 0;
+				
+				if(mag > 125893) //10 ** 5.1
+					walls.insert(Wall(fmod((float)y / nslope * 2 * PI,PI) - PI / 2,(float)x - nodist / 4.0));
+			}
 		}
 	}
+
+	for(it_walls = walls.begin(); it_walls != walls.end(); it_walls++)
+	{
+		std::cerr << " " << it_walls->orient / PI;
+		std::cerr << " " << it_walls->yint;
+		std::cerr << " " << log10(max_mag);
+		std::cerr << std::endl;
+	}
+
+	std::cerr << std::endl;
+
 
 	fftw_free(fft_out);
 

@@ -8,5 +8,6 @@
 #include "posframe.h"
 #include "frameproxy.h"
 #include "mapframe.h"
+#include "depthframe.h"
 
 #endif

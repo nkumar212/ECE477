@@ -7,6 +7,8 @@
 #include <algorithm>
 #include <limits>
 #include <map>
+#include <set>
+#include <utility>
 
 #include <fftw3.h>
 
@@ -20,7 +22,7 @@ class ComWallFrame : public ComFrame
 			float x,y,z;
 		};
 		bool valid_points[8][8];
-		float decode_kinect_dist[1029];
+		float decode_kinect_dist[KINECT_CALIB_DOFF+1];
 	public:
 		ComWallFrame();
 		virtual int action(IDS* main);

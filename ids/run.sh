@@ -38,5 +38,5 @@ if [[ "$HOST" == "localhost" ]] ; then
 fi;
 
 #valgrind --tool=callgrind ./ids > /dev/null
-./ids $HOST 2> test.txt | avconv -f rawvideo -s 320x240 -pix_fmt yuv420p -i - -r 24 http://$HOST:8090/feed1.ffm >/dev/null 2>/dev/null
+./ids $HOST | avconv -f rawvideo -s 320x240 -pix_fmt yuv420p -i - -r 24 http://$HOST:8090/feed1.ffm >/dev/null 2>/dev/null
 #./ids 2>logs/ids_stderr.log | avconv -f rawvideo -s 320x240 -pix_fmt yuv420p -i - -r 24 -f mjpeg test.mjpeg

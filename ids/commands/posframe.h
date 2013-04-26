@@ -17,6 +17,7 @@ class ComPosFrame : public ComFrame
 		};
 		bool valid_points[8][8];
 		int xyzflags;
+		float decode_kinect_dist[KINECT_CALIB_DOFF+1];
 	public:
 		ComPosFrame(int xyzflags = 7);
 		virtual int action(IDS* main);

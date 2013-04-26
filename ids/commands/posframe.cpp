@@ -10,8 +10,10 @@ inline float quick_square(float x)
 
 ComPosFrame::ComPosFrame(int xyzflags) : ComFrame::ComFrame("PosFrame")
 {
+	int d;
 	this->xyzflags = xyzflags;
-	memset(frame,0,sizeof(Kinect::video_buffer));
+	for(d = 1; d <= KINECT_CALIB_DOFF; d++)
+		decode_kinect_dist[d] = (KINECT_CALIB_LOGM*log(KINECT_CALIB_DOFF-d)+KINECT_CALIB_LOGB) * 100;
 }
 
 int ComPosFrame::action(IDS* main)
@@ -31,6 +33,7 @@ int ComPosFrame::action(IDS* main)
 	float fd;
 	float floor_height = 0;
 	int floor_count = 0;
+	float avg_d;
 
 	if(main->getDepthCount() <= 0)
 	{
@@ -47,6 +50,7 @@ int ComPosFrame::action(IDS* main)
 			avg3d.z = 0;
 			valid = 0;
 			xybar = 0;
+			avg_d = 0;
 
 			for(yo = 0; yo < 8; yo++)
 			{
@@ -58,11 +62,13 @@ int ComPosFrame::action(IDS* main)
 					d = d1;
 					d = d << 8 | d0;
 
-					if(d != 0x07FF)
+					if(d != 0x07FF && d <= KINECT_CALIB_DOFF)
 					{
+						avg_d += d;
 //						fd = 3480*254/(1091.5-(float)d);
 //						fd = 4755.3*256/(1091.5-(float)d);
 						fd = (-45.7768687166*log(1028-d)+295.5003224073)*100;
+//						fd = decode_kinect_dist[d];
 						p3d[yo][xo].x = kinect->x3d(x,y,xo,yo,fd);
 						p3d[yo][xo].y = kinect->y3d(x,y,xo,yo,fd);
 						p3d[yo][xo].z = kinect->z3d(x,y,xo,yo,fd);
@@ -84,14 +90,14 @@ int ComPosFrame::action(IDS* main)
 
 			if(valid <= (8*8)*3/4)
 			{
-				r = 0x00;
-				g = 0x00;
+				r = 0xFF;
+				g = 0xFF;
 				b = 0x00;
 			}else{
 
 				if((x == 640/8/2 || x==640/8/2+1) && (y==480/8/2||y==480/8/2+1))
 				{
-					avg_center_y += avg3d.y/4;
+					avg_center_y += avg_d / valid / 4;
 					r = 0xFF;
 					g = b = 0;
 				}else{
