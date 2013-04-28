@@ -194,22 +194,22 @@ bool Minotaur::recv()
 				case 0x02: //Get Battery Level
 					nextState.battery = packet.udata8[0];
 					nextState.valid_battery = true;
-					std::cerr << "Recieved battery level" << std::endl;
+//					std::cerr << "Recieved battery level" << std::endl;
 					break;
 				case 0xB1: //Get IR Sensor Values
 					nextState.ir_bank = packet.udata8[0];
 					nextState.valid_ir_bank = true;
-					std::cerr << "Recieved IR Sensors" << std::endl;
+//					std::cerr << "Recieved IR Sensors" << std::endl;
 					break;
 				case 0xB6: //Get Right Encoder
 					nextState.right_encoder = 65535 - packet.udata16;
 					nextState.valid_right_enc = true;
-					std::cerr << "Recieved Right Encoder" << std::endl;
+//					std::cerr << "Recieved Right Encoder" << std::endl;
 					break;
 				case 0xB7: //Get Left Encoder
 					nextState.left_encoder = packet.udata16;
 					nextState.valid_left_enc = true;
-					std::cerr << "Recieved Left Encoder" << std::endl;
+//					std::cerr << "Recieved Left Encoder" << std::endl;
 					break;
 				default:
 					std::cerr << "Invalid command returned by microcontroller: " << std::hex << (uint32_t)packet.command << " " << std::hex << (uint32_t)packet.udata16 << std::endl;
@@ -220,7 +220,7 @@ bool Minotaur::recv()
 
 	if(nextState.sensorsComplete())
 	{
-		if(currentState.valid_left_enc && currentState.valid_right_enc)
+		if(currentState.valid_left_enc && currentState.valid_right_enc && !nextState.valid_pos)
 		{
 			left_diff = (int)nextState.left_encoder - (int)currentState.left_encoder;
 			right_diff = (int)nextState.right_encoder - (int)currentState.right_encoder;
@@ -237,49 +237,59 @@ bool Minotaur::recv()
                                 
                         left_inches = (float) left_diff / ENCODER_TO_INCHES;
                         right_inches = (float) right_diff / ENCODER_TO_INCHES;
-                        
-                        if(left_diff == right_diff) //Straight Forward
-                        {
-                                nextState.orient = currentState.orient;
-                                nextState.x = currentState.x + sin(currentState.orient) * left_inches;
-                                nextState.y = currentState.y + cos(currentState.orient) * left_inches;
-                        }else{
-                                if(std::abs(left_diff) > std::abs(right_diff)) //Turning along right circle
-                                {
-                                        pct_circum = (left_inches - right_inches) / TURN_CIRCUMFERENCE;
-					ro = left_inches / (2 * PI * pct_circum);
-					ri = right_inches / (2 * PI * pct_circum);
-					r = (ro + ri) / 2;
-					nextState.orient = fmod(currentState.orient - pct_circum * 2 * PI, 2 * PI);
+
+			//Sanity Check, can't possibly move at a rate of 1/100 of an inch per microsecond
+                        if((std::fabs(right_inches/(nextState.timestamp - currentState.timestamp)) < 0.01) && (std::fabs(left_inches)/(nextState.timestamp-currentState.timestamp) < 0.01))
+			{
+				if(left_diff == right_diff) //Straight Forward
+				{
+					nextState.orient = currentState.orient;
+					nextState.x = currentState.x + sin(currentState.orient) * left_inches;
+					nextState.y = currentState.y + cos(currentState.orient) * left_inches;
+				}else{
+					if(std::abs(left_diff) > std::abs(right_diff)) //Turning along right circle
+					{
+						pct_circum = (left_inches - right_inches) / TURN_CIRCUMFERENCE;
+						ro = left_inches / (2 * PI * pct_circum);
+						ri = right_inches / (2 * PI * pct_circum);
+						r = (ro + ri) / 2;
+						nextState.orient = fmod(currentState.orient - pct_circum * 2 * PI, 2 * PI);
 #define TURN_CENTER_X nextState.x + r * sin(currentState.orient - PI / 2)
 #define TURN_CENTER_Y nextState.y + r * cos(currentState.orient - PI / 2)
-					nextState.x = TURN_CENTER_X + r * sin(nextState.orient);
-					nextState.y = TURN_CENTER_Y + r * cos(nextState.orient);
+						nextState.x = TURN_CENTER_X + r * sin(nextState.orient);
+						nextState.y = TURN_CENTER_Y + r * cos(nextState.orient);
 #undef TURN_CENTER_X
 #undef TURN_CENTER_Y			
-                                }else{ //Turning along left circle
-                                        pct_circum = (right_inches - left_inches) / TURN_CIRCUMFERENCE;
-					ro = right_inches / (2 * PI * pct_circum);
-					ri = left_inches / (2 * PI * pct_circum);
-					r = (ro + ri) / 2;
-					nextState.orient = fmod(currentState.orient + pct_circum * 2 * PI, 2 * PI);
+					}else{ //Turning along left circle
+						pct_circum = (right_inches - left_inches) / TURN_CIRCUMFERENCE;
+						ro = right_inches / (2 * PI * pct_circum);
+						ri = left_inches / (2 * PI * pct_circum);
+						r = (ro + ri) / 2;
+						nextState.orient = fmod(currentState.orient + pct_circum * 2 * PI, 2 * PI);
 #define TURN_CENTER_X nextState.x + r * sin(currentState.orient + PI / 2)
 #define TURN_CENTER_Y nextState.y + r * cos(currentState.orient + PI / 2)
-					nextState.x = TURN_CENTER_X + r * sin(nextState.orient);
-					nextState.y = TURN_CENTER_Y + r * cos(nextState.orient);
+						nextState.x = TURN_CENTER_X + r * sin(nextState.orient);
+						nextState.y = TURN_CENTER_Y + r * cos(nextState.orient);
 #undef TURN_CENTER_X
 #undef TURN_CENTER_Y			
-                                }
-                        }
-                        nextState.valid_pos = true;
+					}
+					std::cerr << left_inches << " " << right_inches << " " << currentState.orient - nextState.orient << " " << ro << " " << r << " " << ri << std::endl;
+				}
+				nextState.valid_pos = true;
+			}else{
+				nextState.valid_pos = false;
+			}
 		}
-
-		previousState = currentState;
-		currentState = nextState;
-		nextState = MinotaurState();
+		
+		if(nextState.valid_pos)
+		{
+			previousState = currentState;
+			currentState = nextState;
+			nextState = MinotaurState();
+		}
 	}
 
-	return packets_served ? true : false;
+	return packets_served != 0;
 }
 
 bool Minotaur::checkpacket(uint8_t seq)
