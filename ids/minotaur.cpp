@@ -127,6 +127,9 @@ bool Minotaur::recv()
 	MinosPacket packet;
 	int packets_served = 0;
 	int32_t left_diff, right_diff;
+	float left_inches, right_inches;
+	float ri, ro, r;
+	float pct_circum;
 
 	int cnt = read(minos_desc, minos_buffer+minos_buffer_start, sizeof(minos_buffer)-minos_buffer_start);
 		//::recv(minos_desc, minos_buffer + minos_buffer_start, std::min<int>(sizeof(MinosPacket),sizeof(minos_buffer)-minos_buffer_start), 0);
@@ -231,19 +234,46 @@ bool Minotaur::recv()
 				left_diff -= 65536;
 			else if(left_diff < -32768)
 				left_diff += 65536;
-
-			nextState.orient = currentState.orient;
-			nextState.orient += left_diff / LEFT_ENCODER_TO_INCHES / TURN_RADIUS;
-			nextState.orient -= right_diff / RIGHT_ENCODER_TO_INCHES / TURN_RADIUS;
-	//		nextState.orient = fmod(nextState.orient, 2 * PI);
-
-			nextState.x = currentState.x;
-			nextState.y = currentState.y;
-			nextState.x += (cos(nextState.orient) - cos(currentState.orient)) * TURN_RADIUS;
-			nextState.y += (sin(nextState.orient) - sin(currentState.orient)) * TURN_RADIUS;
+                                
+                        left_inches = (float) left_diff / ENCODER_TO_INCHES;
+                        right_inches = (float) right_diff / ENCODER_TO_INCHES;
+                        
+                        if(left_diff == right_diff) //Straight Forward
+                        {
+                                nextState.orient = currentState.orient;
+                                nextState.x = currentState.x + sin(currentState.orient) * left_inches;
+                                nextState.y = currentState.y + cos(currentState.orient) * left_inches;
+                        }else{
+                                if(std::abs(left_diff) > std::abs(right_diff)) //Turning along right circle
+                                {
+                                        pct_circum = (left_inches - right_inches) / TURN_CIRCUMFERENCE;
+					ro = left_inches / (2 * PI * pct_circum);
+					ri = right_inches / (2 * PI * pct_circum);
+					r = (ro + ri) / 2;
+					nextState.orient = fmod(currentState.orient - pct_circum * 2 * PI, 2 * PI);
+#define TURN_CENTER_X nextState.x + r * sin(currentState.orient - PI / 2)
+#define TURN_CENTER_Y nextState.y + r * cos(currentState.orient - PI / 2)
+					nextState.x = TURN_CENTER_X + r * sin(nextState.orient);
+					nextState.y = TURN_CENTER_Y + r * cos(nextState.orient);
+#undef TURN_CENTER_X
+#undef TURN_CENTER_Y			
+                                }else{ //Turning along left circle
+                                        pct_circum = (right_inches - left_inches) / TURN_CIRCUMFERENCE;
+					ro = right_inches / (2 * PI * pct_circum);
+					ri = left_inches / (2 * PI * pct_circum);
+					r = (ro + ri) / 2;
+					nextState.orient = fmod(currentState.orient + pct_circum * 2 * PI, 2 * PI);
+#define TURN_CENTER_X nextState.x + r * sin(currentState.orient + PI / 2)
+#define TURN_CENTER_Y nextState.y + r * cos(currentState.orient + PI / 2)
+					nextState.x = TURN_CENTER_X + r * sin(nextState.orient);
+					nextState.y = TURN_CENTER_Y + r * cos(nextState.orient);
+#undef TURN_CENTER_X
+#undef TURN_CENTER_Y			
+                                }
+                        }
+                        nextState.valid_pos = true;
 		}
 
-		nextState.valid_pos = true;
 		previousState = currentState;
 		currentState = nextState;
 		nextState = MinotaurState();

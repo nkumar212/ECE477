@@ -247,7 +247,7 @@ ws.onopen = function() {
 
 		<td id="video_stream">
 			
-			<embed id="vlc" type="application/x-vlc-plugin" pluginspage="http://www.videolan.org" width="320" height="240" id="vlc" loop="yes" autoplay="yes" target="rtsp://zeus-cnc.no-ip.info:50001/test1.rtsp"></embed>
+			<embed id="vlc" type="application/x-vlc-plugin" pluginspage="http://www.videolan.org" width="320" height="240" id="vlc" loop="no" ></embed>
 		</td>
 		</tr>
 
@@ -287,7 +287,9 @@ ws.onopen = function() {
 	</div>
 
 	<script type="text/javascript">
-	var vlc = document.getElementById("vlc").video.networkCaching = 200;
+	var vlc = document.getElementById("vlc");
+	vlc.playlist.add("rtsp://zeus-cnc.no-ip.info:50001/test1.rtsp", "mystream", ":network-caching=100");
+	vlc.playlist.play();
 	</script>
 
 </body>

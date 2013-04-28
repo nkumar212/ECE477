@@ -78,8 +78,8 @@ int ComWallFrame::action(IDS* main)
 	int nslope = 480;
 	int nodist = 256;
 	int nodist_half = nodist / 2 + 1;
-	double fft_data[nslope][nodist];
-	fftw_complex* fft_out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*nslope*nodist_half);
+	float fft_data[nslope][nodist];
+	fftwf_complex* fft_out = (fftwf_complex*) fftwf_malloc(sizeof(fftwf_complex)*nslope*nodist_half);
 
 	float avg_slope, avg_yint;
 
@@ -268,28 +268,28 @@ int ComWallFrame::action(IDS* main)
 				}
 			}
 
-			for(yo = 0; yo < 8; yo++)
+		/*	for(yo = 0; yo < 8; yo++)
 				for(xo = 0; xo < 8; xo++)
 				{
 					frame[y*8+yo][x*8+xo][0] = r;
 					frame[y*8+yo][x*8+xo][1] = g;
 					frame[y*8+yo][x*8+xo][2] = b;
-				}
+				}*/
 		}
 	}
 
 	//std::cerr << fail_yx_res << " " << fail_floor_check1 << " " << fail_floor_check2 << " " << fail_floor_check3 << " " << fail_floor_check4 << std::endl;
 
-	fftw_plan fft = fftw_plan_dft_r2c_2d(nslope, nodist, &(fft_data[0][0]), fft_out, FFTW_ESTIMATE);
-	fftw_execute(fft);
-	fftw_destroy_plan(fft);
+	fftwf_plan fft = fftwf_plan_dft_r2c_2d(nslope, nodist, &(fft_data[0][0]), fft_out, FFTW_ESTIMATE);
+	fftwf_execute(fft);
+	fftwf_destroy_plan(fft);
 
-	double mag;
-	double stddev_x, stddev_y;
-	double var_x, var_y;
-	double mean_x, mean_y;
-	double filter_x, filter_y;
-	double coeff_x, coeff_y;
+	float mag;
+	float stddev_x, stddev_y;
+	float var_x, var_y;
+	float mean_x, mean_y;
+	float filter_x, filter_y;
+	float coeff_x, coeff_y;
 
 	stddev_x = 2;
 	stddev_y = 2;
@@ -326,11 +326,11 @@ int ComWallFrame::action(IDS* main)
 		}
 	}
 
-	fft = fftw_plan_dft_c2r_2d(nslope, nodist, fft_out, &(fft_data[0][0]), FFTW_ESTIMATE);
-	fftw_execute(fft);
-	fftw_destroy_plan(fft);
+	fft = fftwf_plan_dft_c2r_2d(nslope, nodist, fft_out, &(fft_data[0][0]), FFTW_ESTIMATE);
+	fftwf_execute(fft);
+	fftwf_destroy_plan(fft);
 
-	double max_mag = 0, maxgrad;
+	float max_mag = 0, maxgrad;
 	int maxgradid;
 
 	std::set< Wall > walls;
@@ -360,7 +360,7 @@ int ComWallFrame::action(IDS* main)
 						maxgradid = yo * 3 + xo;
 					}
 
-			mag = std::max<double>(fft_data[y][x],0);
+			mag = std::max<float>(fft_data[y][x],0);
 
 			if(maxgradid != 0)
 			{
@@ -389,10 +389,10 @@ int ComWallFrame::action(IDS* main)
 	std::cerr << std::endl;
 
 
-	fftw_free(fft_out);
+	fftwf_free(fft_out);
 
-/*	double prev_count = fft_data[255] > 3000 ? fft_data[255] : -1;
-	double prev_count_2 = fft_data[254] > 3000 ? fft_data[254] : -1;
+/*	float prev_count = fft_data[255] > 3000 ? fft_data[255] : -1;
+	float prev_count_2 = fft_data[254] > 3000 ? fft_data[254] : -1;
 
 	for(y = 0; y < 256; y++)
 	{

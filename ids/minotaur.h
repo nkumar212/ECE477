@@ -18,10 +18,9 @@
 #define PI 3.1415926535
 #endif
 
-#define TURN_RADIUS 13.50 //Inches
+#define TURN_RADIUS 14.0 //Inches
 #define TURN_CIRCUMFERENCE (2 * TURN_RADIUS * PI)
-#define LEFT_ENCODER_TO_INCHES 4282
-#define RIGHT_ENCODER_TO_INCHES 4323
+#define ENCODER_TO_INCHES 15.33 // Ticks/Inch
 
 typedef enum {
 	POS_MINOS = 0,
@@ -128,6 +127,8 @@ struct Minotaur
 		MinotaurState currentState;
 		MinotaurState nextState;
 		MinotaurState previousState;
+		
+		uint64_t left_enc_64, right_enc_64;
 };
 
 #endif

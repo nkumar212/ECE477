@@ -3,7 +3,7 @@ SED=$(shell which sed)
 MV=$(shell which mv)
 RM=$(shell which rm)
 
-LIBS = -lpthread -lrt -lfreenect -lfftw3 -lm
+LIBS = -lpthread -lrt -lfreenect -lfftw3f -lm
 CPPFLAGS = -O3 -I $(ROOT)/libfreenect/include -L $(ROOT)/libfreenect/build/lib -L $(ROOT)/libfreenect/build-alaric/lib
 CLEAN_TARGETS=*.o *.d *.a ids
 
