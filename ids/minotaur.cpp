@@ -20,6 +20,8 @@ Minotaur::Minotaur()
 	minos_buffer_start = 0;
 	minos_buffer_end = 0;
 	pthread_mutex_init(&minos_outgoing_mutex,NULL);
+	nextState = MinotaurState();
+	currentState = MinotaurState();
 
 	memset(minos_buffer,0,sizeof(minos_buffer));
 
@@ -131,8 +133,9 @@ bool Minotaur::recv()
 	float ri, ro, r;
 	float pct_circum;
 
-	int cnt = read(minos_desc, minos_buffer+minos_buffer_start, sizeof(minos_buffer)-minos_buffer_start);
+	int cnt = read(minos_desc, minos_buffer+minos_buffer_end, (sizeof(minos_buffer) * 2 - minos_buffer_end - 1) % sizeof(minos_buffer) + 1);
 		//::recv(minos_desc, minos_buffer + minos_buffer_start, std::min<int>(sizeof(MinosPacket),sizeof(minos_buffer)-minos_buffer_start), 0);
+
 
 	if(errno == EWOULDBLOCK)
 	{
@@ -142,27 +145,34 @@ bool Minotaur::recv()
 
 	if(cnt <= 0)
 	{
-//		std::cerr << "No data from minos (2)" << std::endl;
+		//std::cerr << "No data from minos (2)" << std::endl;
 		return false;
 	}
 
+	if((minos_buffer_start - minos_buffer_end + sizeof(minos_buffer)) % sizeof(minos_buffer) < cnt && minos_buffer_start != minos_buffer_end)
+	{
+		std::cerr << "buffer settings: " << std::dec << (uint32_t)minos_buffer_start << " " << (uint32_t) minos_buffer_end << "/" << sizeof(minos_buffer) << std::endl << std::endl << std::endl;
+//throw std::runtime_error("Buffer overrun occurred");
+	}
+	
+
 	minos_buffer_end = (minos_buffer_end + cnt) % sizeof(minos_buffer);
 
-	while((minos_buffer[minos_buffer_start] != 0xAA) && (minos_buffer_start != minos_buffer_end))
+/*	while((minos_buffer[minos_buffer_start] != 0xAA) && (minos_buffer_start != minos_buffer_end))
 	{
-		//std::cerr << "Dropping out of sync packet from Minos Microcontroller " << std::hex << (uint32_t) minos_buffer[minos_buffer_start] << std::endl;
+		std::cerr << "Dropping out of sync packet from Minos Microcontroller " << std::hex << (uint32_t) minos_buffer[minos_buffer_start] << std::endl;
 		minos_buffer_start = (minos_buffer_start + 1) % sizeof(minos_buffer);
-	}
+	}*/
 
-	while((minos_buffer_end - minos_buffer_start) % sizeof(minos_buffer) > sizeof(MinosPacket))
+	while((minos_buffer_end - minos_buffer_start + sizeof(minos_buffer)) % sizeof(minos_buffer) > sizeof(MinosPacket))
 	{
 		while((minos_buffer[minos_buffer_start] != 0xAA) && (minos_buffer_start != minos_buffer_end))
 		{
-			//std::cerr << "Dropping out of sync packet from Minos Microcontroller " << std::hex << (uint32_t)minos_buffer[minos_buffer_start] << std::endl;
+			std::cerr << "Dropping out of sync packet from Minos Microcontroller " << std::hex << (uint32_t)minos_buffer[minos_buffer_start] << std::endl;
 			minos_buffer_start = (minos_buffer_start + 1) % sizeof(minos_buffer);
 		}
 
-		if((minos_buffer_end - minos_buffer_start) % sizeof(minos_buffer) > sizeof(MinosPacket))
+		if((minos_buffer_end - minos_buffer_start + sizeof(minos_buffer)) % sizeof(minos_buffer) > sizeof(MinosPacket))
 		{
 			packet = packetize();
 			packets_served++;
@@ -202,13 +212,14 @@ bool Minotaur::recv()
 //					std::cerr << "Recieved IR Sensors" << std::endl;
 					break;
 				case 0xB6: //Get Right Encoder
-					nextState.right_encoder = 65535 - packet.udata16;
+					nextState.right_encoder = packet.udata16;
 					nextState.valid_right_enc = true;
 //					std::cerr << "Recieved Right Encoder" << std::endl;
 					break;
 				case 0xB7: //Get Left Encoder
 					nextState.left_encoder = packet.udata16;
 					nextState.valid_left_enc = true;
+					std::cerr << "Recieved left encoder value: " << packet.udata16 << std::endl;
 //					std::cerr << "Recieved Left Encoder" << std::endl;
 					break;
 				default:
@@ -220,10 +231,16 @@ bool Minotaur::recv()
 
 	if(nextState.sensorsComplete())
 	{
-		if(currentState.valid_left_enc && currentState.valid_right_enc && !nextState.valid_pos)
+		if((nextState.valid_left_enc && nextState.valid_right_enc) || !currentState.valid_ts)
 		{
-			left_diff = (int)nextState.left_encoder - (int)currentState.left_encoder;
-			right_diff = (int)nextState.right_encoder - (int)currentState.right_encoder;
+			if(currentState.valid_ts)
+			{
+				left_diff = (int)nextState.left_encoder - (int)currentState.left_encoder;
+				right_diff = (int)nextState.right_encoder - (int)currentState.right_encoder;
+			}else{
+				left_diff = 0;
+				right_diff = 0;
+			}
 
 			if(right_diff > 32768)
 				right_diff -= 65536;
@@ -239,13 +256,14 @@ bool Minotaur::recv()
                         right_inches = (float) right_diff / ENCODER_TO_INCHES;
 
 			//Sanity Check, can't possibly move at a rate of 1/100 of an inch per microsecond
-                        if((std::fabs(right_inches/(nextState.timestamp - currentState.timestamp)) < 0.01) && (std::fabs(left_inches)/(nextState.timestamp-currentState.timestamp) < 0.01))
+                        if((std::fabs(right_inches/(nextState.timestamp - currentState.timestamp)) < 1e-3) && (std::fabs(left_inches)/(nextState.timestamp-currentState.timestamp) < 1e-3) || !currentState.valid_pos)
 			{
 				if(left_diff == right_diff) //Straight Forward
 				{
 					nextState.orient = currentState.orient;
 					nextState.x = currentState.x + sin(currentState.orient) * left_inches;
 					nextState.y = currentState.y + cos(currentState.orient) * left_inches;
+					std::cerr << "Moved forward " << left_inches << std::endl;
 				}else{
 					if(std::abs(left_diff) > std::abs(right_diff)) //Turning along right circle
 					{
@@ -273,12 +291,17 @@ bool Minotaur::recv()
 #undef TURN_CENTER_X
 #undef TURN_CENTER_Y			
 					}
-					std::cerr << left_inches << " " << right_inches << " " << currentState.orient - nextState.orient << " " << ro << " " << r << " " << ri << std::endl;
+					std::cerr << left_inches << " " << right_inches << " " << currentState.orient - nextState.orient << " " << ro << " " << r << " " << ri << " " << std::fabs(left_inches/(nextState.timestamp - currentState.timestamp)) << " " << std::fabs(right_inches/(nextState.timestamp - currentState.timestamp)) << std::endl;
 				}
 				nextState.valid_pos = true;
 			}else{
 				nextState.valid_pos = false;
+				std::cerr << "Failed sanity check" << " " ;
+				std::cerr << std::dec << left_diff << " " << right_diff;
+				std::cerr << std::dec << nextState.left_encoder << " " << nextState.right_encoder << std::endl;
 			}
+/*		}else{
+			std::cerr << "Failed invalid nextState.pos" << std::endl;*/
 		}
 		
 		if(nextState.valid_pos)
@@ -315,17 +338,19 @@ Minotaur::MinosPacket Minotaur::getpacket(uint8_t seq)
 
 Minotaur::MinosPacket Minotaur::packetize()
 {
-	MinosPacket ret;
+	MinosPacket ret = MinosPacket();
 	uint8_t* cpy = (uint8_t*)(&ret);
 	int i = 0;
 
-	while(((minos_buffer_start + i) % sizeof(minos_buffer) != minos_buffer_end) && i < sizeof(ret))
-	{
-		*(cpy+i) = minos_buffer[(minos_buffer_start + i) % sizeof(minos_buffer)];
-		++i;
-	}
+	if((minos_buffer_end - minos_buffer_start + sizeof(minos_buffer)) % sizeof(minos_buffer) < sizeof(ret))
+		throw std::runtime_error("Invalid packet buffer sent to packetize");
 
-	minos_buffer_start = (minos_buffer_start + i) % sizeof(minos_buffer);
+	ret.sync = minos_buffer[(minos_buffer_start + 0) % sizeof(minos_buffer)];
+	ret.seq = minos_buffer[(minos_buffer_start + 1) % sizeof(minos_buffer)];
+	ret.command = minos_buffer[(minos_buffer_start + 2) % sizeof(minos_buffer)];
+	ret.udata8[0] = minos_buffer[(minos_buffer_start + 3) % sizeof(minos_buffer)];
+	ret.udata8[1] = minos_buffer[(minos_buffer_start + 4) % sizeof(minos_buffer)];
+	minos_buffer_start = (minos_buffer_start + 5) % sizeof(minos_buffer);
 
 	minos_incoming[ret.seq] = ret;
 

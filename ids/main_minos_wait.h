@@ -14,7 +14,7 @@
 #include "ids.h"
 #include "minotaur.h"
 
-#define MINOSWAIT_LOOP_TIME (1000.0/5.00)
+#define MINOSWAIT_LOOP_TIME (1000.0/1.00)
 
 void* mainMinosWait(void* vids)
 { 

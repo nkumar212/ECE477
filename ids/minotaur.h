@@ -116,7 +116,7 @@ struct Minotaur
 	protected: //Hidden Properties
 		uint8_t minos_buffer[sizeof(MinosPacket)*16];
 		int minos_desc;
-		uint8_t minos_buffer_start, minos_buffer_end;
+		int32_t minos_buffer_start, minos_buffer_end;
 		uint8_t minos_seq;
 
 		pthread_mutex_t minos_outgoing_mutex;
