@@ -272,10 +272,10 @@ bool Minotaur::recv()
 						ri = right_inches / (2 * PI * pct_circum);
 						r = (ro + ri) / 2;
 						nextState.orient = fmod(currentState.orient - pct_circum * 2 * PI, 2 * PI);
-#define TURN_CENTER_X nextState.x + r * sin(currentState.orient - PI / 2)
-#define TURN_CENTER_Y nextState.y + r * cos(currentState.orient - PI / 2)
-						nextState.x = TURN_CENTER_X + r * sin(nextState.orient);
-						nextState.y = TURN_CENTER_Y + r * cos(nextState.orient);
+#define TURN_CENTER_X currentState.x + r * sin(currentState.orient - PI / 2)
+#define TURN_CENTER_Y currentState.y + r * cos(currentState.orient - PI / 2)
+						nextState.x = TURN_CENTER_X + r * sin(nextState.orient + PI / 2);
+						nextState.y = TURN_CENTER_Y + r * cos(nextState.orient + PI / 2);
 #undef TURN_CENTER_X
 #undef TURN_CENTER_Y			
 					}else{ //Turning along left circle
@@ -284,14 +284,17 @@ bool Minotaur::recv()
 						ri = left_inches / (2 * PI * pct_circum);
 						r = (ro + ri) / 2;
 						nextState.orient = fmod(currentState.orient + pct_circum * 2 * PI, 2 * PI);
-#define TURN_CENTER_X nextState.x + r * sin(currentState.orient + PI / 2)
-#define TURN_CENTER_Y nextState.y + r * cos(currentState.orient + PI / 2)
-						nextState.x = TURN_CENTER_X + r * sin(nextState.orient);
-						nextState.y = TURN_CENTER_Y + r * cos(nextState.orient);
+#define TURN_CENTER_X currentState.x + r * sin(currentState.orient + PI / 2)
+#define TURN_CENTER_Y currentState.y + r * cos(currentState.orient + PI / 2)
+						nextState.x = TURN_CENTER_X + r * sin(nextState.orient - PI / 2);
+						nextState.y = TURN_CENTER_Y + r * cos(nextState.orient - PI / 2);
 #undef TURN_CENTER_X
 #undef TURN_CENTER_Y			
 					}
-					std::cerr << left_inches << " " << right_inches << " " << currentState.orient - nextState.orient << " " << ro << " " << r << " " << ri << " " << std::fabs(left_inches/(nextState.timestamp - currentState.timestamp)) << " " << std::fabs(right_inches/(nextState.timestamp - currentState.timestamp)) << std::endl;
+					std::cerr << "\tL:" << left_inches << "\"\tR:" << right_inches
+						<< "\"\tO:" << currentState.orient - nextState.orient
+						<< "\tRo:" << ro << "\"\tR:" << r << "\"\tRi:" << ri << "\""
+						<< std::endl;
 				}
 				nextState.valid_pos = true;
 			}else{
