@@ -252,20 +252,20 @@ bool Minotaur::recv()
 			else if(left_diff < -32768)
 				left_diff += 65536;
                                 
-                        left_inches = (float) left_diff / ENCODER_TO_INCHES;
-                        right_inches = (float) right_diff / ENCODER_TO_INCHES;
+                        left_inches = (float) left_diff / LEFT_ENCODER_TO_INCHES;
+                        right_inches = (float) right_diff / RIGHT_ENCODER_TO_INCHES;
 
 			//Sanity Check, can't possibly move at a rate of 1/100 of an inch per microsecond
                         if((std::fabs(right_inches/(nextState.timestamp - currentState.timestamp)) < 1e-3) && (std::fabs(left_inches)/(nextState.timestamp-currentState.timestamp) < 1e-3) || !currentState.valid_pos)
 			{
-				if(left_diff == right_diff) //Straight Forward
+				if(left_inches == right_inches) //Straight Forward
 				{
 					nextState.orient = currentState.orient;
 					nextState.x = currentState.x + sin(currentState.orient) * left_inches;
 					nextState.y = currentState.y + cos(currentState.orient) * left_inches;
 					std::cerr << "Moved forward " << left_inches << std::endl;
 				}else{
-					if(std::abs(left_diff) > std::abs(right_diff)) //Turning along right circle
+					if(std::abs(left_inches) > std::abs(right_inches)) //Turning along right circle
 					{
 						pct_circum = (left_inches - right_inches) / TURN_CIRCUMFERENCE;
 						ro = left_inches / (2 * PI * pct_circum);

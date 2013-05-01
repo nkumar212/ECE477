@@ -64,11 +64,11 @@ void* mainCncWait(void* vids)
 	comFrameProxy.registerFrameSource("PosFrameZ", new ComPosFrame(
 					ComPosFrame::Z
 				));
-	comFrameProxy.registerFrameSource("MapFrame", new ComDepthFrame());
+	comFrameProxy.registerFrameSource("MapFrame", new ComMapFrame());
 	comFrameProxy.registerFrameSource("WallFrame", new ComWallFrame());
 	comFrameProxy.registerFrameSource("Live", NULL);
 
-	comFrameProxy.chooseSource(ids, "Live");
+	comFrameProxy.chooseSource(ids, "MapFrame");
 
 
 	while(!ids->quit())

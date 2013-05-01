@@ -18,9 +18,10 @@
 #define PI 3.1415926535
 #endif
 
-#define TURN_RADIUS 14.0 //Inches
+#define TURN_RADIUS 16.0 //Inches
 #define TURN_CIRCUMFERENCE (2 * TURN_RADIUS * PI)
-#define ENCODER_TO_INCHES 15.33 // Ticks/Inch
+#define RIGHT_ENCODER_TO_INCHES 15.40625 // Ticks/Inch
+#define LEFT_ENCODER_TO_INCHES 15.5625 // Ticks/Inch
 
 typedef enum {
 	POS_MINOS = 0,
